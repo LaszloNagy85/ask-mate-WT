@@ -1,0 +1,7 @@
+{% extends "layout.html" %}
+{% block title %}Main page{% endblock%}
+{% block content %}
+{% for question in questions %}
+    <p>{{ question["id"] }}. {{ question["title"] }}</p>
+{% endfor %}
+{% endblock %}
