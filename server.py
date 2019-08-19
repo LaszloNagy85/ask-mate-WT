@@ -8,9 +8,19 @@ app = Flask(__name__)
 @app.route('/')
 @app.route('/list')
 def index():
-    questions = data_manager.get_sorted_data('question')
+    sort_by = 'submission_time'
+    order_direction = 'desc'
+    if 'sort' in request.args:
+        sort_by = request.args.get('sort')
+    if 'order' in request.args:
+        order_direction = request.args.get('order')
+
+    questions = data_manager.get_sorted_data('question', sort_by, order_direction)
     return render_template('list.html',
-                           questions=questions)
+                           questions=questions,
+                           sort_options=['submission_time', 'view_number', 'vote_number', 'title'],
+                           sort_titles=['submission time', 'view number', 'vote number', 'title'],
+                           )
 
 
 @app.route('/add-question', methods=["GET", "POST"])
