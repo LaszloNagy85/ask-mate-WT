@@ -1,9 +1,10 @@
 {% extends "layout.html" %}
 {% block title %}Main page{% endblock%}
 {% block content %}
-<ul>
-{% for question in questions %}
-    <p><li>{{ question["title"] }}</li></p>
-{% endfor %}
-</ul>
+    <p><a href="/add-question">Ask a question</a></p>
+    <ul>
+    {% for question in questions %}
+        <p><li>{{ question["title"] }}</li></p>
+    {% endfor %}
+    </ul>
 {% endblock %}

@@ -13,3 +13,7 @@ def get_sorted_data(filename, sort_by='submission_time', order_direction='desc')
 
     sorted_questions = sorted(data_to_sort, key=lambda x: is_int(x[sort_by]), reverse= is_reverse)
     return sorted_questions
+
+
+def export_data(filename, input_data, data_header):
+    return connection.export_data_to_file(filename, input_data, data_header)
