@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block title %}Ask a new question{% endblock%}
+{% block header %}Ask a new question{% endblock %}
+{% block content %}
+    <form method="post", action="/add-question">
+    <p>
+        <label for="question_title">Question title:</label><br>
+        <input type="text" id="question_title" name="question_title" required>
+    </p>
+    <p>
+        <label for="question_text">Question text:</label><br>
+        <textarea id="question_text" name="question_text" rows="6" cols="40" required></textarea>
+    </p>
+    <p>
+        <button type="submit">Add new question</button>
+    </p>
+    </form>
+
+{% endblock %}
