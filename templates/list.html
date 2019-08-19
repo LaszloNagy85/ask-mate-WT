@@ -1,7 +1,9 @@
 {% extends "layout.html" %}
 {% block title %}Main page{% endblock%}
 {% block content %}
+<ul>
 {% for question in questions %}
-    <p>{{ question["id"] }}. {{ question["title"] }}</p>
+    <p><li>{{ question["title"] }}</li></p>
 {% endfor %}
+</ul>
 {% endblock %}
