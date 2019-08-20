@@ -1,4 +1,4 @@
-from flask import Flask, url_for, request, render_template, redirect
+from flask import Flask, request, render_template, redirect
 import data_manager
 from datetime import datetime
 
@@ -52,7 +52,7 @@ def show_details(id):
     QUESTION = 0
     questions = data_manager.get_all_data("question")
     answers = data_manager.get_all_data("answer")
-    answer_to_display = []
+    answers_to_display = []
 
     for question in questions:
         if str(id) == question["id"]:
@@ -62,17 +62,15 @@ def show_details(id):
             data_manager.export_data("question", questions, QUESTION)
 
     for answer in answers:
-        if str(id) == answer["id"]:
-            answer_to_display = answer
+        if str(id) == answer["question_id"]:
+            answer["submission_time"] = datetime.fromtimestamp(int(answer["submission_time"]))
+            answers_to_display.append(answer)
 
     question_to_display["submission_time"] = datetime.fromtimestamp(int(question_to_display["submission_time"]))
 
-    if answer_to_display:
-        answer_to_display["submission_time"] = datetime.fromtimestamp(int(answer_to_display["submission_time"]))
-
     return render_template("show-details.html",
                            question_to_display=question_to_display,
-                           answer_to_display=answer_to_display)
+                           answers_to_display=answers_to_display)
 
 
 if __name__ == '__main__':

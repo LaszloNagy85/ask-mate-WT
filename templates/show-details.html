@@ -28,7 +28,7 @@
     </tr>
     </table><br/>
 
-    <{% if answer_to_display %}
+    <{% if answers_to_display %}
     <table>
     <tr><th>Answer:</th></tr>
     <tr>
@@ -40,14 +40,16 @@
         <th>Image</th>
     </tr>
 
+    <{% for answer in answers_to_display %}
     <tr>
-        <td>{{ answer_to_display["id"] }}</td>
-        <td>{{ answer_to_display["submission_time"] }}</td>
-        <td>{{ answer_to_display["vote_number"] }}</td>
-        <td>{{ question_to_display["id"] }}</td>
-        <td>{{ answer_to_display["message"] }}</td>
-        <td>{{ answer_to_display["image"] }}</td>
+        <td>{{ answer["id"] }}</td>
+        <td>{{ answer["submission_time"] }}</td>
+        <td>{{ answer["vote_number"] }}</td>
+        <td>{{ answer["question_id"] }}</td>
+        <td>{{ answer["message"] }}</td>
+        <td>{{ answer["image"] }}</td>
     </tr>
+    <{% endfor %}>
     </table><br>
     <{% endif %}
 
