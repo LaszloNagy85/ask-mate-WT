@@ -17,3 +17,13 @@ def get_sorted_data(filename, sort_by, order_direction):
 
 def export_data(filename, input_data, data_header):
     return connection.export_data_to_file(filename, input_data, data_header)
+
+
+def vote(filename, data_id, vote_type):
+    header = 0 if filename == 'question' else 1
+    data = get_all_data(filename)
+    vote_modificator = 1 if vote_type == 'up' else -1
+    for row in data:
+        if row['id'] == data_id:
+            row['vote_number'] = str(int(row['vote_number']) + vote_modificator)
+    return connection.export_data_to_file(filename, data, header)
