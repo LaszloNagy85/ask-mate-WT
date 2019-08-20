@@ -102,3 +102,7 @@ ENV/
 
 # pycharm files
 .idea/
+
+#sample_data
+answer.csv
+question.csv
