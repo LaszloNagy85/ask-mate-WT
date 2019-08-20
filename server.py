@@ -49,20 +49,26 @@ def add_question():
 
 @app.route('/question/<int:id>')
 def show_details(id):
+    QUESTION = 0
     questions = data_manager.get_all_data("question")
     answers = data_manager.get_all_data("answer")
-    question_to_display = {}
-    answer_to_display = {}
+    answer_to_display = []
 
     for question in questions:
         if str(id) == question["id"]:
             question_to_display = question
-            print(question_to_display)
+            question_to_display["view_number"] = int(question_to_display["view_number"]) + 1
+            questions[questions.index(question)] = question_to_display
+            data_manager.export_data("question", questions, QUESTION)
 
     for answer in answers:
         if str(id) == answer["id"]:
             answer_to_display = answer
-            print(answer_to_display)
+
+    question_to_display["submission_time"] = datetime.fromtimestamp(int(question_to_display["submission_time"]))
+
+    if answer_to_display:
+        answer_to_display["submission_time"] = datetime.fromtimestamp(int(answer_to_display["submission_time"]))
 
     return render_template("show-details.html",
                            question_to_display=question_to_display,
