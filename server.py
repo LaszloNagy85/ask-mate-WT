@@ -73,6 +73,12 @@ def show_details(id):
                            answers_to_display=answers_to_display)
 
 
+@app.route('/<redirect_id>/vote/<filename>/<data_id>/<vote_type>')
+def vote(redirect_id, filename, data_id, vote_type):
+    data_manager.vote(filename, data_id, vote_type)
+    return redirect(f'/question/{redirect_id}')
+
+
 if __name__ == '__main__':
     app.run(
         port=5000,
