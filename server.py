@@ -47,6 +47,28 @@ def add_question():
     return render_template("add-question.html")
 
 
+@app.route('/question/<int:id>')
+def show_details(id):
+    questions = data_manager.get_all_data("question")
+    answers = data_manager.get_all_data("answer")
+    question_to_display = {}
+    answer_to_display = {}
+
+    for question in questions:
+        if str(id) == question["id"]:
+            question_to_display = question
+            print(question_to_display)
+
+    for answer in answers:
+        if str(id) == answer["id"]:
+            answer_to_display = answer
+            print(answer_to_display)
+
+    return render_template("show-details.html",
+                           question_to_display=question_to_display,
+                           answer_to_display=answer_to_display)
+
+
 if __name__ == '__main__':
     app.run(
         port=5000,
