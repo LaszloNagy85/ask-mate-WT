@@ -21,17 +21,14 @@
     <tr>
         <td><a href="/{{ question_to_display['id'] }}/vote/question/{{ question_to_display['id'] }}/up"> <img src="/static/icons/arrow_up.png" alt="" width="24" height="24"></a>
             <a href="/{{ question_to_display['id'] }}/vote/question/{{ question_to_display['id'] }}/down"> <img src="/static/icons/arrow_down.png" alt="" width="24" height="24"></a></td>
-        <td>{{ question_to_display["id"] }}</td>
-        <td>{{ question_to_display["submission_time"] }}</td>
-        <td>{{ question_to_display["view_number"] }}</td>
-        <td>{{ question_to_display["vote_number"] }}</td>
-        <td>{{ question_to_display["title"] }}</td>
-        <td>{{ question_to_display["message"] }}</td>
-        <td>{{ question_to_display["image"] }}</td>
+        {% for each in question_to_display.values() %}
+        <td>{{ each }}</td>
+        {% endfor %}
+
     </tr>
     </table><br/>
 
-    <{% if answers_to_display %}
+    {% if answers_to_display %}
     <table>
     <tr><th>Answer:</th></tr>
     <tr>
@@ -44,23 +41,20 @@
         <th>Image</th>
     </tr>
 
-    <{% for answer in answers_to_display %}
+    {% for answer in answers_to_display %}
     <tr>
         <td><a href="/{{ question_to_display['id'] }}/vote/answer/{{ answer['id'] }}/up"><img src="/static/icons/arrow_up.png" alt="" width="24" height="24"></a>
             <a href="/{{ question_to_display['id'] }}/vote/answer/{{ answer['id'] }}/down"><img src="/static/icons/arrow_down.png" alt="" width="24" height="24"></a></td>
-        <td>{{ answer["id"] }}</td>
-        <td>{{ answer["submission_time"] }}</td>
-        <td>{{ answer["vote_number"] }}</td>
-        <td>{{ answer["question_id"] }}</td>
-        <td>{{ answer["message"] }}</td>
-        <td>{{ answer["image"] }}</td>
+        {% for each in answer.values() %}
+        <td>{{ each }}</td>
+        {% endfor %}
     </tr>
-    <{% endfor %}>
+    {% endfor %}
     </table><br>
-    <{% endif %}
+    {% endif %}
 
     <form>
-    <input type="button" onclick="history.back()" value="Return"/>
+    <input type="button" onclick="window.location.href='/list'" value="Return"/>
     </form><br/>
 
 {% endblock %}

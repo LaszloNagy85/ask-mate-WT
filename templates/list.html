@@ -8,7 +8,7 @@
     {% endfor %}
     </ul>
     <form action="/list" method="GET">
-        <p><label for="sort">Sort questios by:</label>
+        <p><label for="sort">Sort questions by:</label>
         <select id="sort" name="sort">
             {% for i in range(4) %}
                 <option {% if sort_by == sort_options[i] %} selected {% endif %}
