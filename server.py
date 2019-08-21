@@ -96,7 +96,7 @@ def edit_question(data_id):
             if data_id == question["id"]:
                 question["title"] = request.form["title"]
                 question["message"] = request.form["message"]
-                data_manager.export_data("test", questions, HEADER)
+                data_manager.export_data("question", questions, HEADER)
 
         return redirect("/")
 
@@ -109,6 +109,7 @@ def delete_question(data_id):
     answers = data_manager.get_all_data("answer")
     QUESTION_HEADER = 0
     ANSWER_HEADER = 1
+    answers_to_remove_index = []
 
     for question in questions:
         if question["id"] == data_id:
@@ -117,8 +118,12 @@ def delete_question(data_id):
 
     for answer in answers:
         if answer["question_id"] == data_id:
-            answers.remove(answer)
-            data_manager.export_data("answer", answers, ANSWER_HEADER)
+            answers_to_remove_index.append(answers.index(answer))
+
+    for index_number in answers_to_remove_index:
+        del answers[index_number]
+
+    data_manager.export_data("answer", answers, ANSWER_HEADER)
 
     return redirect("/")
 
