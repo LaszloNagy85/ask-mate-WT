@@ -25,7 +25,7 @@ def index():
 
 @app.route('/add-question', methods=["GET", "POST"])
 def add_question():
-    QUESTION = 0
+    HEADER = 0
     timestamp = datetime.timestamp(datetime.now())
 
     if request.method == "POST":
@@ -33,43 +33,43 @@ def add_question():
         questions_list = data_manager.get_all_data('question')
 
         question_data_dict["id"] = len(questions_list)
-        question_data_dict["submission_time"] = timestamp
+        question_data_dict["submission_time"] = int(timestamp)
         question_data_dict["view_number"] = 0
         question_data_dict["vote_number"] = 0
         question_data_dict["title"] = request.form["title"]
         question_data_dict["message"] = request.form["message"]
         question_data_dict["image"] = ">>>PLACEHOLDER_TEXT<<<"
         questions_list.append(question_data_dict)
-        data_manager.export_data("test", questions_list, QUESTION)
+        data_manager.export_data("question", questions_list, HEADER)
 
         return redirect("/")
 
     return render_template("add-question.html")
 
 
-@app.route('/question/view_count/<id>')
-def view_count(id):
+@app.route('/question/view_count/<int:data_id>')
+def view_count(data_id):
     HEADER = 0
     questions = data_manager.get_all_data("question")
     for question in questions:
-        if str(id) == question["id"]:
+        if str(data_id) == question["id"]:
             question["view_number"] = str(int(question["view_number"])+1)
             data_manager.export_data("question", questions, HEADER)
-    return redirect(f'/question/{id}')
+    return redirect(f'/question/{data_id}')
 
 
-@app.route('/question/<int:id>')
-def show_details(id):
+@app.route('/question/<int:data_id>')
+def show_details(data_id):
     questions = data_manager.get_all_data("question")
     answers = data_manager.get_all_data("answer")
     answers_to_display = []
 
     for question in questions:
-        if str(id) == question["id"]:
+        if str(data_id) == question["id"]:
             question_to_display = question
 
     for answer in answers:
-        if str(id) == answer["question_id"]:
+        if str(data_id) == answer["question_id"]:
             answer["submission_time"] = datetime.fromtimestamp(int(answer["submission_time"]))
             answers_to_display.append(answer)
 
@@ -86,11 +86,21 @@ def vote(redirect_id, filename, data_id, vote_type):
     return redirect(f'/question/{redirect_id}')
 
 
-@app.route('/question/<int:id>/edit')
-def edit_question(id):
+@app.route('/question/<data_id>/edit', methods=["GET", "POST"])
+def edit_question(data_id):
+    HEADER = 0
     questions = data_manager.get_all_data("question")
 
-    return render_template("edit-question.html", questions=questions)
+    if request.method == "POST":
+        for question in questions:
+            if data_id == question["id"]:
+                question["title"] = request.form["title"]
+                question["message"] = request.form["message"]
+                data_manager.export_data("test", questions, HEADER)
+
+        return redirect("/")
+
+    return render_template("edit-question.html", questions=questions, data_id=data_id)
 
 
 if __name__ == '__main__':

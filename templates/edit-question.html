@@ -5,14 +5,17 @@
 {% block content %}
 
     {% for question in questions %}
-    <form method="post" action="/question/{{ question["id"]/edit" }}">
-    <p>
-        <label for="title">Question title:</label><br>
-        <input type="text" id="title" name="title" required/>
-    </p>
-    <p>
-        <label for="message">Question text:</label><br>
-        <textarea id="message" name="message" rows="6" cols="40" required></textarea>
+        {% if question["id"] == data_id %}
+        <form method="post" action="/question/{{ question["id"] }}/edit">
+        <p>
+            <label for="title">Question title:</label><br>
+            <input type="text" id="title" name="title" value="{{ question["title"] }}"/>
+        </p>
+        <p>
+            <label for="message">Question text:</label><br>
+            <textarea id="message" name="message" rows="6" cols="40">{{ question["message"] }}</textarea>
+        {% endif %}
+    {% endfor %}
     </p>
     <p>
         <button type="submit">Add new question</button>
