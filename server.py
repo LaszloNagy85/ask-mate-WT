@@ -47,9 +47,19 @@ def add_question():
     return render_template("add-question.html")
 
 
+@app.route('/question/view_count/<id>')
+def view_count(id):
+    HEADER = 0
+    questions = data_manager.get_all_data("question")
+    for question in questions:
+        if str(id) == question["id"]:
+            question["view_number"] = str(int(question["view_number"])+1)
+            data_manager.export_data("question", questions, HEADER)
+    return redirect(f'/question/{id}')
+
+
 @app.route('/question/<int:id>')
 def show_details(id):
-    HEADER = 0
     questions = data_manager.get_all_data("question")
     answers = data_manager.get_all_data("answer")
     answers_to_display = []
@@ -57,9 +67,6 @@ def show_details(id):
     for question in questions:
         if str(id) == question["id"]:
             question_to_display = question
-            question_to_display["view_number"] = int(question_to_display["view_number"]) + 1
-            questions[questions.index(question)] = question_to_display
-            data_manager.export_data("question", questions, HEADER)
 
     for answer in answers:
         if str(id) == answer["question_id"]:
