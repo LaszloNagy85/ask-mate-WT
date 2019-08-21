@@ -103,6 +103,26 @@ def edit_question(data_id):
     return render_template("edit-question.html", questions=questions, data_id=data_id)
 
 
+@app.route('/question/<data_id>/delete')
+def delete_question(data_id):
+    questions = data_manager.get_all_data("question")
+    answers = data_manager.get_all_data("answer")
+    QUESTION_HEADER = 0
+    ANSWER_HEADER = 1
+
+    for question in questions:
+        if question["id"] == data_id:
+            questions.remove(question)
+            data_manager.export_data("question", questions, QUESTION_HEADER)
+
+    for answer in answers:
+        if answer["question_id"] == data_id:
+            answers.remove(answer)
+            data_manager.export_data("answer", answers, ANSWER_HEADER)
+
+    return redirect("/")
+
+
 if __name__ == '__main__':
     app.run(
         port=5000,
