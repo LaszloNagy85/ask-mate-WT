@@ -104,5 +104,3 @@ ENV/
 .idea/
 
 #sample_data
-sample_data/answer.csv
-sample_data/question.csv
