@@ -1,7 +1,9 @@
 {% extends "layout.html" %}
 {% block title %}Main page{% endblock%}
 {% block content %}
-    <p><a href="/add-question">Ask a question</a></p>
+    <form>
+    <p><input type="button" onclick="window.location.href='/add-question'" value="Ask a question"/>
+    </form>
     <ul>
     {% for question in questions %}
         <p><li><a href="/question/view_count/{{ question["id"] }}"> {{ question["title"] }}</a></li></p>
