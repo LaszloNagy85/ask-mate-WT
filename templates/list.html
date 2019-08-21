@@ -4,7 +4,7 @@
     <p><a href="/add-question">Ask a question</a></p>
     <ul>
     {% for question in questions %}
-        <p><li><a href="/question/{{ question["id"] }}"> {{ question["title"] }}</a></li></p>
+        <p><li><a href="/question/view_count/{{ question["id"] }}"> {{ question["title"] }}</a></li></p>
     {% endfor %}
     </ul>
     <form action="/list" method="GET">
