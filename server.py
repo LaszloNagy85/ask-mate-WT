@@ -49,7 +49,7 @@ def add_question():
 
 @app.route('/question/<int:id>')
 def show_details(id):
-    QUESTION = 0
+    HEADER = 0
     questions = data_manager.get_all_data("question")
     answers = data_manager.get_all_data("answer")
     answers_to_display = []
@@ -59,7 +59,7 @@ def show_details(id):
             question_to_display = question
             question_to_display["view_number"] = int(question_to_display["view_number"]) + 1
             questions[questions.index(question)] = question_to_display
-            data_manager.export_data("question", questions, QUESTION)
+            data_manager.export_data("question", questions, HEADER)
 
     for answer in answers:
         if str(id) == answer["question_id"]:
@@ -77,6 +77,13 @@ def show_details(id):
 def vote(redirect_id, filename, data_id, vote_type):
     data_manager.vote(filename, data_id, vote_type)
     return redirect(f'/question/{redirect_id}')
+
+
+@app.route('/question/<int:id>/edit')
+def edit_question(id):
+    questions = data_manager.get_all_data("question")
+
+    return render_template("edit-question.html", questions=questions)
 
 
 if __name__ == '__main__':
