@@ -127,6 +127,41 @@ def delete_question(data_id):
 
     return redirect("/")
 
+@app.route('/question/<data_id>/new-answer', methods=["GET", "POST"])
+def add_answer(data_id):
+    HEADER = 1
+    timestamp = datetime.timestamp(datetime.now())
+
+    if request.method == "POST":
+        answer_data_dict = {}
+        answers_list = data_manager.get_all_data('answer')
+
+        answer_data_dict["id"] = len(answers_list)
+        answer_data_dict["submission_time"] = int(timestamp)
+        answer_data_dict["vote_number"] = 0
+        answer_data_dict["question_id"] = data_id
+        answer_data_dict["message"] = request.form["message"]
+        answer_data_dict["image"] = ">>>PLACEHOLDER_TEXT<<<"
+        answers_list.append(answer_data_dict)
+        data_manager.export_data("answer", answers_list, HEADER)
+
+        return redirect("/")
+
+    return render_template('answer.html', data_id=data_id)
+
+
+@app.route('/answer/<answer_id>/delete')
+def delete_answer(answer_id):
+    answers = data_manager.get_all_data("answer")
+    ANSWER_HEADER = 1
+
+    for answer in answers:
+        if answer["id"] == answer_id:
+            del answers[answers.index(answer)]
+    data_manager.export_data("answer", answers, ANSWER_HEADER)
+
+    return redirect("/")
+
 
 if __name__ == '__main__':
     app.run(
