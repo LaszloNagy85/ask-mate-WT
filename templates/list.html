@@ -2,7 +2,7 @@
 {% block title %}Main page{% endblock%}
 {% block content %}
     <form>
-    <p><input type="button" onclick="window.location.href='/add-question'" value="Ask a question"/>
+    <p><input id="ask-button" type="button" onclick="window.location.href='/add-question'" value="Ask a question"/>
     </form>
     <ul>
     {% for question in questions %}
@@ -11,13 +11,13 @@
     </ul>
     <form action="/list" method="GET">
         <p><label for="sort">Sort questions by:</label>
-        <select id="sort" name="sort">
+        <select class="drop-downs" id="sort" name="sort">
             {% for i in range(4) %}
                 <option {% if sort_by == sort_options[i] %} selected {% endif %}
                     value="{{ sort_options[i] }}"> {{ sort_titles[i] }} </option>
             {% endfor %}
         </select>
-        <select id="order" name="order">
+        <select class="drop-downs" id="order" name="order">
             {% for direction in ['desc', 'asc'] %}
                 <option {% if direction == order_direction %} selected {% endif %}
                     value="{{ direction }}">
