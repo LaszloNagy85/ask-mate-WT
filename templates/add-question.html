@@ -5,7 +5,7 @@
 
 {% block content %}
 
-    <form method="post" action="/add-question">
+    <form class="center-forms" method="post" action="/add-question">
     <p>
         <label for="title">Question title:</label><br>
         <input type="text" id="title" name="title" required/>
@@ -15,7 +15,7 @@
         <textarea id="message" name="message" rows="6" cols="40" required></textarea>
     </p>
     <p>
-        <button type="submit">Add new question</button>
+        <button class="buttons" type="submit">Add question</button>
     </p>
     </form>
 
