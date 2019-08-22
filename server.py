@@ -127,8 +127,10 @@ def delete_question(data_id):
 
     return redirect("/")
 
+
 @app.route('/question/<data_id>/new-answer', methods=["GET", "POST"])
 def add_answer(data_id):
+    print("a")
     HEADER = 1
     timestamp = datetime.timestamp(datetime.now())
 
