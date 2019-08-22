@@ -2,11 +2,13 @@
 
 {% block title %}Edit question{% endblock%}
 
+{% block header %}Edit question{% endblock %}
+
 {% block content %}
 
     {% for question in questions %}
         {% if question["id"] == data_id %}
-        <form method="post" action="/question/{{ question["id"] }}/edit">
+        <form class="center-forms" method="post" action="/question/{{ question["id"] }}/edit">
         <p>
             <label for="title">Question title:</label><br>
             <input type="text" id="title" name="title" value="{{ question["title"] }}"/>
@@ -18,7 +20,7 @@
     {% endfor %}
     </p>
     <p>
-        <button type="submit">Add new question</button>
+        <button class="buttons" type="submit">Edit question</button>
     </p>
     </form>
 
