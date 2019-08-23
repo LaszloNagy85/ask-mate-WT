@@ -1,8 +1,18 @@
 from flask import Flask, request, render_template, redirect
 import data_manager
+import os
 from datetime import datetime
 
+
+ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif']
+
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = "images"
+#app.config['MAX_CONTENT_LENGTH'] = 5 * 2000 * 1400
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 
 @app.route('/')
@@ -29,20 +39,26 @@ def add_question():
     timestamp = datetime.timestamp(datetime.now())
 
     if request.method == "POST":
-        question_data_dict = {}
+        if 'image-upload' in request.files:
+            image = request.files['image-upload']
+            if image.filename != '' and allowed_file(image.filename):
+                image.save(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
+        else:
+            image = ''
         questions_list = data_manager.get_all_data('question')
-
-        question_data_dict["id"] = len(questions_list)
-        question_data_dict["submission_time"] = int(timestamp)
-        question_data_dict["view_number"] = 0
-        question_data_dict["vote_number"] = 0
-        question_data_dict["title"] = request.form["title"]
-        question_data_dict["message"] = request.form["message"]
-        question_data_dict["image"] = ">>>PLACEHOLDER_TEXT<<<"
+        question_data_dict = {
+            "id": len(questions_list),
+            "submission_time": int(timestamp),
+            "view_number": 0,
+            "vote_number": 0,
+            "title": request.form["title"],
+            "message": request.form["message"],
+            "image": image.filename if image else None,
+        }
         questions_list.append(question_data_dict)
         data_manager.export_data("question", questions_list, HEADER)
 
-        return redirect("/")
+        return redirect(f"/question/{question_data_dict['id']}")
 
     return render_template("add-question.html")
 
