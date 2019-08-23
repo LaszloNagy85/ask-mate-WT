@@ -48,3 +48,11 @@ def allowed_file(filename):
 
 
 """Image handling section over."""
+
+
+def delete_answer(answer_id):
+    answers = get_all_data("answer")
+    for answer in answers:
+        if answer["id"] == answer_id:
+            del answers[answers.index(answer)]
+    export_data("answer", answers, 'answer_header')
