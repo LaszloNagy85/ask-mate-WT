@@ -21,8 +21,15 @@
     <tr>
         <td><a href="/{{ question_to_display['id'] }}/vote/question/{{ question_to_display['id'] }}/up"> <img src="/static/icons/arrow_up.png" alt="" width="24" height="24"></a>
             <a href="/{{ question_to_display['id'] }}/vote/question/{{ question_to_display['id'] }}/down"> <img src="/static/icons/arrow_down.png" alt="" width="24" height="24"></a></td>
-        {% for each in question_to_display.values() %}
-        <td>{{ each }}</td>
+        {% for title,q_data in question_to_display.items() %}
+            {% if title == 'image' %}
+                <td>
+                    <a href="/static/images/{{ q_data }}">
+                        <img src="/static/images/{{ q_data }}" class="uploaded-images" width="100" height="70" alt=""></a>
+                </td>
+            {% else %}
+                <td>{{ q_data }}</td>
+            {% endif %}
         {% endfor %}
 
     </tr>
