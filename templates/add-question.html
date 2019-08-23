@@ -5,7 +5,7 @@
 
 {% block content %}
 
-    <form class="center-forms" method="post" action="/add-question">
+    <form class="center-forms" method="POST" action="/add-question" enctype="multipart/form-data">
     <p>
         <label for="title">Question title:</label><br>
         <input type="text" id="title" name="title" required/>
@@ -13,6 +13,10 @@
     <p>
         <label for="message">Question text:</label><br>
         <textarea id="message" name="message" rows="6" cols="40" required></textarea>
+    </p>
+    <p>
+        <label for="upload">Upload a picture</label><br>
+        <input id="image-upload" name="image-upload" type="file" accept="image/png, image/jpeg">
     </p>
     <p>
         <button class="buttons" type="submit">Add question</button>
