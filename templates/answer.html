@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block title %}Give an answer{% endblock%}
+
+{% block header %}Give an answer{% endblock %}
+
+{% block content %}
+
+    <form class="center-forms" method="post" action="/question/{{ data_id }}/new-answer">
+    <p>
+        <label for="message">Answer text:</label><br>
+        <textarea id="message" name="message" rows="6" cols="40" required></textarea>
+    </p>
+    <p>
+        <button class="buttons" type="submit">Add answer</button>
+    </p>
+    </form>
+
+{% endblock %}
