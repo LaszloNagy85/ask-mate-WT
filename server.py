@@ -4,11 +4,9 @@ import os
 from datetime import datetime
 
 
-
-
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "images"
-#app.config['MAX_CONTENT_LENGTH'] = 5 * 2000 * 1400
+app.config['MAX_CONTENT_LENGTH'] = 5 * 2000 * 1400
 
 
 @app.route('/')
@@ -31,8 +29,6 @@ def index():
 
 @app.route('/add-question', methods=["GET", "POST"])
 def add_question():
-    HEADER = 0
-
     if request.method == "POST":
         if 'image-upload' in request.files:
             image = request.files['image-upload']
@@ -53,7 +49,7 @@ def add_question():
             "image": image.filename if image else None,
         }
         questions_list.append(question_data_dict)
-        data_manager.export_data("question", questions_list, HEADER)
+        data_manager.export_data("question", questions_list, 'question_header')
 
         return redirect(url_for('show_details', data_id=question_data_dict['id']))
 
@@ -62,12 +58,7 @@ def add_question():
 
 @app.route('/question/view_count/<int:data_id>')
 def view_count(data_id):
-    HEADER = 0
-    questions = data_manager.get_all_data("question")
-    for question in questions:
-        if str(data_id) == question["id"]:
-            question["view_number"] = str(int(question["view_number"])+1)
-            data_manager.export_data("question", questions, HEADER)
+    data_manager.view_count_handling(data_id)
     return redirect(f'/question/{data_id}')
 
 
@@ -100,15 +91,13 @@ def vote(redirect_id, filename, data_id, vote_type):
 
 @app.route('/question/<data_id>/edit', methods=["GET", "POST"])
 def edit_question(data_id):
-    HEADER = 0
     questions = data_manager.get_all_data("question")
-
     if request.method == "POST":
         for question in questions:
             if data_id == question["id"]:
                 question["title"] = request.form["title"]
                 question["message"] = request.form["message"]
-                data_manager.export_data("question", questions, HEADER)
+                data_manager.export_data("question", questions, 'question_header')
 
         return redirect("/")
 
@@ -119,14 +108,12 @@ def edit_question(data_id):
 def delete_question(data_id):
     questions = data_manager.get_all_data("question")
     answers = data_manager.get_all_data("answer")
-    QUESTION_HEADER = 0
-    ANSWER_HEADER = 1
     answers_to_remove_index = []
 
     for question in questions:
         if question["id"] == data_id:
             questions.remove(question)
-            data_manager.export_data("question", questions, QUESTION_HEADER)
+            data_manager.export_data("question", questions, 'question_header')
 
     for answer in answers:
         if answer["question_id"] == data_id:
@@ -135,7 +122,7 @@ def delete_question(data_id):
     for index_number in answers_to_remove_index:
         del answers[index_number]
 
-    data_manager.export_data("answer", answers, ANSWER_HEADER)
+    data_manager.export_data("answer", answers, 'answer_header')
 
     return redirect("/")
 
@@ -166,12 +153,10 @@ def add_answer(data_id):
 @app.route('/answer/<answer_id>/delete')
 def delete_answer(answer_id):
     answers = data_manager.get_all_data("answer")
-    ANSWER_HEADER = 1
-
     for answer in answers:
         if answer["id"] == answer_id:
             del answers[answers.index(answer)]
-    data_manager.export_data("answer", answers, ANSWER_HEADER)
+    data_manager.export_data("answer", answers, 'answer_header')
 
     return redirect("/")
 
