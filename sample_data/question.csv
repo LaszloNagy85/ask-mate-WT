@@ -13,5 +13,5 @@ app.js (bundled file with webpack, including jquery)",images/image1.png
 
 This is the code I'm using to draw the image (that works on web/desktop but not cordova built ios app)",
 3,1566489089,4,0,How to make a form in html,I found code <form></form> but what goes inside?,Screenshot from 2019-08-23 08-38-34.png
-4,1566489262,19,0,How to upload a picture,I am trying to upload a picture in html using flask but struggling a bit. Where to start?,Screenshot from 2019-05-23 09-33-21.png
-5,1566542265,3,0,Who is the Mentor of the day in Codecool?,I would like to know who is the best mentor of the day today? please help,
+4,1566489262,22,0,How to upload a picture,I am trying to upload a picture in html using flask but struggling a bit. Where to start?,Screenshot from 2019-05-23 09-33-21.png
+5,1566542265,22,4,Who is the Mentor of the day in Codecool?,I would like to know who is the best mentor of the day today? please help,
