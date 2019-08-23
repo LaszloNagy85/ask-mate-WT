@@ -18,7 +18,6 @@ def index():
         sort_by = request.args.get('sort')
     if 'order' in request.args:
         order_direction = request.args.get('order')
-
     questions = data_manager.get_sorted_data('question', sort_by, order_direction)
     return render_template('list.html',
                            questions=questions,
@@ -131,7 +130,6 @@ def delete_question(data_id):
 
 @app.route('/question/<data_id>/new-answer', methods=["GET", "POST"])
 def add_answer(data_id):
-    HEADER = 1
     timestamp = datetime.timestamp(datetime.now())
 
     if request.method == "POST":
@@ -145,22 +143,17 @@ def add_answer(data_id):
         answer_data_dict["message"] = request.form["message"]
         answer_data_dict["image"] = ""
         answers_list.append(answer_data_dict)
-        data_manager.export_data("answer", answers_list, HEADER)
+        data_manager.export_data("answer", answers_list, 'answer_header')
 
         return redirect("/")
 
     return render_template('answer.html', data_id=data_id)
 
 
-@app.route('/answer/<answer_id>/delete')
-def delete_answer(answer_id):
-    answers = data_manager.get_all_data("answer")
-    for answer in answers:
-        if answer["id"] == answer_id:
-            del answers[answers.index(answer)]
-    data_manager.export_data("answer", answers, 'answer_header')
-
-    return redirect("/")
+@app.route('/answer/<question_id>/<answer_id>/delete')
+def delete_answer(answer_id, question_id):
+    data_manager.delete_answer(answer_id)
+    return redirect(url_for('show_details', data_id=question_id))
 
 
 if __name__ == '__main__':
