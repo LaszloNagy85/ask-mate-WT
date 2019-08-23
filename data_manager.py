@@ -5,6 +5,10 @@ def get_all_data(filename):
     return connection.get_all_data_from_file(filename)
 
 
+def export_data(filename, input_data, data_header):
+    return connection.export_data_to_file(filename, input_data, data_header)
+
+
 def get_sorted_data(filename, sort_by, order_direction):
     data_to_sort = get_all_data(filename)
 
@@ -15,10 +19,6 @@ def get_sorted_data(filename, sort_by, order_direction):
     return sorted_questions
 
 
-def export_data(filename, input_data, data_header):
-    return connection.export_data_to_file(filename, input_data, data_header)
-
-
 def vote(filename, data_id, vote_type):
     header = 0 if filename == 'question' else 1
     data = get_all_data(filename)
@@ -27,3 +27,15 @@ def vote(filename, data_id, vote_type):
         if row['id'] == data_id:
             row['vote_number'] = str(int(row['vote_number']) + vote_modificator)
     return connection.export_data_to_file(filename, data, header)
+
+
+"""Image handling section"""
+
+ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif']
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+
+"""Image handling section over."""
