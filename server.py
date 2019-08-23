@@ -158,7 +158,7 @@ def add_answer(data_id):
         answer_data_dict["vote_number"] = 0
         answer_data_dict["question_id"] = data_id
         answer_data_dict["message"] = request.form["message"]
-        answer_data_dict["image"] = ">>>PLACEHOLDER_TEXT<<<"
+        answer_data_dict["image"] = ""
         answers_list.append(answer_data_dict)
         data_manager.export_data("answer", answers_list, HEADER)
 
