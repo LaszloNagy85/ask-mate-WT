@@ -19,8 +19,17 @@ def get_sorted_data(filename, sort_by, order_direction):
     return sorted_questions
 
 
+def view_count_handling(data_id):
+    questions = get_all_data("question")
+    for question in questions:
+        if str(data_id) == question["id"]:
+            question["view_number"] = str(int(question["view_number"])+1)
+            export_data("question", questions, 'question_header')
+    return
+
+
 def vote(filename, data_id, vote_type):
-    header = 0 if filename == 'question' else 1
+    header = 'question_header' if filename == 'question' else 'answer_header'
     data = get_all_data(filename)
     vote_modificator = 1 if vote_type == 'up' else -1
     for row in data:
