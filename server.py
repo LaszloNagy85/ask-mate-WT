@@ -83,7 +83,6 @@ def show_details(data_id):
     for question in questions:
         if str(data_id) == question["id"]:
             question_to_display = question
-
     for answer in answers:
         if str(data_id) == answer["question_id"]:
             answer["submission_time"] = datetime.fromtimestamp(int(answer["submission_time"]))
