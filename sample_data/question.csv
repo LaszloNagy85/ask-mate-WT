@@ -1,6 +1,6 @@
 id,submission_time,view_number,vote_number,title,message,image
-0,1493368154,73,10,How to make lists in Python?,"I am totally new to this, any hints?",
-1,1493068124,25,9,Wordpress loading multiple jQuery Versions,"I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $('.myBook').booklet();
+0,1493368154,118,16,How to make lists in Python?,"I am totally new to this, any hints?",
+1,1493068124,29,9,Wordpress loading multiple jQuery Versions,"I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $('.myBook').booklet();
 
 I could easy managing the loading order with wp_enqueue_script so first I load jquery then I load booklet so everything is fine.
 
@@ -9,6 +9,9 @@ BUT in my theme i also using jquery via webpack so the loading order is now foll
 jquery
 booklet
 app.js (bundled file with webpack, including jquery)",images/image1.png
-2,1493015432,1376,57,Drawing canvas with an image picked with Cordova Camera Plugin,"I'm getting an image from device and drawing a canvas with filters using Pixi JS. It works all well using computer to get an image. But when I'm on IOS, it throws errors such as cross origin issue, or that I'm trying to use an unknown format.
+2,1493015432,1389,57,Drawing canvas with an image picked with Cordova Camera Plugin,"I'm getting an image from device and drawing a canvas with filters using Pixi JS. It works all well using computer to get an image. But when I'm on IOS, it throws errors such as cross origin issue, or that I'm trying to use an unknown format.
 
 This is the code I'm using to draw the image (that works on web/desktop but not cordova built ios app)",
+3,1566489089,4,0,How to make a form in html,I found code <form></form> but what goes inside?,Screenshot from 2019-08-23 08-38-34.png
+4,1566489262,19,0,How to upload a picture,I am trying to upload a picture in html using flask but struggling a bit. Where to start?,Screenshot from 2019-05-23 09-33-21.png
+5,1566542265,3,0,Who is the Mentor of the day in Codecool?,I would like to know who is the best mentor of the day today? please help,
