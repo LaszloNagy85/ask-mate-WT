@@ -24,6 +24,8 @@ def index():
                            questions=questions,
                            sort_options=['submission_time', 'view_number', 'vote_number', 'title'],
                            sort_titles=['submission time', 'view number', 'vote number', 'title'],
+                           sort_by=sort_by,
+                           order_direction=order_direction,
                            )
 
 
