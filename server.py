@@ -1,7 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for
 import data_manager
 import os
-from datetime import datetime
 
 
 app = Flask(__name__)
@@ -128,32 +127,19 @@ def delete_question(data_id):
     return redirect("/")
 
 
-@app.route('/question/<data_id>/new-answer', methods=["GET", "POST"])
-def add_answer(data_id):
-    timestamp = datetime.timestamp(datetime.now())
-
+@app.route('/question/<question_id>/new-answer', methods=["GET", "POST"])
+def route_add_answer(question_id):
     if request.method == "POST":
-        answer_data_dict = {}
-        answers_list = data_manager.get_all_data('answer')
+        data_manager.add_answer(question_id)
+        return redirect(url_for('show_details', question_id=question_id))
 
-        answer_data_dict["id"] = len(answers_list)
-        answer_data_dict["submission_time"] = int(timestamp)
-        answer_data_dict["vote_number"] = 0
-        answer_data_dict["question_id"] = data_id
-        answer_data_dict["message"] = request.form["message"]
-        answer_data_dict["image"] = ""
-        answers_list.append(answer_data_dict)
-        data_manager.export_data("answer", answers_list, 'answer_header')
-
-        return redirect("/")
-
-    return render_template('answer.html', data_id=data_id)
+    return render_template('answer.html', question_id=question_id)
 
 
 @app.route('/answer/<question_id>/<answer_id>/delete')
 def delete_answer(answer_id, question_id):
     data_manager.delete_answer(answer_id)
-    return redirect(url_for('show_details', data_id=question_id))
+    return redirect(url_for('show_details', question_id=question_id))
 
 
 if __name__ == '__main__':
