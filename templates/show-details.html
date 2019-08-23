@@ -53,7 +53,7 @@
         {% for each in answer.values() %}
         <td>{{ each }}</td>
         {% endfor %}
-    <td><input class="buttons" type="button" onclick="window.location.href='/answer/{{ answer["id"] }}/delete'" value="Delete Answer"/></td>
+    <td><input class="buttons" type="button" onclick="window.location.href='/answer/{{ question_to_display['id'] }}/{{ answer["id"] }}/delete'" value="Delete Answer"/></td>
     </tr>
     {% endfor %}
     </table><br>
