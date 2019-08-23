@@ -1,4 +1,5 @@
 import connection
+from datetime import datetime
 
 
 def get_all_data(filename):
@@ -48,6 +49,21 @@ def allowed_file(filename):
 
 
 """Image handling section over."""
+
+
+def add_answer(question_id):
+    timestamp = datetime.timestamp(datetime.now())
+    answers_list = get_all_data('answer')
+    answer_data_dict = {
+        "id": len(answers_list),
+        'submission_time': int(timestamp),
+        "vote_number": 0,
+        "question_id": question_id,
+        "message": request.form["message"],
+        "image": "",
+    }
+    answers_list.append(answer_data_dict)
+    export_data("answer", answers_list, 'answer_header')
 
 
 def delete_answer(answer_id):
