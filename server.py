@@ -1,16 +1,17 @@
 from flask import Flask, request, render_template, redirect, url_for
+from datetime import datetime
 import data_manager
 import os
 
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = "images"
+app.config['UPLOAD_FOLDER'] = "static/images"
 app.config['MAX_CONTENT_LENGTH'] = 5 * 2000 * 1400
 
 
 @app.route('/')
 @app.route('/list')
-def index():
+def route_list():
     sort_by = 'submission_time'
     order_direction = 'desc'
     if 'sort' in request.args:
@@ -27,9 +28,9 @@ def index():
                            )
 
 
-@app.route('/add-question', methods=["GET", "POST"])
+@app.route('/add-question', methods=['GET', 'POST'])
 def add_question():
-    if request.method == "POST":
+    if request.method == 'POST':
         if 'image-upload' in request.files:
             image = request.files['image-upload']
             if image.filename != '' and data_manager.allowed_file(image.filename):
@@ -40,39 +41,39 @@ def add_question():
         questions_list = data_manager.get_all_data('question')
         timestamp = datetime.timestamp(datetime.now())
         question_data_dict = {
-            "id": len(questions_list),
-            "submission_time": int(timestamp),
-            "view_number": 0,
-            "vote_number": 0,
-            "title": request.form["title"],
-            "message": request.form["message"],
-            "image": image.filename if image else None,
+            'id': len(questions_list),
+            'submission_time': int(timestamp),
+            'view_number': 0,
+            'vote_number': 0,
+            'title': request.form['title'],
+            'message': request.form['message'],
+            'image': image.filename if image else None,
         }
         questions_list.append(question_data_dict)
         data_manager.export_data("question", questions_list, 'question_header')
 
-        return redirect(url_for('show_details', data_id=question_data_dict['id']))
+        return redirect(url_for('show_details', question_id=question_data_dict['id']))
 
     return render_template("add-question.html")
 
 
-@app.route('/question/view_count/<int:data_id>')
-def view_count(data_id):
-    data_manager.view_count_handling(data_id)
-    return redirect(f'/question/{data_id}')
+@app.route('/question/view_count/<question_id>')
+def route_view_count(question_id):
+    data_manager.view_count_handling(question_id)
+    return redirect(f'/question/{question_id}')
 
 
-@app.route('/question/<int:data_id>')
-def show_details(data_id):
+@app.route('/question/<int:question_id>')
+def show_details(question_id):
     questions = data_manager.get_all_data("question")
     answers = data_manager.get_all_data("answer")
     answers_to_display = []
 
     for question in questions:
-        if str(data_id) == question["id"]:
+        if str(question_id) == question["id"]:
             question_to_display = question
     for answer in answers:
-        if str(data_id) == answer["question_id"]:
+        if str(question_id) == answer["question_id"]:
             answer["submission_time"] = datetime.fromtimestamp(int(answer["submission_time"]))
             answers_to_display.append(answer)
 
@@ -83,10 +84,10 @@ def show_details(data_id):
                            answers_to_display=answers_to_display)
 
 
-@app.route('/<redirect_id>/vote/<filename>/<data_id>/<vote_type>')
-def vote(redirect_id, filename, data_id, vote_type):
+@app.route('/<redirect_question_id>/vote/<filename>/<data_id>/<vote_type>')
+def route_vote(redirect_question_id, filename, data_id, vote_type):
     data_manager.vote(filename, data_id, vote_type)
-    return redirect(f'/question/{redirect_id}')
+    return redirect(url_for('show_details', question_id=redirect_question_id))
 
 
 @app.route('/question/<data_id>/edit', methods=["GET", "POST"])
@@ -127,17 +128,18 @@ def delete_question(data_id):
     return redirect("/")
 
 
-@app.route('/question/<question_id>/new-answer', methods=["GET", "POST"])
+@app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def route_add_answer(question_id):
-    if request.method == "POST":
-        data_manager.add_answer(question_id)
+    if request.method == 'POST':
+        answer_text = request.form['message']
+        data_manager.add_answer(question_id, answer_text)
         return redirect(url_for('show_details', question_id=question_id))
 
     return render_template('answer.html', question_id=question_id)
 
 
 @app.route('/answer/<question_id>/<answer_id>/delete')
-def delete_answer(answer_id, question_id):
+def route_delete_answer(answer_id, question_id):
     data_manager.delete_answer(answer_id)
     return redirect(url_for('show_details', question_id=question_id))
 
