@@ -5,7 +5,7 @@ import os
 
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = "static/images"
+app.config['UPLOAD_FOLDER'] = 'static/images'
 app.config['MAX_CONTENT_LENGTH'] = 5 * 2000 * 1400
 
 
@@ -132,7 +132,14 @@ def delete_question(data_id):
 def route_add_answer(question_id):
     if request.method == 'POST':
         answer_text = request.form['message']
-        data_manager.add_answer(question_id, answer_text)
+        if 'image-upload' in request.files:
+            image = request.files['image-upload']
+            if image.filename != '' and data_manager.allowed_file(image.filename):
+                image.save(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
+            else:
+                image = ''
+        image_name = image.filename if image else None
+        data_manager.add_answer(question_id, answer_text, image_name)
         return redirect(url_for('show_details', question_id=question_id))
 
     return render_template('answer.html', question_id=question_id)
