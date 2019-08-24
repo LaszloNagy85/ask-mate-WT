@@ -7,7 +7,7 @@ def get_all_data(filename):
 
 
 def export_data(filename, input_data, data_header):
-    return connection.export_data_to_file(filename, input_data, data_header)
+    connection.export_data_to_file(filename, input_data, data_header)
 
 
 def get_sorted_data(filename, sort_by, order_direction):
@@ -20,13 +20,12 @@ def get_sorted_data(filename, sort_by, order_direction):
     return sorted_questions
 
 
-def view_count_handling(data_id):
+def view_count_handling(question_id):
     questions = get_all_data("question")
     for question in questions:
-        if str(data_id) == question["id"]:
+        if question_id == question["id"]:
             question["view_number"] = str(int(question["view_number"])+1)
             export_data("question", questions, 'question_header')
-    return
 
 
 def vote(filename, data_id, vote_type):
@@ -36,7 +35,7 @@ def vote(filename, data_id, vote_type):
     for row in data:
         if row['id'] == data_id:
             row['vote_number'] = str(int(row['vote_number']) + vote_modificator)
-    return connection.export_data_to_file(filename, data, header)
+    connection.export_data_to_file(filename, data, header)
 
 
 """Image handling section"""
@@ -51,7 +50,7 @@ def allowed_file(filename):
 """Image handling section over."""
 
 
-def add_answer(question_id):
+def add_answer(question_id, answer_text):
     timestamp = datetime.timestamp(datetime.now())
     answers_list = get_all_data('answer')
     answer_data_dict = {
@@ -59,7 +58,7 @@ def add_answer(question_id):
         'submission_time': int(timestamp),
         "vote_number": 0,
         "question_id": question_id,
-        "message": request.form["message"],
+        "message": answer_text,
         "image": "",
     }
     answers_list.append(answer_data_dict)
