@@ -1,5 +1,6 @@
 import connection
 from datetime import datetime
+import util
 
 
 def get_all_data(filename):
@@ -71,3 +72,22 @@ def delete_answer(answer_id):
         if answer["id"] == answer_id:
             del answers[answers.index(answer)]
     export_data("answer", answers, 'answer_header')
+
+
+def create_new_question(title, message, image):
+
+    questions_list = get_all_data('question')
+
+    question_data_dict = {
+        'id': len(questions_list),
+        'submission_time': util.create_timestamp(),
+        'view_number': 0,
+        'vote_number': 0,
+        'title': title,
+        'message': message,
+        'image': image.filename if image else None,
+    }
+    questions_list.append(question_data_dict)
+    connection.export_data_to_file("question", questions_list, 'question_header')
+
+    return question_data_dict

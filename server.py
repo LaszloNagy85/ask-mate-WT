@@ -38,19 +38,7 @@ def add_question():
             else:
                 image = ''
 
-        questions_list = data_manager.get_all_data('question')
-        timestamp = datetime.timestamp(datetime.now())
-        question_data_dict = {
-            'id': len(questions_list),
-            'submission_time': int(timestamp),
-            'view_number': 0,
-            'vote_number': 0,
-            'title': request.form['title'],
-            'message': request.form['message'],
-            'image': image.filename if image else None,
-        }
-        questions_list.append(question_data_dict)
-        data_manager.export_data("question", questions_list, 'question_header')
+        question_data_dict = data_manager.create_new_question(request.form['title'], request.form['message'], image)
 
         return redirect(url_for('show_details', question_id=question_data_dict['id']))
 
