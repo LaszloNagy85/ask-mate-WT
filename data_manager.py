@@ -125,12 +125,16 @@ def get_answers_to_display(cursor, question_id):
     return data
 
 
-def update_and_export_question(questions, data_id, title, message):
-    for question in questions:
-        if data_id == question["id"]:
-            question["title"] = title
-            question["message"] = message
-            export_data("question", questions, 'question_header')
+@database_common.connection_handler
+def update_and_export_question(cursor, data_id, title, message):
+    cursor.execute(
+        sql.SQL("""UPDATE question
+                   SET  title = {title}, message = {message}
+                   WHERE id = {data_id};
+                    """).format(title=sql.Literal(title),
+                                message=sql.Literal(message),
+                                data_id=sql.SQL(data_id)))
+
 
 
 def remove_question_and_its_answers(data_id):

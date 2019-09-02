@@ -81,12 +81,12 @@ def route_vote(redirect_question_id, filename, data_id, vote_type):
 
 @app.route('/question/<data_id>/edit', methods=["GET", "POST"])
 def edit_question(data_id):
-    questions = data_manager.get_all_data("question")
+    question = data_manager.get_question_to_display(data_id)
     if request.method == "POST":
-        data_manager.update_and_export_question(questions, data_id, request.form['title'], request.form['message'])
-        return redirect("/")
+        data_manager.update_and_export_question(data_id, request.form['title'], request.form['message'])
+        return redirect(url_for('show_details', question_id=data_id))
 
-    return render_template("edit-question.html", questions=questions, data_id=data_id)
+    return render_template("edit-question.html", question=question, data_id=data_id)
 
 
 @app.route('/question/<data_id>/delete')
