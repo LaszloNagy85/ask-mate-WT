@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, redirect, url_for
-from datetime import datetime
 import data_manager
 import os
+import util
 
 
 app = Flask(__name__)
@@ -48,12 +48,7 @@ def route_list_all():
 @app.route('/add-question', methods=['GET', 'POST'])
 def add_question():
     if request.method == 'POST':
-        if 'image-upload' in request.files:
-            image = request.files['image-upload']
-            if image.filename != '' and data_manager.allowed_file(image.filename):
-                image.save(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
-            else:
-                image = ''
+        image = util.upload_image(request.files, app)
 
         question_data_dict = data_manager.create_new_question(request.form['title'], request.form['message'], image)
 
@@ -88,12 +83,7 @@ def route_vote(redirect_question_id, filename, data_id, vote_type):
 def edit_question(data_id):
     questions = data_manager.get_all_data("question")
     if request.method == "POST":
-        for question in questions:
-            if data_id == question["id"]:
-                question["title"] = request.form["title"]
-                question["message"] = request.form["message"]
-                data_manager.export_data("question", questions, 'question_header')
-
+        data_manager.update_and_export_question(questions, data_id, request.form['title'], request.form['message'])
         return redirect("/")
 
     return render_template("edit-question.html", questions=questions, data_id=data_id)
@@ -101,24 +91,7 @@ def edit_question(data_id):
 
 @app.route('/question/<data_id>/delete')
 def delete_question(data_id):
-    questions = data_manager.get_all_data("question")
-    answers = data_manager.get_all_data("answer")
-    answers_to_remove_index = []
-
-    for question in questions:
-        if question["id"] == data_id:
-            questions.remove(question)
-            data_manager.export_data("question", questions, 'question_header')
-
-    for answer in answers:
-        if answer["question_id"] == data_id:
-            answers_to_remove_index.append(answers.index(answer))
-
-    for index_number in answers_to_remove_index:
-        del answers[index_number]
-
-    data_manager.export_data("answer", answers, 'answer_header')
-
+    data_manager.remove_question_and_its_answers(data_id)
     return redirect("/")
 
 
@@ -126,14 +99,10 @@ def delete_question(data_id):
 def route_add_answer(question_id):
     if request.method == 'POST':
         answer_text = request.form['message']
-        if 'image-upload' in request.files:
-            image = request.files['image-upload']
-            if image.filename != '' and data_manager.allowed_file(image.filename):
-                image.save(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
-            else:
-                image = ''
+        image = util.upload_image(request.files, app)
         image_name = image.filename if image else None
         data_manager.add_answer(question_id, answer_text, image_name)
+
         return redirect(url_for('show_details', question_id=question_id))
 
     return render_template('answer.html', question_id=question_id)

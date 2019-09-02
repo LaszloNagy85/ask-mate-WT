@@ -131,3 +131,33 @@ def get_answers_to_display(question_id):
             answers_to_display.append(answer)
 
     return answers_to_display
+
+
+def update_and_export_question(questions, data_id, title, message):
+    for question in questions:
+        if data_id == question["id"]:
+            question["title"] = title
+            question["message"] = message
+            export_data("question", questions, 'question_header')
+
+
+def remove_question_and_its_answers(data_id):
+    questions = get_all_data("question")
+    answers = get_all_data("answer")
+    answers_to_remove_index = []
+
+    for question in questions:
+        if question["id"] == data_id:
+            questions.remove(question)
+            export_data("question", questions, 'question_header')
+
+    for answer in answers:
+        if answer["question_id"] == data_id:
+            answers_to_remove_index.append(answers.index(answer))
+
+    for index_number in answers_to_remove_index:
+        del answers[index_number]
+
+    export_data("answer", answers, 'answer_header')
+
+
