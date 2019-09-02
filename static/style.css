@@ -37,10 +37,6 @@ table {
     width: 100%;
     text-align: center;
 }
-ul {
-  /*  border: 1px double black; */
-
-}
 ul li {
     margin: 10px;
     padding: 40px;
@@ -50,7 +46,6 @@ ul li {
 }
 ul li:hover {
     background-color: #FFF;
-
 }
 button {
     height: 30px;
