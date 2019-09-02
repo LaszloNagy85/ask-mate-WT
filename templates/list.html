@@ -23,7 +23,7 @@
     </form>
     <ul>
     {% for question in questions %}
-        <p><li><a href="/question/view_count/{{ question["id"] }}"> {{ question["title"] }}</a></li></p>
+        <p><li onclick="location.href='/question/view_count/{{ question["id"] }}'"> {{ question["title"] }} </li></p>
     {% endfor %}
     </ul>
 {% endblock %}
