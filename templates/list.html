@@ -1,16 +1,10 @@
 {% extends "layout.html" %}
 {% block title %}Main page{% endblock%}
 {% block content %}
-    <form>
-    <p><input id="ask-button" type="button" onclick="window.location.href='/add-question'" value="Ask a question"/>
-    </form>
-    <ul>
-    {% for question in questions %}
-        <p><li><a href="/question/view_count/{{ question["id"] }}"> {{ question["title"] }}</a></li></p>
-    {% endfor %}
-    </ul>
-    <form action="/list" method="GET">
-        <p><label for="sort">Sort questions by:</label>
+    <input id="ask-button" type="button" onclick="window.location.href='/add-question'" value="Ask a question"/>
+    <input id="list-all-button" type="button" onclick="window.location.href='/list'" value="List all questions"/>
+    <form id="sort-form" action={{ "/" if limit_it else "/list" }} method="GET">
+        <label for="sort">Sort questions by:</label>
         <select class="drop-downs" id="sort" name="sort">
             {% for i in range(4) %}
                 <option {% if sort_by == sort_options[i] %} selected {% endif %}
@@ -27,4 +21,9 @@
         </select>
         <button type="submit">Sort it!</button></p>
     </form>
+    <ul>
+    {% for question in questions %}
+        <p><li onclick="location.href='/question/view_count/{{ question["id"] }}'"> {{ question["title"] }} </li></p>
+    {% endfor %}
+    </ul>
 {% endblock %}

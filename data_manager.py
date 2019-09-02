@@ -10,10 +10,16 @@ def get_all_data(filename):
 
 
 @database_common.connection_handler
-def get_all_data_sql(cursor, table_name):
+def get_all_data_sql(cursor, table_name, sort_by, order_direction, limit_it=''):
     cursor.execute(
-        sql.SQL('SELECT * FROM {table}').format(table=sql.Identifier(table_name))
-            )
+        sql.SQL("""SELECT * FROM {table} 
+                ORDER BY {order} {direction}
+                {limit};
+                """).format(table=sql.Identifier(table_name),
+                            order=sql.Identifier(sort_by),
+                            direction=sql.SQL(order_direction),
+                            limit=sql.SQL(limit_it))
+    )
     data = cursor.fetchall()
     return data
 
@@ -22,32 +28,27 @@ def export_data(filename, input_data, data_header):
     connection.export_data_to_file(filename, input_data, data_header)
 
 
-def get_sorted_data(filename, sort_by, order_direction):
-    data_to_sort = get_all_data(filename)
-
-    is_int = str if sort_by == 'title' else int
-    is_reverse = True if order_direction == 'desc' else False
-
-    sorted_questions = sorted(data_to_sort, key=lambda x: is_int(x[sort_by]), reverse=is_reverse)
-    return sorted_questions
-
-
-def view_count_handling(question_id):
-    questions = get_all_data("question")
-    for question in questions:
-        if question_id == question["id"]:
-            question["view_number"] = str(int(question["view_number"])+1)
-            export_data("question", questions, 'question_header')
+@database_common.connection_handler
+def view_count_handling(cursor, question_id):
+    cursor.execute(
+        sql.SQL("""UPDATE question
+                SET view_number = view_number + 1
+                WHERE id = {q_id};
+                """).format(q_id=sql.SQL(question_id))
+    )
 
 
-def vote(filename, data_id, vote_type):
-    header = 'question_header' if filename == 'question' else 'answer_header'
-    data = get_all_data(filename)
-    vote_modificator = 1 if vote_type == 'up' else -1
-    for row in data:
-        if row['id'] == data_id:
-            row['vote_number'] = str(int(row['vote_number']) + vote_modificator)
-    connection.export_data_to_file(filename, data, header)
+@database_common.connection_handler
+def vote(cursor, table_name, data_id, vote_type):
+    vote_modificator = '1' if vote_type == 'up' else '-1'
+    cursor.execute(
+        sql.SQL("""UPDATE {table}
+                SET vote_number = vote_number + {vote}
+                WHERE id = {data_id}
+                """).format(table=sql.Identifier(table_name),
+                            vote=sql.SQL(vote_modificator),
+                            data_id=sql.SQL(data_id))
+    )
 
 
 """Image handling section"""
@@ -85,20 +86,74 @@ def delete_answer(answer_id):
     export_data("answer", answers, 'answer_header')
 
 
-def create_new_question(title, message, image):
+@database_common.connection_handler
+def create_new_question(cursor, title, message, image):
+    sub_time = util.convert_timestamp(util.create_timestamp())
 
-    questions_list = get_all_data('question')
+    cursor.execute(
+        sql.SQL("""INSERT INTO question (submission_time, view_number, vote_number, title, message, image) 
+                   VALUES ({sub_time}, 0, 0, {title}, {message}, {image});
+                   """).format(sub_time=sql.Literal(str(sub_time)),
+                               title=sql.Literal(title),
+                               message=sql.Literal(message),
+                               image=sql.Literal(image)))
 
-    question_data_dict = {
-        'id': len(questions_list),
-        'submission_time': util.create_timestamp(),
-        'view_number': 0,
-        'vote_number': 0,
-        'title': title,
-        'message': message,
-        'image': image.filename if image else None,
-    }
-    questions_list.append(question_data_dict)
-    connection.export_data_to_file("question", questions_list, 'question_header')
+    cursor.execute(
+        sql.SQL("""SELECT * FROM question
+                   WHERE id=(SELECT max(id) FROM question)     """))
+    data = cursor.fetchall()
+    return data
 
-    return question_data_dict
+
+@database_common.connection_handler
+def get_question_to_display(cursor, question_id):
+    cursor.execute(
+        sql.SQL("""SELECT * FROM question 
+                   WHERE id = {question_id};
+                    """).format(question_id=sql.Literal(question_id)))
+    data = cursor.fetchall()
+    return data
+
+
+@database_common.connection_handler
+def get_answers_to_display(cursor, question_id):
+    cursor.execute(
+        sql.SQL("""SELECT * FROM answer 
+                   WHERE question_id = {question_id};
+                    """).format(question_id=sql.Literal(question_id)))
+    data = cursor.fetchall()
+    return data
+
+
+@database_common.connection_handler
+def update_and_export_question(cursor, data_id, title, message):
+    cursor.execute(
+        sql.SQL("""UPDATE question
+                   SET  title = {title}, message = {message}
+                   WHERE id = {data_id};
+                    """).format(title=sql.Literal(title),
+                                message=sql.Literal(message),
+                                data_id=sql.SQL(data_id)))
+
+
+
+def remove_question_and_its_answers(data_id):
+    questions = get_all_data("question")
+    answers = get_all_data("answer")
+    answers_to_remove_index = []
+
+    for question in questions:
+        if question["id"] == data_id:
+            questions.remove(question)
+            export_data("question", questions, 'question_header')
+
+    for answer in answers:
+        if answer["question_id"] == data_id:
+            answers_to_remove_index.append(answers.index(answer))
+
+    for index_number in answers_to_remove_index:
+        del answers[index_number]
+
+    export_data("answer", answers, 'answer_header')
+
+
