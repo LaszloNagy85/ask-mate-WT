@@ -127,8 +127,10 @@ def delete_question(data_id):
 
     return redirect("/")
 
+
 @app.route('/question/<data_id>/new-answer', methods=["GET", "POST"])
 def add_answer(data_id):
+
     HEADER = 1
     timestamp = datetime.timestamp(datetime.now())
 
@@ -150,7 +152,7 @@ def add_answer(data_id):
     return render_template('answer.html', data_id=data_id)
 
 
-@app.route('/answer/<answer_id>/delete')
+@app.route('/answer/<answer_id>/delete', methods=["GET", "POST"])
 def delete_answer(answer_id):
     answers = data_manager.get_all_data("answer")
     ANSWER_HEADER = 1
