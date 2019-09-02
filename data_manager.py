@@ -38,14 +38,17 @@ def view_count_handling(cursor, question_id):
     )
 
 
-def vote(filename, data_id, vote_type):
-    header = 'question_header' if filename == 'question' else 'answer_header'
-    data = get_all_data(filename)
-    vote_modificator = 1 if vote_type == 'up' else -1
-    for row in data:
-        if row['id'] == data_id:
-            row['vote_number'] = str(int(row['vote_number']) + vote_modificator)
-    connection.export_data_to_file(filename, data, header)
+@database_common.connection_handler
+def vote(cursor, table_name, data_id, vote_type):
+    vote_modificator = '1' if vote_type == 'up' else '-1'
+    cursor.execute(
+        sql.SQL("""UPDATE {table}
+                SET vote_number = vote_number + {vote}
+                WHERE id = {data_id}
+                """).format(table=sql.Identifier(table_name),
+                            vote=sql.SQL(vote_modificator),
+                            data_id=sql.SQL(data_id))
+    )
 
 
 """Image handling section"""
