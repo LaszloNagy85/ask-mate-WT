@@ -28,22 +28,14 @@ def export_data(filename, input_data, data_header):
     connection.export_data_to_file(filename, input_data, data_header)
 
 
-def get_sorted_data(filename, sort_by, order_direction):
-    data_to_sort = get_all_data(filename)
-
-    is_int = str if sort_by == 'title' else int
-    is_reverse = True if order_direction == 'desc' else False
-
-    sorted_questions = sorted(data_to_sort, key=lambda x: is_int(x[sort_by]), reverse=is_reverse)
-    return sorted_questions
-
-
-def view_count_handling(question_id):
-    questions = get_all_data("question")
-    for question in questions:
-        if question_id == question["id"]:
-            question["view_number"] = str(int(question["view_number"])+1)
-            export_data("question", questions, 'question_header')
+@database_common.connection_handler
+def view_count_handling(cursor, question_id):
+    cursor.execute(
+        sql.SQL("""UPDATE question
+                SET view_number = view_number + 1
+                WHERE id = {q_id};
+                """).format(q_id=sql.SQL(question_id))
+    )
 
 
 def vote(filename, data_id, vote_type):
