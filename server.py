@@ -10,7 +10,6 @@ app.config['MAX_CONTENT_LENGTH'] = 5 * 2000 * 1400
 
 
 @app.route('/')
-@app.route('/list')
 def route_list():
     sort_by = 'submission_time'
     order_direction = 'desc'
@@ -18,8 +17,25 @@ def route_list():
         sort_by = request.args.get('sort')
     if 'order' in request.args:
         order_direction = request.args.get('order')
-  #  questions = data_manager.get_sorted_data('question', sort_by, order_direction)
-    questions = data_manager.get_all_data_sql('question')
+    questions = data_manager.get_all_data_sql('question',  sort_by, order_direction, limit_it='LIMIT 5')
+    return render_template('list.html',
+                           questions=questions,
+                           sort_options=['submission_time', 'view_number', 'vote_number', 'title'],
+                           sort_titles=['submission time', 'view number', 'vote number', 'title'],
+                           sort_by=sort_by,
+                           order_direction=order_direction,
+                           )
+
+
+@app.route('/list')
+def route_list_all():
+    sort_by = 'submission_time'
+    order_direction = 'desc'
+    if 'sort' in request.args:
+        sort_by = request.args.get('sort')
+    if 'order' in request.args:
+        order_direction = request.args.get('order')
+    questions = data_manager.get_all_data_sql('question',  sort_by, order_direction)
     return render_template('list.html',
                            questions=questions,
                            sort_options=['submission_time', 'view_number', 'vote_number', 'title'],
