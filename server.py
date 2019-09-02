@@ -54,21 +54,10 @@ def route_view_count(question_id):
 
 @app.route('/question/<int:question_id>')
 def show_details(question_id):
-    questions = data_manager.get_all_data("question")
-    answers = data_manager.get_all_data("answer")
-    answers_to_display = []
+    question_to_display = data_manager.get_question_to_display(question_id)
+    answers_to_display = data_manager.get_answers_to_display(question_id)
 
-    for question in questions:
-        if str(question_id) == question["id"]:
-            question_to_display = question
-    for answer in answers:
-        if str(question_id) == answer["question_id"]:
-            answer["submission_time"] = datetime.fromtimestamp(int(answer["submission_time"]))
-            answers_to_display.append(answer)
-
-    question_to_display["submission_time"] = datetime.fromtimestamp(int(question_to_display["submission_time"]))
-
-    return render_template("show-details.html",
+    return render_template('show-details.html',
                            question_to_display=question_to_display,
                            answers_to_display=answers_to_display)
 

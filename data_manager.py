@@ -102,3 +102,26 @@ def create_new_question(title, message, image):
     connection.export_data_to_file("question", questions_list, 'question_header')
 
     return question_data_dict
+
+
+def get_question_to_display(question_id):
+    questions = get_all_data("question")
+
+    for question in questions:
+        if str(question_id) == question["id"]:
+            question_to_display = question
+    question_to_display["submission_time"] = datetime.fromtimestamp(int(question_to_display["submission_time"]))
+
+    return question_to_display
+
+
+def get_answers_to_display(question_id):
+    answers = get_all_data("answer")
+    answers_to_display = []
+
+    for answer in answers:
+        if str(question_id) == answer["question_id"]:
+            answer["submission_time"] = datetime.fromtimestamp(int(answer["submission_time"]))
+            answers_to_display.append(answer)
+
+    return answers_to_display
