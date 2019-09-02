@@ -86,46 +86,43 @@ def delete_answer(answer_id):
     export_data("answer", answers, 'answer_header')
 
 
-def create_new_question(title, message, image):
+@database_common.connection_handler
+def create_new_question(cursor, title, message, image):
+    sub_time = util.convert_timestamp(util.create_timestamp())
 
-    questions_list = get_all_data('question')
+    cursor.execute(
+        sql.SQL("""INSERT INTO question (submission_time, view_number, vote_number, title, message, image) 
+                   VALUES ({sub_time}, 0, 0, {title}, {message}, {image});
+                   """).format(sub_time=sql.Literal(str(sub_time)),
+                               title=sql.Literal(title),
+                               message=sql.Literal(message),
+                               image=sql.Literal(image)))
 
-    question_data_dict = {
-        'id': len(questions_list),
-        'submission_time': util.create_timestamp(),
-        'view_number': 0,
-        'vote_number': 0,
-        'title': title,
-        'message': message,
-        'image': image.filename if image else None,
-    }
-    questions_list.append(question_data_dict)
-    connection.export_data_to_file("question", questions_list, 'question_header')
-
-    return question_data_dict
-
-
-def get_question_to_display(question_id):
-    questions = get_all_data("question")
-
-    for question in questions:
-        if str(question_id) == question["id"]:
-            question_to_display = question
-    question_to_display["submission_time"] = datetime.fromtimestamp(int(question_to_display["submission_time"]))
-
-    return question_to_display
+    cursor.execute(
+        sql.SQL("""SELECT * FROM question
+                   WHERE id=(SELECT max(id) FROM question)     """))
+    data = cursor.fetchall()
+    return data
 
 
-def get_answers_to_display(question_id):
-    answers = get_all_data("answer")
-    answers_to_display = []
+@database_common.connection_handler
+def get_question_to_display(cursor, question_id):
+    cursor.execute(
+        sql.SQL("""SELECT * FROM question 
+                   WHERE id = {question_id};
+                    """).format(question_id=sql.Literal(question_id)))
+    data = cursor.fetchall()
+    return data
 
-    for answer in answers:
-        if str(question_id) == answer["question_id"]:
-            answer["submission_time"] = datetime.fromtimestamp(int(answer["submission_time"]))
-            answers_to_display.append(answer)
 
-    return answers_to_display
+@database_common.connection_handler
+def get_answers_to_display(cursor, question_id):
+    cursor.execute(
+        sql.SQL("""SELECT * FROM answer 
+                   WHERE question_id = {question_id};
+                    """).format(question_id=sql.Literal(question_id)))
+    data = cursor.fetchall()
+    return data
 
 
 def update_and_export_question(questions, data_id, title, message):

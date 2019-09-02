@@ -21,7 +21,7 @@
     <tr>
         <td><a href="/{{ question_to_display['id'] }}/vote/question/{{ question_to_display['id'] }}/up"> <img src="/static/icons/arrow_up.png" alt="" width="24" height="24"></a>
             <a href="/{{ question_to_display['id'] }}/vote/question/{{ question_to_display['id'] }}/down"> <img src="/static/icons/arrow_down.png" alt="" width="24" height="24"></a></td>
-        {% for title,q_data in question_to_display.items() %}
+        {% for title,q_data in question_to_display[0].items() %}
             {% if title == 'image' %}
                 <td>
                     <a href="/static/images/{{ q_data }}">

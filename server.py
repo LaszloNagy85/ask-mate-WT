@@ -51,8 +51,8 @@ def add_question():
         image = util.upload_image(request.files, app)
 
         question_data_dict = data_manager.create_new_question(request.form['title'], request.form['message'], image)
-
-        return redirect(url_for('show_details', question_id=question_data_dict['id']))
+        id_to_use = question_data_dict[0]['id']
+        return redirect(url_for('show_details', question_id=id_to_use))
 
     return render_template("add-question.html")
 

@@ -15,6 +15,6 @@ def upload_image(files, app):
     if image.filename != '' and data_manager.allowed_file(image.filename):
         image.save(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
     else:
-        image = ''
+        image = 'No image'
 
     return image
