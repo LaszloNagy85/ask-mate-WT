@@ -1,10 +1,21 @@
 import connection
+import database_common
 from datetime import datetime
 import util
+from psycopg2 import sql
 
 
 def get_all_data(filename):
     return connection.get_all_data_from_file(filename)
+
+
+@database_common.connection_handler
+def get_all_data_sql(cursor, table_name):
+    cursor.execute(
+        sql.SQL('SELECT * FROM {table}').format(table=sql.Identifier(table_name))
+            )
+    data = cursor.fetchall()
+    return data
 
 
 def export_data(filename, input_data, data_header):
