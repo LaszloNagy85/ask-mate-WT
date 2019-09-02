@@ -18,7 +18,8 @@ def route_list():
         sort_by = request.args.get('sort')
     if 'order' in request.args:
         order_direction = request.args.get('order')
-    questions = data_manager.get_sorted_data('question', sort_by, order_direction)
+  #  questions = data_manager.get_sorted_data('question', sort_by, order_direction)
+    questions = data_manager.get_all_data_sql('question')
     return render_template('list.html',
                            questions=questions,
                            sort_options=['submission_time', 'view_number', 'vote_number', 'title'],
