@@ -10,10 +10,16 @@ def get_all_data(filename):
 
 
 @database_common.connection_handler
-def get_all_data_sql(cursor, table_name):
+def get_all_data_sql(cursor, table_name, sort_by, order_direction, limit_it=''):
     cursor.execute(
-        sql.SQL('SELECT * FROM {table}').format(table=sql.Identifier(table_name))
-            )
+        sql.SQL("""SELECT * FROM {table} 
+                ORDER BY {order} {direction}
+                {limit};
+                """).format(table=sql.Identifier(table_name),
+                            order=sql.Identifier(sort_by),
+                            direction=sql.SQL(order_direction),
+                            limit=sql.SQL(limit_it))
+    )
     data = cursor.fetchall()
     return data
 
