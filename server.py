@@ -57,7 +57,7 @@ def route_list_all():
 
 
 @app.route('/question/<int:question_id>')
-def show_details(question_id):
+def route_show_details(question_id):
     question_to_display = data_manager.get_question_to_display(question_id)
     answers_to_display = data_manager.get_answers_to_display(question_id)
 
@@ -71,7 +71,7 @@ def add_question():
     if request.method == 'POST':
         image = util.upload_image(request.files, app)
         new_question_id = data_manager.create_new_question(request.form['title'], request.form['message'], image)
-        return redirect(url_for('show_details', question_id=new_question_id['id']))
+        return redirect(url_for('route_show_details', question_id=new_question_id['id']))
 
     return render_template('add-question.html')
 
@@ -81,7 +81,7 @@ def edit_question(data_id):
     question = data_manager.get_question_to_display(data_id)
     if request.method == 'POST':
         data_manager.update_question(data_id, request.form['title'], request.form['message'])
-        return redirect(url_for('show_details', question_id=data_id))
+        return redirect(url_for('route_show_details', question_id=data_id))
 
     return render_template('edit-question.html', question=question, data_id=data_id)
 
@@ -97,8 +97,7 @@ def route_add_answer(question_id):
     if request.method == 'POST':
         image = util.upload_image(request.files, app)
         data_manager.add_answer(question_id, request.form['message'], image)
-
-        return redirect(url_for('show_details', question_id=question_id))
+        return redirect(url_for('route_show_details', question_id=question_id))
 
     return render_template('answer.html', question_id=question_id)
 
@@ -106,19 +105,28 @@ def route_add_answer(question_id):
 @app.route('/answer/<question_id>/<answer_id>/delete')
 def route_delete_answer(answer_id, question_id):
     data_manager.delete_answer(answer_id)
-    return redirect(url_for('show_details', question_id=question_id))
+    return redirect(url_for('route_show_details', question_id=question_id))
 
 
 @app.route('/question/view_count/<question_id>')
 def route_view_count(question_id):
     data_manager.view_count_handling(question_id)
-    return redirect(url_for('show_details', question_id=question_id))
+    return redirect(url_for('route_show_details', question_id=question_id))
 
 
-@app.route('/<redirect_question_id>/vote/<filename>/<data_id>/<vote_type>')
-def route_vote(redirect_question_id, filename, data_id, vote_type):
-    data_manager.vote(filename, data_id, vote_type)
-    return redirect(url_for('show_details', question_id=redirect_question_id))
+@app.route('/<redirect_question_id>/vote/<table_name>/<data_id>/<vote_type>')
+def route_vote(redirect_question_id, table_name, data_id, vote_type):
+    data_manager.vote(table_name, data_id, vote_type)
+    return redirect(url_for('route_show_details', question_id=redirect_question_id))
+
+
+@app.route('/<table_name>/<question_id>/new_comment')
+def route_new_comment(question_id, table_name):
+    if request.method == 'POST':
+        data_manager.new_comment(question_id)
+        return redirect(url_for('route_show_details', question_id=question_id))
+
+    return render_template('comment.html', question_id=question_id, table_name=table_name)
 
 
 if __name__ == '__main__':
