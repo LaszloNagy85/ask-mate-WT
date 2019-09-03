@@ -130,9 +130,11 @@ def remove_question_and_its_answers(cursor, question_id):
 def get_searched_data(cursor, search_string):
     cursor.execute(
         sql.SQL("""SELECT * FROM question, answer
-                   WHERE answer.message LIKE '%{search_string}%' 
-                   OR question.message LIKE '%{search_string}%'
-                   OR question.title LIKE '%{search_string}%';
+                   WHERE question.message LIKE '%{search_string}%'
+                   OR question.title LIKE '%{search_string}%'
+                   OR answer.message LIKE '%{search_string}%';
                     """).format(search_string=sql.SQL(search_string)))
     data = cursor.fetchall()
+    for each in data:
+        print(each, '\n')
     return data
