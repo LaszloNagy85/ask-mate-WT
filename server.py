@@ -35,7 +35,6 @@ def route_list_all():
     if 'order' in request.args:
         order_direction = request.args.get('order')
     questions = data_manager.get_all_data_sql('question',  sort_by, order_direction)
-    print(questions)
     return render_template('list.html',
                            questions=questions,
                            sort_options=['submission_time', 'view_number', 'vote_number', 'title'],
@@ -51,7 +50,8 @@ def add_question():
         image = util.upload_image(request.files, app)
 
         question_data_dict = data_manager.create_new_question(request.form['title'], request.form['message'], image)
-        id_to_use = question_data_dict[0]['id']
+        print(question_data_dict)
+        id_to_use = question_data_dict['id']
         return redirect(url_for('show_details', question_id=id_to_use))
 
     return render_template('add-question.html')
