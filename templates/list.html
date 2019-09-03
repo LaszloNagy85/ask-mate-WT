@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %}Main page{% endblock%}
+{% block title %}Main page{% endblock %}
 {% block content %}
     <input id="ask-button" type="button" onclick="window.location.href='/add-question'" value="Ask a question"/>
     <input id="list-all-button" type="button" onclick="window.location.href='/list'" value="List all questions"/>
@@ -8,22 +8,24 @@
         <select class="drop-downs" id="sort" name="sort">
             {% for i in range(4) %}
                 <option {% if sort_by == sort_options[i] %} selected {% endif %}
-                    value="{{ sort_options[i] }}"> {{ sort_titles[i] }} </option>
+                                                            value="{{ sort_options[i] }}"> {{ sort_titles[i] }} </option>
             {% endfor %}
         </select>
         <select class="drop-downs" id="order" name="order">
             {% for direction in ['desc', 'asc'] %}
                 <option {% if direction == order_direction %} selected {% endif %}
-                    value="{{ direction }}">
+                                                              value="{{ direction }}">
                     {% if direction == 'desc' %}descending{% else %}ascending{% endif %}
                 </option>
             {% endfor %}
         </select>
-        <button type="submit">Sort it!</button></p>
+        <button type="submit">Sort it!</button>
+        </p>
     </form>
     <ul>
-    {% for question in questions %}
-        <p><li onclick="location.href='/question/view_count/{{ question["id"] }}'"> {{ question["title"] }} </li></p>
-    {% endfor %}
+        {% for question in questions %}
+            <p>
+            <li onclick="location.href='/question/view_count/{{ question["id"] }}'"> {{ question["title"] }} </li></p>
+        {% endfor %}
     </ul>
 {% endblock %}
