@@ -43,11 +43,11 @@ def vote(cursor, table_name, data_id, vote_type):
 
 """Image handling section"""
 
-ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif']
-
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+    allowed_extensions = ['jpg', 'jpeg', 'png', 'gif']
+    extension = 1
+    return '.' in filename and filename.rsplit('.', 1)[extension] in allowed_extensions
 
 
 """Image handling section over."""
@@ -64,12 +64,6 @@ def add_answer(cursor, question_id, answer_text, image_name):
                                question_id=sql.Literal(question_id),
                                message=sql.Literal(answer_text),
                                image=sql.Literal(image_name)))
-
-    cursor.execute(
-        sql.SQL("""SELECT * FROM answer
-                   WHERE id=(SELECT max(id) FROM answer)     """))
-    data = cursor.fetchall()
-    return data
 
 
 @database_common.connection_handler
@@ -93,7 +87,7 @@ def create_new_question(cursor, title, message, image):
                                image=sql.Literal(image)))
 
     cursor.execute(
-        sql.SQL("""SELECT * FROM question
+        sql.SQL("""SELECT id FROM question
                    WHERE id=(SELECT max(id) FROM question)     """))
     data = cursor.fetchone()
     return data
@@ -120,7 +114,7 @@ def get_answers_to_display(cursor, question_id):
 
 
 @database_common.connection_handler
-def update_and_export_question(cursor, data_id, title, message):
+def update_question(cursor, data_id, title, message):
     cursor.execute(
         sql.SQL("""UPDATE question
                    SET  title = {title}, message = {message}
@@ -131,10 +125,10 @@ def update_and_export_question(cursor, data_id, title, message):
 
 
 @database_common.connection_handler
-def remove_question_and_its_answers(cursor, data_id):
+def remove_question_and_its_answers(cursor, question_id):
     cursor.execute(
-        sql.SQL("""DELETE FROM answer WHERE question_id = {data_id};
-                   DELETE FROM question WHERE id = {data_id};
-                        """).format(data_id=sql.SQL(data_id)))
+        sql.SQL("""DELETE FROM answer WHERE question_id = {q_id};
+                   DELETE FROM question WHERE id = {q_id};
+                        """).format(q_id=sql.SQL(question_id)))
 
 
