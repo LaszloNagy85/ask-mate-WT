@@ -18,4 +18,4 @@ def upload_image(files, app):
     else:
         image = 'No image'
 
-    return image
+    return image.filename if image != 'No image' else image
