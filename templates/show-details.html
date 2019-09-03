@@ -38,16 +38,24 @@
             {% endfor %}
         </tr>
     </table>
-    <div id="comment">
-        <input id="comment-button" type='button'
-               onclick="window.location.href='/comment-question/{{ question_to_display['id'] }}'"
-               value="Comment question"/>
-    </div>
-    <br/>
+    <button class="buttons" onclick="window.location.href='/question/{{ question_to_display["id"] }}/new-answer'">
+        Answer
+    </button>
+    <button class="buttons"
+            onclick="window.location.href='{{ url_for('route_new_comment', question_id=question_to_display['id'], table_name='question') }}'">
+        Comment
+    </button>
+
+    <button class="buttons" onclick="window.location.href='/question/{{ question_to_display["id"] }}/edit'">Edit
+    </button>
+    <button class="buttons" onclick="window.location.href='/question/{{ question_to_display["id"] }}/delete'">Delete
+    </button>
+    <button class="buttons" onclick="window.location.href='{{ url_for('route_list') }}'">Return</button>
+    <br/><br/>
     {% if answers_to_display %}
         <table>
             <tr>
-                <th>Answer:</th>
+                <th>Answers:</th>
             </tr>
             <tr>
                 <th>Vote</th>
@@ -79,11 +87,11 @@
                     {% endfor %}
                     <td>
                         <button class="buttons"
-                                onclick="window.location.href='/comment-answer/{{ question_to_display['id'] }}/{{ answer['id'] }}'">
+                                onclick="window.location.href='/comment/{{ question_to_display['id'] }}/{{ answer['id'] }}'">
                             Comment answer
                         </button>
                         <button class="buttons"
-                                 onclick="window.location.href='/answer/{{ question_to_display['id'] }}/{{ answer["id"] }}/delete'">
+                                onclick="window.location.href='/answer/{{ question_to_display['id'] }}/{{ answer["id"] }}/delete'">
                             Delete Answer
                         </button>
                     </td>
@@ -93,14 +101,6 @@
         </table><br>
     {% endif %}
 
-    <button class="buttons" onclick="window.location.href='/question/{{ question_to_display["id"] }}/new-answer'">
-        Answer
-    </button>
-    <button class="buttons" onclick="window.location.href='/question/{{ question_to_display["id"] }}/edit'">Edit
-    </button>
-    <button class="buttons" onclick="window.location.href='/question/{{ question_to_display["id"] }}/delete'">Delete
-        Question
-    </button>
-    <button class="buttons" onclick="window.location.href='{{ url_for('route_list') }}'">Return</button>
+
 
 {% endblock %}

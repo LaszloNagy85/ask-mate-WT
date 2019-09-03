@@ -52,13 +52,12 @@ button {
     width: 100px;
     font-size: 0.8em;
 }
-
 .buttons {
     height: 30px;
     width:  145px;
     font-size: 0.8em;
     margin-bottom: 5px;
-
+    margin-top: 5px;
 }
 #sort-form {
     display: inline;
@@ -83,12 +82,4 @@ button {
     height: 50px;
     width:  430px;
     font-size: 1.1em;
-}
-#comment {
-    text-align: right;
-}
-#comment #comment-button {
-    height: 30px;
-    width:  200px;
-    font-size: 0.8em;
 }
