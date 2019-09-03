@@ -86,7 +86,6 @@ def route_add_answer(question_id):
         image = util.upload_image(request.files, app)
 #       image_name = image.filename if image  else None
         data_manager.add_answer(question_id, request.form['message'], image)
-
         return redirect(url_for('show_details', question_id=question_id))
 
     return render_template('answer.html', question_id=question_id)
@@ -104,10 +103,19 @@ def route_view_count(question_id):
     return redirect(url_for('show_details', question_id=question_id))
 
 
-@app.route('/<redirect_question_id>/vote/<filename>/<data_id>/<vote_type>')
-def route_vote(redirect_question_id, filename, data_id, vote_type):
-    data_manager.vote(filename, data_id, vote_type)
+@app.route('/<redirect_question_id>/vote/<table_name>/<data_id>/<vote_type>')
+def route_vote(redirect_question_id, table_name, data_id, vote_type):
+    data_manager.vote(table_name, data_id, vote_type)
     return redirect(url_for('show_details', question_id=redirect_question_id))
+
+
+@app.route('/question/<question_id>/new_comment')
+def route_new_question_comment(question_id):
+    if request.method == 'POST':
+        data_manager.new_comment(question_id)
+        return redirect(url_for('show_details', question_id=question_id))
+
+    return render_template('comment.html', question_id=question_id)
 
 
 if __name__ == '__main__':
