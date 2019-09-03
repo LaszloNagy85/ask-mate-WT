@@ -128,13 +128,32 @@ def remove_question_and_its_answers(cursor, question_id):
 
 @database_common.connection_handler
 def get_searched_data(cursor, search_string):
+    result_ids = set()
     cursor.execute(
-        sql.SQL("""SELECT * FROM question, answer
-                   WHERE question.message LIKE '%{search_string}%'
-                   OR question.title LIKE '%{search_string}%'
-                   OR answer.message LIKE '%{search_string}%';
+        sql.SQL("""SELECT id FROM question
+                   WHERE message LIKE '%{search_string}%'
+                   OR title LIKE '%{search_string}%';
                     """).format(search_string=sql.SQL(search_string)))
-    data = cursor.fetchall()
-    for each in data:
-        print(each, '\n')
-    return data
+    questions_with_result = cursor.fetchall()
+
+    cursor.execute(
+        sql.SQL("""SELECT question_id FROM answer
+                   WHERE message LIKE '%{search_string}%';
+                        """).format(search_string=sql.SQL(search_string)))
+    answers_with_result = cursor.fetchall()
+
+    for question in questions_with_result:
+        result_ids.add(question['id'])
+
+    for answer in answers_with_result:
+        result_ids.add(answer['question_id'])
+
+    result_ids = tuple(result_ids)
+
+    cursor.execute(
+        sql.SQL("""SELECT * FROM question
+                   WHERE id IN ({result_ids});
+                    """).format(result_ids=sql.Literal(*result_ids)))
+    result_data = cursor.fetchall()
+
+    return result_data
