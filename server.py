@@ -44,25 +44,6 @@ def route_list_all():
                            )
 
 
-@app.route('/add-question', methods=['GET', 'POST'])
-def add_question():
-    if request.method == 'POST':
-        image = util.upload_image(request.files, app)
-
-        question_data_dict = data_manager.create_new_question(request.form['title'], request.form['message'], image)
-        print(question_data_dict)
-        id_to_use = question_data_dict['id']
-        return redirect(url_for('show_details', question_id=id_to_use))
-
-    return render_template('add-question.html')
-
-
-@app.route('/question/view_count/<question_id>')
-def route_view_count(question_id):
-    data_manager.view_count_handling(question_id)
-    return redirect(f'/question/{question_id}')
-
-
 @app.route('/question/<int:question_id>')
 def show_details(question_id):
     question_to_display = data_manager.get_question_to_display(question_id)
@@ -73,17 +54,21 @@ def show_details(question_id):
                            answers_to_display=answers_to_display)
 
 
-@app.route('/<redirect_question_id>/vote/<filename>/<data_id>/<vote_type>')
-def route_vote(redirect_question_id, filename, data_id, vote_type):
-    data_manager.vote(filename, data_id, vote_type)
-    return redirect(url_for('show_details', question_id=redirect_question_id))
+@app.route('/add-question', methods=['GET', 'POST'])
+def add_question():
+    if request.method == 'POST':
+        image = util.upload_image(request.files, app)
+        new_question_id = data_manager.create_new_question(request.form['title'], request.form['message'], image)
+        return redirect(url_for('show_details', question_id=new_question_id))
+
+    return render_template('add-question.html')
 
 
 @app.route('/question/<data_id>/edit', methods=["GET", "POST"])
 def edit_question(data_id):
     question = data_manager.get_question_to_display(data_id)
     if request.method == 'POST':
-        data_manager.update_and_export_question(data_id, request.form['title'], request.form['message'])
+        data_manager.update_question(data_id, request.form['title'], request.form['message'])
         return redirect(url_for('show_details', question_id=data_id))
 
     return render_template('edit-question.html', question=question, data_id=data_id)
@@ -98,10 +83,9 @@ def delete_question(data_id):
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def route_add_answer(question_id):
     if request.method == 'POST':
-        answer_text = request.form['message']
         image = util.upload_image(request.files, app)
-#        image_name = image.filename if image  else None
-        data_manager.add_answer(question_id, answer_text, image)
+#       image_name = image.filename if image  else None
+        data_manager.add_answer(question_id, request.form['message'], image)
 
         return redirect(url_for('show_details', question_id=question_id))
 
@@ -112,6 +96,18 @@ def route_add_answer(question_id):
 def route_delete_answer(answer_id, question_id):
     data_manager.delete_answer(answer_id)
     return redirect(url_for('show_details', question_id=question_id))
+
+
+@app.route('/question/view_count/<question_id>')
+def route_view_count(question_id):
+    data_manager.view_count_handling(question_id)
+    return redirect(f'/question/{question_id}')
+
+
+@app.route('/<redirect_question_id>/vote/<filename>/<data_id>/<vote_type>')
+def route_vote(redirect_question_id, filename, data_id, vote_type):
+    data_manager.vote(filename, data_id, vote_type)
+    return redirect(url_for('show_details', question_id=redirect_question_id))
 
 
 if __name__ == '__main__':
