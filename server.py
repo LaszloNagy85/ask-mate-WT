@@ -59,7 +59,7 @@ def add_question():
     if request.method == 'POST':
         image = util.upload_image(request.files, app)
         new_question_id = data_manager.create_new_question(request.form['title'], request.form['message'], image)
-        return redirect(url_for('show_details', question_id=new_question_id))
+        return redirect(url_for('show_details', question_id=new_question_id['id']))
 
     return render_template('add-question.html')
 
