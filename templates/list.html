@@ -19,8 +19,17 @@
                 </option>
             {% endfor %}
         </select>
-        <button type="submit">Sort it!</button></p>
+        <button type="submit">Sort it!</button>
+
     </form>
+
+    <form method="POST" action="/list">
+    <label for="site-search"></label>
+    <input type="search" id="site-search" name="search"/><br>
+    <button type="submit">Search</button>
+    </form>
+
+
     <ul>
     {% for question in questions %}
         <p><li onclick="location.href='/question/view_count/{{ question["id"] }}'"> {{ question["title"] }} </li></p>

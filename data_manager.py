@@ -41,16 +41,10 @@ def vote(cursor, table_name, data_id, vote_type):
     )
 
 
-"""Image handling section"""
-
-
 def allowed_file(filename):
     allowed_extensions = ['jpg', 'jpeg', 'png', 'gif']
     extension = 1
     return '.' in filename and filename.rsplit('.', 1)[extension] in allowed_extensions
-
-
-"""Image handling section over."""
 
 
 @database_common.connection_handler
@@ -132,3 +126,13 @@ def remove_question_and_its_answers(cursor, question_id):
                         """).format(q_id=sql.SQL(question_id)))
 
 
+@database_common.connection_handler
+def get_searched_data(cursor, search_string):
+    cursor.execute(
+        sql.SQL("""SELECT * FROM question, answer
+                   WHERE answer.message LIKE '%{search_string}%' 
+                   OR question.message LIKE '%{search_string}%'
+                   OR question.title LIKE '%{search_string}%';
+                    """).format(search_string=sql.SQL(search_string)))
+    data = cursor.fetchall()
+    return data
