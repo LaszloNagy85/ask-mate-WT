@@ -77,7 +77,7 @@ def edit_question(data_id):
 @app.route('/question/<data_id>/delete')
 def delete_question(data_id):
     data_manager.remove_question_and_its_answers(data_id)
-    return redirect('/')
+    return redirect(url_for('route_list'))
 
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
@@ -101,7 +101,7 @@ def route_delete_answer(answer_id, question_id):
 @app.route('/question/view_count/<question_id>')
 def route_view_count(question_id):
     data_manager.view_count_handling(question_id)
-    return redirect(f'/question/{question_id}')
+    return redirect(url_for('show_details', question_id=question_id))
 
 
 @app.route('/<redirect_question_id>/vote/<filename>/<data_id>/<vote_type>')
