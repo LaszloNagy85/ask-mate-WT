@@ -1,6 +1,5 @@
 from flask import Flask, request, render_template, redirect, url_for
 import data_manager
-import os
 import util
 
 
@@ -36,6 +35,7 @@ def route_list_all():
     if 'order' in request.args:
         order_direction = request.args.get('order')
     questions = data_manager.get_all_data_sql('question',  sort_by, order_direction)
+    print(questions)
     return render_template('list.html',
                            questions=questions,
                            sort_options=['submission_time', 'view_number', 'vote_number', 'title'],
@@ -54,7 +54,7 @@ def add_question():
         id_to_use = question_data_dict[0]['id']
         return redirect(url_for('show_details', question_id=id_to_use))
 
-    return render_template("add-question.html")
+    return render_template('add-question.html')
 
 
 @app.route('/question/view_count/<question_id>')
@@ -82,17 +82,17 @@ def route_vote(redirect_question_id, filename, data_id, vote_type):
 @app.route('/question/<data_id>/edit', methods=["GET", "POST"])
 def edit_question(data_id):
     question = data_manager.get_question_to_display(data_id)
-    if request.method == "POST":
+    if request.method == 'POST':
         data_manager.update_and_export_question(data_id, request.form['title'], request.form['message'])
         return redirect(url_for('show_details', question_id=data_id))
 
-    return render_template("edit-question.html", question=question, data_id=data_id)
+    return render_template('edit-question.html', question=question, data_id=data_id)
 
 
 @app.route('/question/<data_id>/delete')
 def delete_question(data_id):
     data_manager.remove_question_and_its_answers(data_id)
-    return redirect("/")
+    return redirect('/')
 
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
@@ -100,8 +100,8 @@ def route_add_answer(question_id):
     if request.method == 'POST':
         answer_text = request.form['message']
         image = util.upload_image(request.files, app)
-        image_name = image.filename if image else None
-        data_manager.add_answer(question_id, answer_text, image_name)
+#        image_name = image.filename if image  else None
+        data_manager.add_answer(question_id, answer_text, image)
 
         return redirect(url_for('show_details', question_id=question_id))
 

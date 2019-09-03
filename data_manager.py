@@ -63,27 +63,31 @@ def allowed_file(filename):
 """Image handling section over."""
 
 
-def add_answer(question_id, answer_text, image_name):
-    timestamp = datetime.timestamp(datetime.now())
-    answers_list = get_all_data('answer')
-    answer_data_dict = {
-        'id': len(answers_list),
-        'submission_time': int(timestamp),
-        'vote_number': 0,
-        'question_id': question_id,
-        'message': answer_text,
-        'image': image_name,
-    }
-    answers_list.append(answer_data_dict)
-    export_data('answer', answers_list, 'answer_header')
+@database_common.connection_handler
+def add_answer(cursor, question_id, answer_text, image_name):
+    sub_time = util.convert_timestamp(util.create_timestamp())
+
+    cursor.execute(
+        sql.SQL("""INSERT INTO answer (submission_time, vote_number, question_id, message, image) 
+                   VALUES ({sub_time}, 0, {question_id}, {message}, {image});
+                   """).format(sub_time=sql.Literal(str(sub_time)),
+                               question_id=sql.Literal(question_id),
+                               message=sql.Literal(answer_text),
+                               image=sql.Literal(image_name)))
+
+    cursor.execute(
+        sql.SQL("""SELECT * FROM answer
+                   WHERE id=(SELECT max(id) FROM answer)     """))
+    data = cursor.fetchall()
+    return data
 
 
-def delete_answer(answer_id):
-    answers = get_all_data("answer")
-    for answer in answers:
-        if answer["id"] == answer_id:
-            del answers[answers.index(answer)]
-    export_data("answer", answers, 'answer_header')
+@database_common.connection_handler
+def delete_answer(cursor, answer_id):
+    cursor.execute(
+        sql.SQL("""DELETE FROM answer 
+                   WHERE id = {answer_id};
+                       """).format(answer_id=sql.Literal(answer_id)))
 
 
 @database_common.connection_handler
@@ -136,24 +140,11 @@ def update_and_export_question(cursor, data_id, title, message):
                                 data_id=sql.SQL(data_id)))
 
 
-
-def remove_question_and_its_answers(data_id):
-    questions = get_all_data("question")
-    answers = get_all_data("answer")
-    answers_to_remove_index = []
-
-    for question in questions:
-        if question["id"] == data_id:
-            questions.remove(question)
-            export_data("question", questions, 'question_header')
-
-    for answer in answers:
-        if answer["question_id"] == data_id:
-            answers_to_remove_index.append(answers.index(answer))
-
-    for index_number in answers_to_remove_index:
-        del answers[index_number]
-
-    export_data("answer", answers, 'answer_header')
+@database_common.connection_handler
+def remove_question_and_its_answers(cursor, data_id):
+    cursor.execute(
+        sql.SQL("""DELETE FROM answer WHERE question_id = {data_id};
+                   DELETE FROM question WHERE id = {data_id};
+                        """).format(data_id=sql.SQL(data_id)))
 
 
