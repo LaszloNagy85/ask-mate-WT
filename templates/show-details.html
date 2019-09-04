@@ -28,9 +28,11 @@
             {% for title,q_data in question_to_display.items() %}
                 {% if title == 'image' %}
                     <td>
-                        <a href="/static/images/{{ q_data }}">
-                            <img src="/static/images/{{ q_data }}" class="uploaded-images" width="100" height="70"
-                                 alt=""></a>
+                        {% if a_data %}
+                            <a href="/static/images/{{ q_data }}">
+                                <img src="/static/images/{{ q_data }}" class="uploaded-images" width="100" height="70"
+                                    alt=""></a>
+                        {% endif %}
                     </td>
                 {% else %}
                     <td>{{ q_data }}</td>
@@ -77,9 +79,11 @@
                     {% for title,a_data in answer.items() %}
                         {% if title == 'image' %}
                             <td>
-                                <a href="/static/images/{{ a_data }}">
-                                    <img src="/static/images/{{ a_data }}" class="uploaded-images" width="100"
-                                         height="70" alt=""></a>
+                                {% if a_data %}
+                                    <a href="/static/images/{{ a_data }}">
+                                        <img src="/static/images/{{ a_data }}" class="uploaded-images" width="100"
+                                            height="70" alt=""></a>
+                                {% endif %}
                             </td>
                         {% else %}
                             <td>{{ a_data }}</td>

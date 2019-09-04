@@ -137,9 +137,9 @@ def get_answers_to_edit(cursor, answer_id):
 def get_answer_to_comment(cursor, answer_id):
     cursor.execute(
         sql.SQL("""SELECT * FROM answer 
-                   WHERE answer_id = {a_id};
+                   WHERE id = {a_id};
                     """).format(a_id=sql.Literal(answer_id)))
-    data = cursor.fetchall()
+    data = cursor.fetchone()
     return data
 
 
