@@ -134,6 +134,16 @@ def get_answers_to_edit(cursor, answer_id):
 
 
 @database_common.connection_handler
+def get_answer_to_comment(cursor, answer_id):
+    cursor.execute(
+        sql.SQL("""SELECT * FROM answer 
+                   WHERE answer_id = {a_id};
+                    """).format(a_id=sql.Literal(answer_id)))
+    data = cursor.fetchall()
+    return data
+
+
+@database_common.connection_handler
 def update_question(cursor, data_id, title, message):
     cursor.execute(
         sql.SQL("""UPDATE question
@@ -193,14 +203,26 @@ def get_searched_data(cursor, search_string):
 def add_new_tag(cursor, question_id, new_tag):
     cursor.execute(
         sql.SQL("""INSERT INTO tag (name)
-                   VALUES {new_tag};
-                        """).format(new_tag=sql.Identifier(new_tag)))
+                   VALUES ({new_tag});
+                        """).format(new_tag=sql.Literal(new_tag)))
 
     cursor.execute(
-        sql.SQL("""INSERT INTO question_tag
-                   VALUES (SELECT max(id) FROM tag)
-                   WHERE question_id = {question_id};
-                            """).format(question_id=sql.Identifier(question_id)))
+        sql.SQL("""INSERT INTO question_tag (question_id, tag_id)
+                   VALUES ({question_id}, (SELECT max(id) FROM tag));
+                            """).format(question_id=sql.SQL(question_id)))
+
+
+@database_common.connection_handler
+def new_comment(cursor, comment_type, data_id, comment):
+    sub_time = util.convert_timestamp(util.create_timestamp())
+    cursor.execute(
+        sql.SQL("""INSERT INTO comment ({com_type}, message, submission_time)
+                   VALUES ({id_number}, {msg}, {sub_time});
+                   """).format(com_type=sql.SQL(comment_type),
+                               id_number=sql.SQL(data_id),
+                               msg=sql.Literal(comment),
+                               sub_time=sql.Literal(str(sub_time)))
+    )
 
 
 @database_common.connection_handler
