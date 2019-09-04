@@ -40,6 +40,17 @@
             {% endfor %}
         </tr>
     </table>
+    <div id="comments">
+    <table>
+        {% for comment in comments %}
+            <tr>
+                {%  for data in comment %}
+                <td>{{ data }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+    </div>
     <button class="buttons" onclick="window.location.href='/question/{{ question_to_display["id"] }}/new-answer'">
         Answer
     </button>

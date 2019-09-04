@@ -74,10 +74,12 @@ def route_list_search_results():
 def route_show_details(question_id):
     question_to_display = data_manager.get_question_to_display(question_id)
     answers_to_display = data_manager.get_answers_to_display(question_id)
+    comments_to_display = data_manager.get_comments_to_display(question_id)
 
     return render_template('show-details.html',
                            question_to_display=question_to_display,
-                           answers_to_display=answers_to_display)
+                           answers_to_display=answers_to_display,
+                           comments=comments_to_display)
 
 
 @app.route('/add-question', methods=['GET', 'POST'])

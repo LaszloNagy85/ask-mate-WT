@@ -224,6 +224,18 @@ def new_comment(cursor, comment_type, data_id, comment):
                                sub_time=sql.Literal(str(sub_time)))
     )
 
+
+@database_common.connection_handler
+def get_comments_to_display(cursor, question_id):
+    cursor.execute(
+        sql.SQL("""SELECT * FROM comment
+                    WHERE question_id={q_id};
+                    """).format(q_id=sql.Literal(question_id))
+    )
+    data = cursor.fetchall()
+    return data
+
+
 @database_common.connection_handler
 def delete_comment(cursor, comment_id):
     cursor.execute(
