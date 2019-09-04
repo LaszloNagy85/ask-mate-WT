@@ -157,3 +157,16 @@ def get_searched_data(cursor, search_string):
     result_data = cursor.fetchall()
 
     return result_data
+
+
+@database_common.connection_handler
+def add_new_tag(cursor, question_id, new_tag):
+    cursor.execute(
+        sql.SQL("""INSERT INTO tag (name)
+                   VALUES {new_tag};
+                        """).format(new_tag=sql.Identifier(new_tag)))
+
+    cursor.execute(
+        sql.SQL("""INSERT INTO question_tag
+                       VALUES {question_id};
+                            """).format(question_id=sql.Identifier(question_id)))

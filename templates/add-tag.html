@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}Add new tag{% endblock %}
+
+{% block header %}Add new tag{% endblock %}
+
+{% block content %}
+
+    <form class="center-forms" method="POST" action="/question/{{ question_id['id'] }}/new-tag" enctype="multipart/form-data">
+        <p>
+        Choose tag
+        </p>
+
+        <p>
+            <label for="tag">Tag to be added</label><br>
+            <input type="text" id="tag" name="tag" required/>
+        </p>
+        <p>
+            <button class="buttons" type="submit">Add tag</button>
+        </p>
+        <button class="buttons" onclick="window.location.href='{{ url_for('route_list') }}'">Return</button>
+    </form>
+{% endblock %}

@@ -45,6 +45,12 @@
             onclick="window.location.href='{{ url_for('route_new_comment', question_id=question_to_display['id'], table_name='question') }}'">
         Comment
     </button>
+    <button class="buttons"
+            onclick="window.location.href='{{ url_for('route_new_tag', question_id=question_to_display['id']) }}'">
+        Add tag
+    </button>
+
+
 
     <button class="buttons" onclick="window.location.href='/question/{{ question_to_display["id"] }}/edit'">Edit
     </button>
