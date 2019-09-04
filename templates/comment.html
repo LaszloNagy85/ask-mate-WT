@@ -5,18 +5,20 @@
 
 {% block content %}
 
-    <form class="center-forms" method="post" action="/question/{{ question_id }}/new-answer"
-          enctype="multipart/form-data">
+    <form class="center-forms" method="POST"
+          action="{% if answer_data %}{{ url_for('route_new_comment', question_id=question_data['id'], answer_id=answer_data['id']) }}
+                  {% else %}{{ url_for('route_new_comment', question_id=question_data['id']) }}
+                  {% endif %}">
         <p>
-            <label for="message">Comment text:</label><br>
-            <textarea id="message" name="message" rows="6" cols="40" required></textarea>
-        </p>
-        <p>
-            <button class="buttons" type="submit">Add comment</button>
-        </p>
-        <button class="buttons"
-                onclick="window.location.href='{{ url_for('route_show_details', question_id=question_id) }}'">Return
-        </button>
+            <label for=" message">Comment text:</label><br>
+    <textarea id="comment" name="comment" rows="6" cols="40" required></textarea>
+    </p>
+    <p>
+        <button class="buttons" type="submit">Add comment</button>
+    </p>
+    <button class="buttons"
+            onclick="window.location.href='{{ url_for('route_show_details', question_id=question_data['id']) }}'">Return
+    </button>
     </form>
 
 {% endblock %}

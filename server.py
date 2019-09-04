@@ -144,13 +144,19 @@ def route_vote(redirect_question_id, table_name, data_id, vote_type):
     return redirect(url_for('route_show_details', question_id=redirect_question_id))
 
 
-@app.route('/<table_name>/<question_id>/new_comment', methods=['GET', 'POST'])
-def route_new_comment(question_id, table_name):
+@app.route('/comment/<question_id>', methods=['GET', 'POST'])
+@app.route('/comment/<question_id>/<answer_id>', methods=['GET', 'POST'])
+def route_new_comment(question_id, answer_id=''):
+    question_data = data_manager.get_question_to_display(question_id)
+    answer_data = None if not answer_id else data_manager.get_answer_to_comment(answer_id)
+
     if request.method == 'POST':
-        data_manager.new_comment(question_id)
+        data_id = question_id if not answer_id else answer_id
+        comment_type = 'question_id' if not answer_id else 'answer_id'
+        data_manager.new_comment(comment_type, data_id, request.form['comment'])
         return redirect(url_for('route_show_details', question_id=question_id))
 
-    return render_template('comment.html', question_id=question_id, table_name=table_name)
+    return render_template('comment.html', question_data=question_data, answer_data=answer_data)
 
 
 @app.route('/question/<question_id>/new-tag', methods=['GET', 'POST'])

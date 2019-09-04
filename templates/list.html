@@ -23,14 +23,15 @@
 
     </form>
 
-    <form method="GET" action="/search">
-    <label for="site-search"></label>
-    <input type="search" id="site-search" name="q"/><br>
-    <button type="submit">Search</button>
+    <form method="POST" action="/list">
+        <label for="site-search"></label>
+        <input type="search" id="site-search" name="search"/><br>
+        <button type="submit">Search</button>
     </form>
     <ul>
-    {% for question in questions %}
-        <p><li onclick="location.href='/question/view_count/{{ question["id"] }}'"> {{ question["title"] }} </li>
-    {% endfor %}
+        {% for question in questions %}
+            <p>
+            <li onclick="location.href='/question/view_count/{{ question["id"] }}'"> {{ question["title"] }} </li></p>
+        {% endfor %}
     </ul>
 {% endblock %}
