@@ -10,6 +10,7 @@ def create_timestamp():
 def convert_timestamp(submission_time):
     return datetime.fromtimestamp(submission_time)
 
+
 def upload_image(files, app):
     image = files['image-upload']
     if image.filename != '' and data_manager.allowed_file(image.filename):
@@ -17,4 +18,4 @@ def upload_image(files, app):
     else:
         image = 'No image'
 
-    return image
+    return image.filename if image != 'No image' else image

@@ -1,7 +1,7 @@
 body {
     background-color: #dddddd;
-    padding-left: 250px;
-    padding-right: 250px;
+    padding-left: 200px;
+    padding-right: 200px;
     padding-bottom: 100px;
 }
 #header {
@@ -30,7 +30,7 @@ td {
     font-size: 1em;
     background-color: #bcc;
     margin: 20px;
-    padding: 20px;
+    padding: 10px;
 }
 
 table {
@@ -52,16 +52,21 @@ button {
     width: 100px;
     font-size: 0.8em;
 }
-
 .buttons {
     height: 30px;
-    width:  130px;
+    width:  145px;
     font-size: 0.8em;
-
+    margin-bottom: 5px;
+    margin-top: 5px;
 }
 #sort-form {
     display: inline;
-    padding-left: 30px;
+    padding-left: 50px;
+}
+.center-forms {
+    text-align: center;
+    width: 400px;
+    margin: auto;
 }
 .drop-downs {
     height: 30px;
@@ -70,18 +75,11 @@ button {
 }
 #ask-button {
     height: 50px;
-    width:  400px;
+    width:  430px;
     font-size: 1.1em;
-    /*display: block;*/
-    /*margin: 0 auto; */
 }
 #list-all-button {
     height: 50px;
-    width:  400px;
+    width:  430px;
     font-size: 1.1em;
-}
-.center-forms {
-    text-align: center;
-    width: 400px;
-    margin: auto;
 }

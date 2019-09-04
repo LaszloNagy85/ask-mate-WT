@@ -1,20 +1,24 @@
 {% extends "layout.html" %}
-{% block title %}Give an answer{% endblock%}
+{% block title %}Give an answer{% endblock %}
 
 {% block header %}Give an answer{% endblock %}
 
 {% block content %}
 
-    <form class="center-forms" method="post" action="/question/{{ question_id }}/new-answer" enctype="multipart/form-data">
-    <p>
-        <label for="message">Answer text:</label><br>
-        <textarea id="message" name="message" rows="6" cols="40" required></textarea>
-    </p>
-    <p><label for="upload">Upload a picture</label><br>
-        <input id="image-upload" name="image-upload" type="file" accept="image/png, image/jpeg">
-    </p>
-    <p>
-        <button class="buttons" type="submit">Add answer</button>
-    </p>
+    <form class="center-forms" method="post" action="/question/{{ question_id }}/new-answer"
+          enctype="multipart/form-data">
+        <p>
+            <label for="message">Answer text:</label><br>
+            <textarea id="message" name="message" rows="6" cols="40" required></textarea>
+        </p>
+        <p><label for="upload">Upload a picture</label><br>
+            <input id="image-upload" name="image-upload" type="file" accept="image/png, image/jpeg">
+        </p>
+        <p>
+            <button class="buttons" type="submit">Add answer</button>
+        </p>
+        <button class="buttons" onclick="window.location.href='{{ url_for('route_show_details', question_id=question_id) }}'">
+            Return
+        </button>
     </form>
 {% endblock %}

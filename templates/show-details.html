@@ -1,76 +1,110 @@
 {% extends "layout.html" %}
-{% block title %}Show details{% endblock%}
+{% block title %}Show details{% endblock %}
 
 {% block header %}Show details{% endblock %}
 
 {% block content %}
 
     <table>
-    <tr><th>Question:</th></tr>
-    <tr>
-        <th>Vote</th>
-        <th>ID</th>
-        <th>Submission time</th>
-        <th>View number</th>
-        <th>Vote number</th>
-        <th>Title</th>
-        <th>Message</th>
-        <th>Image</th>
-    </tr>
+        <tr>
+            <th>Question:</th>
+        </tr>
+        <tr>
+            <th>Vote</th>
+            <th>ID</th>
+            <th>Submission time</th>
+            <th>View number</th>
+            <th>Vote number</th>
+            <th>Title</th>
+            <th>Message</th>
+            <th>Image</th>
+        </tr>
 
-    <tr>
-        <td><a href="/{{ question_to_display[0]['id'] }}/vote/question/{{ question_to_display[0]['id'] }}/up"> <img src="/static/icons/arrow_up.png" alt="" width="24" height="24"></a>
-            <a href="/{{ question_to_display[0]['id'] }}/vote/question/{{ question_to_display[0]['id'] }}/down"> <img src="/static/icons/arrow_down.png" alt="" width="24" height="24"></a></td>
-        {% for title,q_data in question_to_display[0].items() %}
-            {% if title == 'image' %}
-                <td>
-                    <a href="/static/images/{{ q_data }}">
-                        <img src="/static/images/{{ q_data }}" class="uploaded-images" width="100" height="70" alt=""></a>
-                </td>
-            {% else %}
-                <td>{{ q_data }}</td>
-            {% endif %}
-        {% endfor %}
-    </tr>
-    </table><br/>
+        <tr>
+            <td><a href="/{{ question_to_display['id'] }}/vote/question/{{ question_to_display['id'] }}/up"> <img
+                    src="/static/icons/arrow_up.png" alt="" width="24" height="24"></a>
+                <a href="/{{ question_to_display['id'] }}/vote/question/{{ question_to_display['id'] }}/down"> <img
+                        src="/static/icons/arrow_down.png" alt="" width="24" height="24"></a></td>
+            {% for title,q_data in question_to_display.items() %}
+                {% if title == 'image' %}
+                    <td>
+                        <a href="/static/images/{{ q_data }}">
+                            <img src="/static/images/{{ q_data }}" class="uploaded-images" width="100" height="70"
+                                 alt=""></a>
+                    </td>
+                {% else %}
+                    <td>{{ q_data }}</td>
+                {% endif %}
+            {% endfor %}
+        </tr>
+    </table>
+    <button class="buttons" onclick="window.location.href='/question/{{ question_to_display["id"] }}/new-answer'">
+        Answer
+    </button>
+    <button class="buttons"
+            onclick="window.location.href='{{ url_for('route_new_comment', question_id=question_to_display['id'], table_name='question') }}'">
+        Comment
+    </button>
+
+    <button class="buttons" onclick="window.location.href='/question/{{ question_to_display["id"] }}/edit'">Edit
+    </button>
+    <button class="buttons" onclick="window.location.href='/question/{{ question_to_display["id"] }}/delete'">Delete
+    </button>
+    <button class="buttons" onclick="window.location.href='{{ url_for('route_list') }}'">Return</button>
+    <br/><br/>
     {% if answers_to_display %}
-    <table>
-    <tr><th>Answer:</th></tr>
-    <tr>
-        <th>Vote</th>
-        <th>ID</th>
-        <th>Submission time</th>
-        <th>Vote number</th>
-        <th>Question ID</th>
-        <th>Message</th>
-        <th>Image</th>
-    </tr>
+        <table>
+            <tr>
+                <th>Answers:</th>
+            </tr>
+            <tr>
+                <th>Vote</th>
+                <th>ID</th>
+                <th>Submission time</th>
+                <th>Vote number</th>
+                <th>Question ID</th>
+                <th>Message</th>
+                <th>Image</th>
+                <th>Actions</th>
+            </tr>
 
-    {% for answer in answers_to_display %}
-    <tr>
-        <td><a href="/{{ question_to_display[0]['id'] }}/vote/answer/{{ answer[0]['id'] }}/up"><img src="/static/icons/arrow_up.png" alt="" width="24" height="24"></a>
-            <a href="/{{ question_to_display[0]['id'] }}/vote/answer/{{ answer[0]['id'] }}/down"><img src="/static/icons/arrow_down.png" alt="" width="24" height="24"></a></td>
-        {% for title,a_data in answer.items() %}
-            {% if title == 'image' %}
-                <td>
-                    <a href="/static/images/{{ a_data }}">
-                        <img src="/static/images/{{ a_data }}" class="uploaded-images" width="100" height="70" alt=""></a>
-                </td>
-            {% else %}
-                <td>{{ a_data }}</td>
-            {% endif %}
-        {% endfor %}
-    <td><input class="buttons" type="button" onclick="window.location.href='/answer/{{ question_to_display[0]['id'] }}/{{ answer[0]["id"] }}/delete'" value="Delete Answer"/></td>
-    </tr>
-    {% endfor %}
-    </table><br>
+            {% for answer in answers_to_display %}
+                <tr>
+                    <td><a href="/{{ question_to_display['id'] }}/vote/answer/{{ answer['id'] }}/up"><img
+                            src="/static/icons/arrow_up.png" alt="" width="24" height="24"></a>
+                        <a href="/{{ question_to_display['id'] }}/vote/answer/{{ answer['id'] }}/down"><img
+                                src="/static/icons/arrow_down.png" alt="" width="24" height="24"></a></td>
+                    {% for title,a_data in answer.items() %}
+                        {% if title == 'image' %}
+                            <td>
+                                <a href="/static/images/{{ a_data }}">
+                                    <img src="/static/images/{{ a_data }}" class="uploaded-images" width="100"
+                                         height="70" alt=""></a>
+                            </td>
+                        {% else %}
+                            <td>{{ a_data }}</td>
+                        {% endif %}
+                    {% endfor %}
+                    <td>
+                        <button class="buttons"
+                                onclick="window.location.href='/comment/{{ question_to_display['id'] }}/{{ answer['id'] }}'">
+                            Comment answer
+                        </button>
+                        <button class="buttons"
+                                onclick="window.location.href='/answer/{{ answer['id'] }}/edit'">
+                            Edit answer
+                        </button>
+                        <button class="buttons"
+                                onclick="window.location.href='/answer/{{ question_to_display['id'] }}/{{ answer["id"] }}/delete'">
+                            Delete Answer
+                        </button>
+                    </td>
+
+                </tr>
+            {% endfor %}
+        </table><br>
     {% endif %}
 
-    <form>
-    <input class="buttons" type="button" onclick="window.location.href='/question/{{ question_to_display[0]["id"] }}/new-answer'" value="Answer"/>
-    <input class="buttons" type="button" onclick="window.location.href='/question/{{ question_to_display[0]["id"] }}/edit'" value="Edit"/>
-    <input class="buttons" type="button" onclick="window.location.href='/question/{{ question_to_display[0]["id"] }}/delete'" value="Delete Question"/>
-    <input class="buttons" type="button" onclick="window.location.href='/list'" value="Return"/>
-    </form><br/>
+
 
 {% endblock %}

@@ -6,18 +6,19 @@
 
 {% block content %}
 
-    <form class="center-forms" method="post" action="/question/{{ question[0]["id"] }}/edit">
+    <form class="center-forms" method="post" action="/question/{{ question["id"] }}/edit">
     <p>
         <label for="title">Question title:</label><br>
-        <input type="text" id="title" name="title" value="{{ question[0]["title"] }}"/>
+        <input type="text" id="title" name="title" value="{{ question["title"] }}"/>
     </p>
     <p>
         <label for="message">Question text:</label><br>
-        <textarea id="message" name="message" rows="6" cols="40">{{ question[0]["message"] }}</textarea>
+        <textarea id="message" name="message" rows="6" cols="40">{{ question["message"] }}</textarea>
     </p>
 
     <p>
         <button class="buttons" type="submit">Edit question</button>
     </p>
+        <input class="buttons" type="button" onclick="window.location.href='/'" value="Return"/>
     </form>
 {% endblock %}

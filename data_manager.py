@@ -1,12 +1,6 @@
-import connection
 import database_common
-from datetime import datetime
 import util
 from psycopg2 import sql
-
-
-def get_all_data(filename):
-    return connection.get_all_data_from_file(filename)
 
 
 @database_common.connection_handler
@@ -22,10 +16,6 @@ def get_all_data_sql(cursor, table_name, sort_by, order_direction, limit_it=''):
     )
     data = cursor.fetchall()
     return data
-
-
-def export_data(filename, input_data, data_header):
-    connection.export_data_to_file(filename, input_data, data_header)
 
 
 @database_common.connection_handler
@@ -51,39 +41,47 @@ def vote(cursor, table_name, data_id, vote_type):
     )
 
 
-"""Image handling section"""
-
-ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif']
-
-
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+    allowed_extensions = ['jpg', 'jpeg', 'png', 'gif']
+    extension = 1
+    return '.' in filename and filename.rsplit('.', 1)[extension] in allowed_extensions
 
 
-"""Image handling section over."""
+@database_common.connection_handler
+def add_answer(cursor, question_id, answer_text, image_name):
+    sub_time = util.convert_timestamp(util.create_timestamp())
+
+    cursor.execute(
+        sql.SQL("""INSERT INTO answer (submission_time, vote_number, question_id, message, image) 
+                   VALUES ({sub_time}, 0, {question_id}, {message}, {image});
+                   """).format(sub_time=sql.Literal(str(sub_time)),
+                               question_id=sql.Literal(question_id),
+                               message=sql.Literal(answer_text),
+                               image=sql.Literal(image_name)))
 
 
-def add_answer(question_id, answer_text, image_name):
-    timestamp = datetime.timestamp(datetime.now())
-    answers_list = get_all_data('answer')
-    answer_data_dict = {
-        'id': len(answers_list),
-        'submission_time': int(timestamp),
-        'vote_number': 0,
-        'question_id': question_id,
-        'message': answer_text,
-        'image': image_name,
-    }
-    answers_list.append(answer_data_dict)
-    export_data('answer', answers_list, 'answer_header')
+@database_common.connection_handler
+def delete_answer(cursor, answer_id):
+    cursor.execute(
+        sql.SQL("""DELETE FROM answer 
+                   WHERE id = {answer_id};
+                       """).format(answer_id=sql.Literal(answer_id)))
 
 
-def delete_answer(answer_id):
-    answers = get_all_data("answer")
-    for answer in answers:
-        if answer["id"] == answer_id:
-            del answers[answers.index(answer)]
-    export_data("answer", answers, 'answer_header')
+@database_common.connection_handler
+def edit_answer(cursor, answer_id, message):
+    cursor.execute(
+        sql.SQL(""" UPDATE answer
+                    SET message = {message}
+                    WHERE id = {answer_id}
+                    """).format(message=sql.Literal(message),
+                                answer_id=sql.SQL(answer_id)))
+    cursor.execute(
+        sql.SQL(""" SELECT question_id FROM answer 
+                    WHERE id = {answer_id};
+                           """).format(answer_id=sql.Literal(answer_id)))
+    question_id = cursor.fetchone()
+    return question_id
 
 
 @database_common.connection_handler
@@ -99,9 +97,9 @@ def create_new_question(cursor, title, message, image):
                                image=sql.Literal(image)))
 
     cursor.execute(
-        sql.SQL("""SELECT * FROM question
+        sql.SQL("""SELECT id FROM question
                    WHERE id=(SELECT max(id) FROM question)     """))
-    data = cursor.fetchall()
+    data = cursor.fetchone()
     return data
 
 
@@ -111,7 +109,7 @@ def get_question_to_display(cursor, question_id):
         sql.SQL("""SELECT * FROM question 
                    WHERE id = {question_id};
                     """).format(question_id=sql.Literal(question_id)))
-    data = cursor.fetchall()
+    data = cursor.fetchone()
     return data
 
 
@@ -126,7 +124,17 @@ def get_answers_to_display(cursor, question_id):
 
 
 @database_common.connection_handler
-def update_and_export_question(cursor, data_id, title, message):
+def get_answers_to_edit(cursor, answer_id):
+    cursor.execute(
+        sql.SQL("""SELECT * FROM answer 
+                   WHERE id = {answer_id};
+                    """).format(answer_id=sql.Literal(answer_id)))
+    data = cursor.fetchone()
+    return data
+
+
+@database_common.connection_handler
+def update_question(cursor, data_id, title, message):
     cursor.execute(
         sql.SQL("""UPDATE question
                    SET  title = {title}, message = {message}
@@ -136,24 +144,42 @@ def update_and_export_question(cursor, data_id, title, message):
                                 data_id=sql.SQL(data_id)))
 
 
-
-def remove_question_and_its_answers(data_id):
-    questions = get_all_data("question")
-    answers = get_all_data("answer")
-    answers_to_remove_index = []
-
-    for question in questions:
-        if question["id"] == data_id:
-            questions.remove(question)
-            export_data("question", questions, 'question_header')
-
-    for answer in answers:
-        if answer["question_id"] == data_id:
-            answers_to_remove_index.append(answers.index(answer))
-
-    for index_number in answers_to_remove_index:
-        del answers[index_number]
-
-    export_data("answer", answers, 'answer_header')
+@database_common.connection_handler
+def remove_question_and_its_answers(cursor, question_id):
+    cursor.execute(
+        sql.SQL("""DELETE FROM answer WHERE question_id = {q_id};
+                   DELETE FROM question WHERE id = {q_id};
+                        """).format(q_id=sql.SQL(question_id)))
 
 
+@database_common.connection_handler
+def get_searched_data(cursor, search_string):
+    result_ids = set()
+    cursor.execute(
+        sql.SQL("""SELECT id FROM question
+                   WHERE message LIKE '%{search_string}%'
+                   OR title LIKE '%{search_string}%';
+                    """).format(search_string=sql.SQL(search_string)))
+    questions_with_result = cursor.fetchall()
+
+    cursor.execute(
+        sql.SQL("""SELECT question_id FROM answer
+                   WHERE message LIKE '%{search_string}%';
+                        """).format(search_string=sql.SQL(search_string)))
+    answers_with_result = cursor.fetchall()
+
+    for question in questions_with_result:
+        result_ids.add(question['id'])
+
+    for answer in answers_with_result:
+        result_ids.add(answer['question_id'])
+
+    result_ids = tuple(result_ids)
+
+    cursor.execute(
+        sql.SQL("""SELECT * FROM question
+                   WHERE id IN {result_ids};
+                    """).format(result_ids=sql.Literal(result_ids)))
+    result_data = cursor.fetchall()
+
+    return result_data
