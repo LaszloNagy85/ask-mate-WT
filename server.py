@@ -161,11 +161,12 @@ def route_new_comment(question_id, answer_id=''):
 
 @app.route('/question/<question_id>/new-tag', methods=['GET', 'POST'])
 def route_new_tag(question_id):
+    tags = data_manager.get_all_tags()
+
     if request.method == "POST":
         data_manager.add_new_tag(question_id, request.form['tag'])
 
-
-    return render_template('add-tag.html', question_id=question_id)
+    return render_template('add-tag.html', question_id=question_id, tags=tags)
 
 
 if __name__ == '__main__':

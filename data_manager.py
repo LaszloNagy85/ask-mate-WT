@@ -233,10 +233,9 @@ def delete_comment(cursor, comment_id):
 
 
 @database_common.connection_handler
-def get_all_tags():
+def get_all_tags(cursor):
     cursor.execute(
-        sql.SQL("""SELECT * FROM tag
-                   VALUES ({id_number}, {msg}, {sub_time});
-                       """).format(com_type=sql.SQL(comment_type),
+        sql.SQL("""SELECT name FROM tag;"""))
+    data = cursor.fetchall()
 
-    )
+    return data
