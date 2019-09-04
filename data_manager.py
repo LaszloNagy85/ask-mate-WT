@@ -224,6 +224,13 @@ def new_comment(cursor, comment_type, data_id, comment):
                                sub_time=sql.Literal(str(sub_time)))
     )
 
+@database_common.connection_handler
+def delete_comment(cursor, comment_id):
+    cursor.execute(
+        sql.SQL(""" DELETE FROM comment 
+                    WHERE id = {comment_id};
+                           """).format(comment_id=sql.Literal(comment_id)))
+
 
 @database_common.connection_handler
 def get_all_tags():
