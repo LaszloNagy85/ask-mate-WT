@@ -232,11 +232,11 @@ def delete_comment(cursor, comment_id):
                            """).format(comment_id=sql.Literal(comment_id)))
 
 
-@database_common.connection_handler
-def get_all_tags():
-    cursor.execute(
-        sql.SQL("""SELECT * FROM tag
-                   VALUES ({id_number}, {msg}, {sub_time});
-                       """).format(com_type=sql.SQL(comment_type),
-
-    )
+# @database_common.connection_handler
+# def get_all_tags():
+#     cursor.execute(
+#         sql.SQL("""SELECT * FROM tag
+#                    VALUES ({id_number}, {msg}, {sub_time});
+#                        """).format(com_type=sql.SQL(comment_type),
+#
+#     )
