@@ -201,3 +201,11 @@ def add_new_tag(cursor, question_id, new_tag):
                    VALUES (SELECT max(id) FROM tag)
                    WHERE question_id = {question_id};
                             """).format(question_id=sql.Identifier(question_id)))
+
+
+@database_common.connection_handler
+def delete_comment(cursor, comment_id):
+    cursor.execute(
+        sql.SQL(""" DELETE FROM comment 
+                    WHERE id = {comment_id};
+                           """).format(comment_id=sql.Literal(comment_id)))
