@@ -58,6 +58,11 @@
         <div class="comments">
             <table>
                 <tr>
+                    <th id="question-comment-title">Comments</th>
+                </tr>
+            </table>
+            <table>
+                <tr>
                     <th>ID</th>
                     <th>Question ID</th>
                     <th>Submission time</th>
@@ -128,38 +133,42 @@
             </tr>
             <br/>
             {% if answer_comments %}
-                <table>
-                    <tr>
-                        <th id="answer-comment-title">Comments</th>
-                    </tr>
-                </table>
-                <table id="answer-comments">
+                {% if answer['id'] in comment_answer_ids %}
+                    <table>
+                        <tr>
+                            <th id="answer-comment-title">Comments</th>
+                        </tr>
+                    </table>
+                    <table id="answer-comments">
                     <tr>
                         <th>ID</th>
                         <th>Answer ID</th>
                         <th>Submission time</th>
-                        <th>Comment</th>
+                        <th>Message</th>
                         <th>Edited count</th>
                         <th>Actions</th>
                     </tr>
-                    {% for comment in answer_comments %}
-                        <tr>
-                            {% for data in comment.values() %}
-                                <td>{{ data }}</td>
-                            {% endfor %}
-                            <td>
-                                <button class="buttons"
-                                        onclick="window.location.href=''">
-                                    Edit answer
-                                </button>
-                                <button class="buttons"
-                                        onclick="window.location.href='">
-                                    Delete Answer
-                                </button>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>
+                {% endif %}
+            {% for comment in answer_comments %}
+                {% if comment['answer_id'] == answer['id'] %}
+                    <tr>
+                        {% for data in comment.values() %}
+                            <td>{{ data }}</td>
+                        {% endfor %}
+                        <td>
+                            <button class="buttons"
+                                    onclick="window.location.href=''">
+                                Edit comment
+                            </button>
+                            <button class="buttons"
+                                    onclick="window.location.href='">
+                                Delete comment
+                            </button>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            </table>
                 <br/><br/>
             {% endif %}
             <br/>

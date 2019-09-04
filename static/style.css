@@ -95,9 +95,11 @@ button {
     width: 1000px;
     display: block;
 }
-#answer-comment-title {
+#answer-comment-title, #question-comment-title {
     position: relative;
     float: right;
-    width: 1000px;
+    width: 977px;
     display: block;
+    margin: 0px;
+    padding: 10px;
 }

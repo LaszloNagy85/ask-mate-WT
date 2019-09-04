@@ -80,11 +80,16 @@ def route_show_details(question_id):
     answer_ids = tuple([answer['id'] for answer in answers_to_display]) if answers_to_display else None
     answer_comments_to_display = data_manager.get_answer_comments_to_display(answer_ids) if answer_ids else None
 
+    comment_answer_ids = []
+    if answer_comments_to_display:
+        comment_answer_ids = [comment['answer_id'] for comment in answer_comments_to_display]
+
     return render_template('show-details.html',
                            question_to_display=question_to_display,
                            answers_to_display=answers_to_display,
                            question_comments=question_comments_to_display,
-                           answer_comments=answer_comments_to_display)
+                           answer_comments=answer_comments_to_display,
+                           comment_answer_ids=comment_answer_ids)
 
 
 @app.route('/add-question', methods=['GET', 'POST'])
