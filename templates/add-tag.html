@@ -10,7 +10,7 @@
             <label for="added_tag">Status:</label><br/>
             <select id="added_tag" name="tag">
                 {% for tag in tags %}
-                    <option value="{{ tag['name'] }}">{{ tag['name'] }}</option>
+                    <option value="{{ tag }}">{{ tag }}</option>
                 {% endfor %}
             </select>
         </p>

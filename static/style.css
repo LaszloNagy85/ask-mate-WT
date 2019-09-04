@@ -101,3 +101,14 @@ button {
     width: 1000px;
     display: block;
 }
+
+#tags {
+    display: block;
+    width: 100%;
+}
+
+#delete_tag {
+    background-image: url("/static/images/cancel_button.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+}
