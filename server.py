@@ -36,17 +36,6 @@ def route_list_all():
         order_direction = request.args.get('order')
     questions = data_manager.get_all_data_sql('question',  sort_by, order_direction)
 
-    if request.method == 'POST':
-        search_string = request.form['search']
-        questions = data_manager.get_searched_data(search_string)
-        return render_template('list.html',
-                               questions=questions,
-                               sort_options=['submission_time', 'view_number', 'vote_number', 'title'],
-                               sort_titles=['submission time', 'view number', 'vote number', 'title'],
-                               sort_by=sort_by,
-                               order_direction=order_direction,
-                               )
-
     return render_template('list.html',
                            questions=questions,
                            sort_options=['submission_time', 'view_number', 'vote_number', 'title'],
@@ -54,6 +43,31 @@ def route_list_all():
                            sort_by=sort_by,
                            order_direction=order_direction,
                            )
+
+
+@app.route('/search')
+def route_list_search_results():
+    sort_by = 'submission_time'
+    order_direction = 'desc'
+    if 'sort' in request.args:
+        sort_by = request.args.get('sort')
+    if 'order' in request.args:
+        order_direction = request.args.get('order')
+
+    search_string = request.args.get('q')
+    questions = data_manager.get_searched_data(search_string)
+
+    if type(questions) is str:
+        return render_template('error.html', error_message=questions)
+
+    else:
+        return render_template('search.html',
+                               questions=questions,
+                               sort_options=['submission_time', 'view_number', 'vote_number', 'title'],
+                               sort_titles=['submission time', 'view number', 'vote number', 'title'],
+                               sort_by=sort_by,
+                               order_direction=order_direction,
+                               )
 
 
 @app.route('/question/<int:question_id>')
@@ -84,6 +98,16 @@ def edit_question(data_id):
         return redirect(url_for('route_show_details', question_id=data_id))
 
     return render_template('edit-question.html', question=question, data_id=data_id)
+
+
+@app.route('/answer/<answer_id>/edit', methods=["GET", "POST"])
+def edit_answer(answer_id):
+    answer = data_manager.get_answers_to_edit(answer_id)
+    if request.method == 'POST':
+        question_id = data_manager.edit_answer(answer_id, request.form['message'])
+        return redirect(url_for('route_show_details', question_id=question_id['question_id']))
+
+    return render_template('edit-answer.html', answer=answer)
 
 
 @app.route('/question/<data_id>/delete')
@@ -135,8 +159,17 @@ def route_new_comment(question_id, answer_id=''):
     return render_template('comment.html', question_data=question_data, answer_data=answer_data)
 
 
+@app.route('/question/<question_id>/new-tag', methods=['GET', 'POST'])
+def route_new_tag(question_id):
+    if request.method == "POST":
+        data_manager.add_new_tag(question_id, request.form['tag'])
+
+
+    return render_template('add-tag.html', question_id=question_id)
+
+
 if __name__ == '__main__':
     app.run(
         port=5000,
-        debug=True,
+        debug=False,
     )
