@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block title %}Error page{% endblock %}
+
+{% block header %}You have run into an error{% endblock %}
+
+{% block content %}
+
+    <p>{{ error_message }}</p>
+
+    <button class="buttons" onclick="window.location.href='{{ url_for('route_list') }}'">Return</button>
+
+{% endblock %}

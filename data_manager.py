@@ -176,11 +176,15 @@ def get_searched_data(cursor, search_string):
 
     result_ids = tuple(result_ids)
 
-    cursor.execute(
-        sql.SQL("""SELECT * FROM question
-                   WHERE id IN {result_ids};
-                    """).format(result_ids=sql.Literal(result_ids)))
-    result_data = cursor.fetchall()
+    if result_ids:
+        cursor.execute(
+            sql.SQL("""SELECT * FROM question
+                       WHERE id IN {result_ids};
+                        """).format(result_ids=sql.Literal(result_ids)))
+        result_data = cursor.fetchall()
+
+    else:
+        result_data = 'Search not found in database'
 
     return result_data
 
@@ -194,5 +198,6 @@ def add_new_tag(cursor, question_id, new_tag):
 
     cursor.execute(
         sql.SQL("""INSERT INTO question_tag
-                       VALUES {question_id};
+                   VALUES (SELECT max(id) FROM tag)
+                   WHERE question_id = {question_id};
                             """).format(question_id=sql.Identifier(question_id)))

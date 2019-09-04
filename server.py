@@ -56,13 +56,18 @@ def route_list_search_results():
 
     search_string = request.args.get('q')
     questions = data_manager.get_searched_data(search_string)
-    return render_template('search.html',
-                           questions=questions,
-                           sort_options=['submission_time', 'view_number', 'vote_number', 'title'],
-                           sort_titles=['submission time', 'view number', 'vote number', 'title'],
-                           sort_by=sort_by,
-                           order_direction=order_direction,
-                           )
+
+    if type(questions) is str:
+        return render_template('error.html', error_message=questions)
+
+    else:
+        return render_template('search.html',
+                               questions=questions,
+                               sort_options=['submission_time', 'view_number', 'vote_number', 'title'],
+                               sort_titles=['submission time', 'view number', 'vote number', 'title'],
+                               sort_by=sort_by,
+                               order_direction=order_direction,
+                               )
 
 
 @app.route('/question/<int:question_id>')
