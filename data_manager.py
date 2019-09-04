@@ -69,22 +69,6 @@ def delete_answer(cursor, answer_id):
 
 
 @database_common.connection_handler
-def edit_answer(cursor, answer_id, message):
-    cursor.execute(
-        sql.SQL(""" UPDATE answer
-                    SET message = {message}
-                    WHERE id = {answer_id}
-                    """).format(message=sql.Literal(message),
-                                answer_id=sql.SQL(answer_id)))
-    cursor.execute(
-        sql.SQL(""" SELECT question_id FROM answer 
-                    WHERE id = {answer_id};
-                           """).format(answer_id=sql.Literal(answer_id)))
-    question_id = cursor.fetchone()
-    return question_id
-
-
-@database_common.connection_handler
 def create_new_question(cursor, title, message, image):
     sub_time = util.convert_timestamp(util.create_timestamp())
 
@@ -116,7 +100,7 @@ def get_question_to_display(cursor, question_id):
 @database_common.connection_handler
 def get_answers_to_display(cursor, question_id):
     cursor.execute(
-        sql.SQL("""SELECT * FROM answer 
+        sql.SQL("""SELECT * FROM answer
                    WHERE question_id = {question_id};
                     """).format(question_id=sql.Literal(question_id)))
     data = cursor.fetchall()
@@ -124,12 +108,12 @@ def get_answers_to_display(cursor, question_id):
 
 
 @database_common.connection_handler
-def get_answers_to_edit(cursor, answer_id):
+def get_answer_to_comment(cursor, answer_id):
     cursor.execute(
         sql.SQL("""SELECT * FROM answer 
-                   WHERE id = {answer_id};
-                    """).format(answer_id=sql.Literal(answer_id)))
-    data = cursor.fetchone()
+                   WHERE answer_id = {a_id};
+                    """).format(a_id=sql.Literal(answer_id)))
+    data = cursor.fetchall()
     return data
 
 
@@ -154,45 +138,24 @@ def remove_question_and_its_answers(cursor, question_id):
 
 @database_common.connection_handler
 def get_searched_data(cursor, search_string):
-    result_ids = set()
     cursor.execute(
-        sql.SQL("""SELECT id FROM question
-                   WHERE message LIKE '%{search_string}%'
-                   OR title LIKE '%{search_string}%';
+        sql.SQL("""SELECT * FROM question, answer
+                   WHERE answer.message LIKE '%{search_string}%' 
+                   OR question.message LIKE '%{search_string}%'
+                   OR question.title LIKE '%{search_string}%';
                     """).format(search_string=sql.SQL(search_string)))
-    questions_with_result = cursor.fetchall()
-
-    cursor.execute(
-        sql.SQL("""SELECT question_id FROM answer
-                   WHERE message LIKE '%{search_string}%';
-                        """).format(search_string=sql.SQL(search_string)))
-    answers_with_result = cursor.fetchall()
-
-    for question in questions_with_result:
-        result_ids.add(question['id'])
-
-    for answer in answers_with_result:
-        result_ids.add(answer['question_id'])
-
-    result_ids = tuple(result_ids)
-
-    cursor.execute(
-        sql.SQL("""SELECT * FROM question
-                   WHERE id IN {result_ids};
-                    """).format(result_ids=sql.Literal(result_ids)))
-    result_data = cursor.fetchall()
-
-    return result_data
+    data = cursor.fetchall()
+    return data
 
 
 @database_common.connection_handler
-def add_new_tag(cursor, question_id, new_tag):
+def new_comment(cursor, comment_type, data_id, comment):
+    sub_time = util.convert_timestamp(util.create_timestamp())
     cursor.execute(
-        sql.SQL("""INSERT INTO tag (name)
-                   VALUES {new_tag};
-                        """).format(new_tag=sql.Identifier(new_tag)))
-
-    cursor.execute(
-        sql.SQL("""INSERT INTO question_tag
-                       VALUES {question_id};
-                            """).format(question_id=sql.Identifier(question_id)))
+        sql.SQL("""INSERT INTO comment ({com_type}, message, submission_time)
+                   VALUES ({id_number}, {msg}, {sub_time});
+                   """).format(com_type=sql.SQL(comment_type),
+                               id_number=sql.SQL(data_id),
+                               msg=sql.Literal(comment),
+                               sub_time=sql.Literal(str(sub_time)))
+    )

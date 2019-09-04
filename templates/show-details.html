@@ -42,15 +42,9 @@
         Answer
     </button>
     <button class="buttons"
-            onclick="window.location.href='{{ url_for('route_new_comment', question_id=question_to_display['id'], table_name='question') }}'">
+            onclick="window.location.href='{{ url_for('route_new_comment', question_id=question_to_display['id']) }}'">
         Comment
     </button>
-    <button class="buttons"
-            onclick="window.location.href='{{ url_for('route_new_tag', question_id=question_to_display['id']) }}'">
-        Add tag
-    </button>
-
-
 
     <button class="buttons" onclick="window.location.href='/question/{{ question_to_display["id"] }}/edit'">Edit
     </button>
@@ -95,10 +89,6 @@
                         <button class="buttons"
                                 onclick="window.location.href='/comment/{{ question_to_display['id'] }}/{{ answer['id'] }}'">
                             Comment answer
-                        </button>
-                        <button class="buttons"
-                                onclick="window.location.href='/answer/{{ answer['id'] }}/edit'">
-                            Edit answer
                         </button>
                         <button class="buttons"
                                 onclick="window.location.href='/answer/{{ question_to_display['id'] }}/{{ answer["id"] }}/delete'">
