@@ -193,11 +193,10 @@ def get_searched_data(cursor, search_string):
 def add_new_tag(cursor, question_id, new_tag):
     cursor.execute(
         sql.SQL("""INSERT INTO tag (name)
-                   VALUES {new_tag};
-                        """).format(new_tag=sql.Identifier(new_tag)))
+                   VALUES ({new_tag});
+                        """).format(new_tag=sql.Literal(new_tag)))
 
     cursor.execute(
-        sql.SQL("""INSERT INTO question_tag
-                   VALUES (SELECT max(id) FROM tag)
-                   WHERE question_id = {question_id};
-                            """).format(question_id=sql.Identifier(question_id)))
+        sql.SQL("""INSERT INTO question_tag (question_id, tag_id)
+                   VALUES ({question_id}, (SELECT max(id) FROM tag));
+                            """).format(question_id=sql.SQL(question_id)))
