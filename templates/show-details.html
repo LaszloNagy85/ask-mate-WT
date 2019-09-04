@@ -97,6 +97,10 @@
                             Comment answer
                         </button>
                         <button class="buttons"
+                                onclick="window.location.href='/answer/{{ answer['id'] }}/edit'">
+                            Edit answer
+                        </button>
+                        <button class="buttons"
                                 onclick="window.location.href='/answer/{{ question_to_display['id'] }}/{{ answer["id"] }}/delete'">
                             Delete Answer
                         </button>

@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block title %}Edit question{% endblock%}
+
+{% block header %}Edit question{% endblock %}
+
+{% block content %}
+
+    <form class="center-forms" method="post" action="/answer/{{ answer["id"] }}/edit">
+    <p>
+        <label for="message">Answer text:</label><br>
+        <textarea id="message" name="message" rows="6" cols="40">{{ answer["message"] }}</textarea>
+    </p>
+
+    <p>
+        <button class="buttons" type="submit">Edit answer</button>
+    </p>
+        <input class="buttons" type="button" onclick="window.location.href='/'" value="Return"/>
+    </form>
+{% endblock %}

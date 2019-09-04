@@ -95,6 +95,16 @@ def edit_question(data_id):
     return render_template('edit-question.html', question=question, data_id=data_id)
 
 
+@app.route('/answer/<answer_id>/edit', methods=["GET", "POST"])
+def edit_answer(answer_id):
+    answer = data_manager.get_answers_to_edit(answer_id)
+    if request.method == 'POST':
+        question_id = data_manager.edit_answer(answer_id, request.form['message'])
+        return redirect(url_for('route_show_details', question_id=question_id['question_id']))
+
+    return render_template('edit-answer.html', answer=answer)
+
+
 @app.route('/question/<data_id>/delete')
 def delete_question(data_id):
     data_manager.remove_question_and_its_answers(data_id)

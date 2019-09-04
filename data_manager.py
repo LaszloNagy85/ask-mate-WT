@@ -69,6 +69,22 @@ def delete_answer(cursor, answer_id):
 
 
 @database_common.connection_handler
+def edit_answer(cursor, answer_id, message):
+    cursor.execute(
+        sql.SQL(""" UPDATE answer
+                    SET message = {message}
+                    WHERE id = {answer_id}
+                    """).format(message=sql.Literal(message),
+                                answer_id=sql.SQL(answer_id)))
+    cursor.execute(
+        sql.SQL(""" SELECT question_id FROM answer 
+                    WHERE id = {answer_id};
+                           """).format(answer_id=sql.Literal(answer_id)))
+    question_id = cursor.fetchone()
+    return question_id
+
+
+@database_common.connection_handler
 def create_new_question(cursor, title, message, image):
     sub_time = util.convert_timestamp(util.create_timestamp())
 
@@ -104,6 +120,16 @@ def get_answers_to_display(cursor, question_id):
                    WHERE question_id = {question_id};
                     """).format(question_id=sql.Literal(question_id)))
     data = cursor.fetchall()
+    return data
+
+
+@database_common.connection_handler
+def get_answers_to_edit(cursor, answer_id):
+    cursor.execute(
+        sql.SQL("""SELECT * FROM answer 
+                   WHERE id = {answer_id};
+                    """).format(answer_id=sql.Literal(answer_id)))
+    data = cursor.fetchone()
     return data
 
 
