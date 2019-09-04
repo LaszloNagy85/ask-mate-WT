@@ -42,13 +42,15 @@
     </table>
 
     {% if tags %}
-    <table id="tags">
-        <tr>
-            {% for tag in tags %}
-            <td><button id="delete_tag" onclick="window.location.href='{{ url_for('route_list') }}'"></button>{{ tag["name"] }}</td>
-            {% endfor %}
-        </tr>
-    </table>
+        <table id="tags">
+            <tr>
+                {% for tag in tags %}
+                    <td>
+                        <button id="delete_tag" onclick="window.location.href='{{ url_for('route_list') }}'"></button>
+                        {{ tag["name"] }}</td>
+                {% endfor %}
+            </tr>
+        </table>
     {% endif %}
 
     <button class="buttons" onclick="window.location.href='/question/{{ question_to_display["id"] }}/new-answer'">
@@ -83,12 +85,23 @@
                     <th>Submission time</th>
                     <th>Comment</th>
                     <th>Edited count</th>
+                    <th>Actions</th>
                 </tr>
                 {% for comment in question_comments %}
                     <tr>
                         {% for data in comment.values() %}
                             <td>{{ data }}</td>
                         {% endfor %}
+                        <td>
+                            <button class="buttons"
+                                    onclick="window.location.href=''">
+                                Edit comment
+                            </button>
+                            <button class="buttons"
+                                    onclick="window.location.href='">
+                                Delete comment
+                            </button>
+                        </td>
                     </tr>
                 {% endfor %}
             </table>
