@@ -83,3 +83,9 @@ button {
     width:  430px;
     font-size: 1.1em;
 }
+#comments {
+    position: fixed;
+    right: 207px;
+    width: 1000px;
+}
+

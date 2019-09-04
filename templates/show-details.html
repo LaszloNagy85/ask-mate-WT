@@ -31,7 +31,7 @@
                         {% if a_data %}
                             <a href="/static/images/{{ q_data }}">
                                 <img src="/static/images/{{ q_data }}" class="uploaded-images" width="100" height="70"
-                                    alt=""></a>
+                                     alt=""></a>
                         {% endif %}
                     </td>
                 {% else %}
@@ -40,17 +40,6 @@
             {% endfor %}
         </tr>
     </table>
-    <div id="comments">
-    <table>
-        {% for comment in comments %}
-            <tr>
-                {%  for data in comment %}
-                <td>{{ data }}</td>
-                {% endfor %}
-            </tr>
-        {% endfor %}
-    </table>
-    </div>
     <button class="buttons" onclick="window.location.href='/question/{{ question_to_display["id"] }}/new-answer'">
         Answer
     </button>
@@ -64,7 +53,26 @@
     <button class="buttons" onclick="window.location.href='/question/{{ question_to_display["id"] }}/delete'">Delete
     </button>
     <button class="buttons" onclick="window.location.href='{{ url_for('route_list') }}'">Return</button>
-    <br/><br/>
+    <br/>
+        <div id="comments">
+        <table class="comments_table">
+            <tr>
+                <th>ID</th>
+                <th>Question ID</th>
+                <th>Submission time</th>
+                <th>Comment</th>
+                <th>Edited count</th>
+            </tr>
+            {% for comment in comments %}
+                <tr>
+                    {% for data in comment.values() %}
+                        <td>{{ data }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <br/>
     {% if answers_to_display %}
         <table>
             <tr>
@@ -93,7 +101,7 @@
                                 {% if a_data %}
                                     <a href="/static/images/{{ a_data }}">
                                         <img src="/static/images/{{ a_data }}" class="uploaded-images" width="100"
-                                            height="70" alt=""></a>
+                                             height="70" alt=""></a>
                                 {% endif %}
                             </td>
                         {% else %}

@@ -228,7 +228,7 @@ def new_comment(cursor, comment_type, data_id, comment):
 @database_common.connection_handler
 def get_comments_to_display(cursor, question_id):
     cursor.execute(
-        sql.SQL("""SELECT * FROM comment
+        sql.SQL("""SELECT id, question_id, submission_time, message, edited_count FROM comment
                     WHERE question_id={q_id};
                     """).format(q_id=sql.Literal(question_id))
     )
