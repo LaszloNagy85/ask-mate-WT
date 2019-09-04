@@ -84,7 +84,7 @@ button {
     font-size: 1.1em;
 }
 #comments {
-    position: fixed;
+    position: absolute;
     right: 207px;
     width: 1000px;
 }
