@@ -7,12 +7,16 @@
 
     <form class="center-forms" method="POST" action="/question/{{ question_id }}/new-tag">
         <p>
-        Choose tag
+            <label for="added_tag">Status:</label><br/>
+            <select id="added_tag" name="tag">
+                {% for tag in tags %}
+                    <option value="{{ tag }}">{{ tag }}</option>
+                {% endfor %}
+            </select>
         </p>
-
         <p>
             <label for="tag">Tag to be added</label><br>
-            <input type="text" id="tag" name="tag" required/>
+            <input type="text" id="tag" name="tag"/>
         </p>
         <p>
             <button class="buttons" type="submit">Add tag</button>

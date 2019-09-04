@@ -74,6 +74,7 @@ def route_list_search_results():
 def route_show_details(question_id):
     question_to_display = data_manager.get_question_to_display(question_id)
     answers_to_display = data_manager.get_answers_to_display(question_id)
+    tags = data_manager.get_questions_tags(question_id)
 
     question_comments_to_display = data_manager.get_question_comments_to_display(question_id)
 
@@ -89,7 +90,8 @@ def route_show_details(question_id):
                            answers_to_display=answers_to_display,
                            question_comments=question_comments_to_display,
                            answer_comments=answer_comments_to_display,
-                           comment_answer_ids=comment_answer_ids)
+                           comment_answer_ids=comment_answer_ids,
+                           tags=tags)
 
 
 @app.route('/add-question', methods=['GET', 'POST'])
@@ -173,11 +175,16 @@ def route_new_comment(question_id, answer_id=''):
 
 @app.route('/question/<question_id>/new-tag', methods=['GET', 'POST'])
 def route_new_tag(question_id):
-    tags = data_manager.get_all_tags()
+    tag_data = data_manager.get_all_tags()
+    tags = set()
+    for each in tag_data:
+        tags.add(each['name'])
+
+    print(tags)
 
     if request.method == "POST":
         data_manager.add_new_tag(question_id, request.form['tag'])
-
+        return redirect(url_for('route_show_details', question_id=question_id))
     return render_template('add-tag.html', question_id=question_id, tags=tags)
 
 

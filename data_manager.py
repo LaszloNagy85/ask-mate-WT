@@ -165,6 +165,7 @@ def remove_question_and_its_answers(cursor, question_id):
 @database_common.connection_handler
 def get_searched_data(cursor, search_string):
     result_ids = set()
+    search_string = search_string.strip("'")
     cursor.execute(
         sql.SQL("""SELECT id FROM question
                    WHERE message LIKE '%{search_string}%'
@@ -261,5 +262,33 @@ def get_all_tags(cursor):
     cursor.execute(
         sql.SQL("""SELECT name FROM tag;"""))
     data = cursor.fetchall()
+
+    return data
+
+
+@database_common.connection_handler
+def get_questions_tags(cursor, question_id):
+    tag_ids = []
+
+    cursor.execute(
+        sql.SQL("""SELECT tag_id FROM question_tag
+                   WHERE question_id = {question_id};
+                   """).format(question_id=sql.Literal(question_id)))
+    data = cursor.fetchall()
+
+    for id in data:
+        tag_ids.append(id['tag_id'])
+
+    tag_ids = tuple(tag_ids)
+
+    if tag_ids:
+        cursor.execute(
+            sql.SQL("""SELECT name FROM tag
+                       WHERE id IN {tag_ids};
+                       """).format(tag_ids=sql.Literal(tag_ids)))
+        data = cursor.fetchall()
+
+    else:
+        return tag_ids
 
     return data

@@ -40,12 +40,27 @@
             {% endfor %}
         </tr>
     </table>
+
+    {% if tags %}
+    <table id="tags">
+        <tr>
+            {% for tag in tags %}
+            <td><button id="delete_tag" onclick="window.location.href='{{ url_for('route_list') }}'"></button>{{ tag["name"] }}</td>
+            {% endfor %}
+        </tr>
+    </table>
+    {% endif %}
+
     <button class="buttons" onclick="window.location.href='/question/{{ question_to_display["id"] }}/new-answer'">
         Answer
     </button>
     <button class="buttons"
             onclick="window.location.href='{{ url_for('route_new_comment', question_id=question_to_display['id']) }}'">
         Comment
+    </button>
+    <button class="buttons"
+            onclick="window.location.href='{{ url_for('route_new_tag', question_id=question_to_display['id']) }}'">
+        Add Tag
     </button>
 
     <button class="buttons" onclick="window.location.href='/question/{{ question_to_display["id"] }}/edit'">Edit
