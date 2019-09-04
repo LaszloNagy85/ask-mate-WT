@@ -226,11 +226,23 @@ def new_comment(cursor, comment_type, data_id, comment):
 
 
 @database_common.connection_handler
-def get_comments_to_display(cursor, question_id):
+def get_question_comments_to_display(cursor, question_id):
     cursor.execute(
         sql.SQL("""SELECT id, question_id, submission_time, message, edited_count FROM comment
-                    WHERE question_id={q_id};
-                    """).format(q_id=sql.Literal(question_id))
+                   WHERE question_id={q_id};
+                   """).format(q_id=sql.Literal(question_id))
+    )
+    data = cursor.fetchall()
+    return data
+
+
+@database_common.connection_handler
+def get_answer_comments_to_display(cursor, answer_ids):
+    if answer_ids:
+        cursor.execute(
+        sql.SQL("""SELECT id, answer_id, submission_time, message, edited_count FROM comment
+                   WHERE answer_id IN {list_of_ids};
+                   """).format(list_of_ids=sql.Literal(answer_ids))
     )
     data = cursor.fetchall()
     return data

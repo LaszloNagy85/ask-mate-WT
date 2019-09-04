@@ -37,6 +37,12 @@ table {
     width: 100%;
     text-align: center;
 }
+#answer-comments {
+    position: relative;
+    float: right;
+    width: 1000px;
+    display: block;
+}
 ul li {
     margin: 10px;
     padding: 40px;
@@ -83,9 +89,15 @@ button {
     width:  430px;
     font-size: 1.1em;
 }
-#comments {
-    position: absolute;
-    right: 207px;
+.comments {
+    position: relative;
+    float: right;
     width: 1000px;
+    display: block;
 }
-
+#answer-comment-title {
+    position: relative;
+    float: right;
+    width: 1000px;
+    display: block;
+}
