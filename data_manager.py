@@ -203,14 +203,13 @@ def get_searched_data(cursor, search_string):
 def add_new_tag(cursor, question_id, new_tag):
     cursor.execute(
         sql.SQL("""INSERT INTO tag (name)
-                   VALUES {new_tag};
-                        """).format(new_tag=sql.Identifier(new_tag)))
+                   VALUES ({new_tag});
+                        """).format(new_tag=sql.Literal(new_tag)))
 
     cursor.execute(
-        sql.SQL("""INSERT INTO question_tag
-                   VALUES (SELECT max(id) FROM tag)
-                   WHERE question_id = {question_id};
-                            """).format(question_id=sql.Identifier(question_id)))
+        sql.SQL("""INSERT INTO question_tag (question_id, tag_id)
+                   VALUES ({question_id}, (SELECT max(id) FROM tag));
+                            """).format(question_id=sql.SQL(question_id)))
 
 
 @database_common.connection_handler
@@ -223,4 +222,21 @@ def new_comment(cursor, comment_type, data_id, comment):
                                id_number=sql.SQL(data_id),
                                msg=sql.Literal(comment),
                                sub_time=sql.Literal(str(sub_time)))
+    )
+
+@database_common.connection_handler
+def delete_comment(cursor, comment_id):
+    cursor.execute(
+        sql.SQL(""" DELETE FROM comment 
+                    WHERE id = {comment_id};
+                           """).format(comment_id=sql.Literal(comment_id)))
+
+
+@database_common.connection_handler
+def get_all_tags():
+    cursor.execute(
+        sql.SQL("""SELECT * FROM tag
+                   VALUES ({id_number}, {msg}, {sub_time});
+                       """).format(com_type=sql.SQL(comment_type),
+
     )
