@@ -45,7 +45,7 @@ def route_list_all():
                            )
 
 
-@app.route('/search', methods=['GET', 'POST'])
+@app.route('/search')
 def route_list_search_results():
     sort_by = 'submission_time'
     order_direction = 'desc'
@@ -54,16 +54,15 @@ def route_list_search_results():
     if 'order' in request.args:
         order_direction = request.args.get('order')
 
-    if request.method == 'POST':
-        search_string = request.form['search']
-        questions = data_manager.get_searched_data(search_string)
-        return render_template('list.html',
-                               questions=questions,
-                               sort_options=['submission_time', 'view_number', 'vote_number', 'title'],
-                               sort_titles=['submission time', 'view number', 'vote number', 'title'],
-                               sort_by=sort_by,
-                               order_direction=order_direction,
-                               )
+    search_string = request.args.get('q')
+    questions = data_manager.get_searched_data(search_string)
+    return render_template('search.html',
+                           questions=questions,
+                           sort_options=['submission_time', 'view_number', 'vote_number', 'title'],
+                           sort_titles=['submission time', 'view number', 'vote number', 'title'],
+                           sort_by=sort_by,
+                           order_direction=order_direction,
+                           )
 
 
 @app.route('/question/<int:question_id>')

@@ -152,8 +152,8 @@ def get_searched_data(cursor, search_string):
 
     cursor.execute(
         sql.SQL("""SELECT * FROM question
-                   WHERE id IN ({result_ids});
-                    """).format(result_ids=sql.Literal(*result_ids)))
+                   WHERE id IN {result_ids};
+                    """).format(result_ids=sql.Literal(result_ids)))
     result_data = cursor.fetchall()
 
     return result_data
