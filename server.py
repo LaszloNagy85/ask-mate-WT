@@ -125,7 +125,8 @@ def edit_answer(answer_id):
 
 @app.route('/question/<data_id>/delete')
 def delete_question(data_id):
-    data_manager.remove_question_and_its_answers(data_id)
+    answers = data_manager.get_answers_to_display(data_id)
+    data_manager.remove_question_and_its_answers(data_id, answers)
     return redirect(url_for('route_list'))
 
 
