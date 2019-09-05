@@ -19,3 +19,8 @@ def upload_image(files, app):
         image = 'No image'
 
     return image.filename if image != 'No image' else image
+
+
+def delete_image(image_name):
+    path = 'static/images/' + image_name
+    os.remove(path)

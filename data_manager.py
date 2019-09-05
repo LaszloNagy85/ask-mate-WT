@@ -129,18 +129,31 @@ def update_question(cursor, data_id, title, message):
 
 
 @database_common.connection_handler
-def remove_question_and_its_answers(cursor, question_id):
+def remove_question_and_its_answers(cursor, question_id, answers):
+    questions_tag_ids = get_tag_ids(question_id)
+
+    if answers:
+        answer_ids = tuple([answer['id'] for answer in answers])
+
     cursor.execute(
-        sql.SQL("""SELECT tag_id FROM question_tag
-                       WHERE question_id = {q_id};
-                            """).format(q_id=sql.SQL(question_id)))
+        sql.SQL("""SELECT image FROM question
+                       WHERE id = {q_id};
+                          """).format(q_id=sql.SQL(question_id)))
+    util.delete_image(cursor.fetchone()['image'])
 
-
-cursor.execute(
-        sql.SQL("""DELETE FROM answer WHERE question_id = {q_id};
-                   DELETE FROM comment WHERE question_id = {q_id};
+    cursor.execute(
+        sql.SQL("""DELETE FROM comment WHERE question_id = {q_id};
+                   DELETE FROM comment WHERE answer_id = {a_id}
+                   DELETE FROM answer WHERE question_id = {q_id};
+                   DELETE FROM question_tag WHERE question_id = {q_id};
                    DELETE FROM question WHERE id = {q_id};
                             """).format(q_id=sql.SQL(question_id)))
+
+    if questions_tag_ids:
+        cursor.execute(
+            sql.SQL("""DELETE FROM tag WHERE id = {questions_tag_ids};
+                            """).format(questions_tag_ids=sql.SQL(questions_tag_ids)))
+
 
 
 """------QUESTION SECTION OVER------"""
@@ -306,18 +319,7 @@ def get_all_tags(cursor):
 
 @database_common.connection_handler
 def get_questions_tags(cursor, question_id):
-    tag_ids = []
-
-    cursor.execute(
-        sql.SQL("""SELECT tag_id FROM question_tag
-                   WHERE question_id = {question_id};
-                   """).format(question_id=sql.Literal(question_id)))
-    data = cursor.fetchall()
-
-    for id in data:
-        tag_ids.append(id['tag_id'])
-
-    tag_ids = tuple(tag_ids)
+    tag_ids = get_tag_ids(question_id)
 
     if tag_ids:
         cursor.execute(
@@ -346,3 +348,23 @@ def delete_tag(cursor, tag_id):
 
 
 """------TAG SECTION OVER------"""
+
+"""------MISCELLANEOUS------"""
+
+
+@database_common.connection_handler
+def get_tag_ids(cursor, question_id):
+    tag_ids = []
+
+    cursor.execute(
+        sql.SQL("""SELECT tag_id FROM question_tag
+                   WHERE question_id = {question_id};
+                       """).format(question_id=sql.Literal(question_id)))
+    data = cursor.fetchall()
+
+    for id in data:
+        tag_ids.append(id['tag_id'])
+
+    tag_ids = tuple(tag_ids)
+
+    return tag_ids
