@@ -241,10 +241,10 @@ def get_question_comments_to_display(cursor, question_id):
 def get_answer_comments_to_display(cursor, answer_ids):
     if answer_ids:
         cursor.execute(
-            sql.SQL("""SELECT id, answer_id, submission_time, message, edited_count FROM comment
-                       WHERE answer_id IN {list_of_ids};
-                       """).format(list_of_ids=sql.Literal(answer_ids))
-        )
+        sql.SQL("""SELECT id, answer_id, submission_time, message, edited_count FROM comment
+                   WHERE answer_id IN {list_of_ids};
+                   """).format(list_of_ids=sql.Literal(answer_ids))
+    )
     data = cursor.fetchall()
     return data
 
@@ -306,7 +306,7 @@ def get_questions_tags(cursor, question_id):
 
     if tag_ids:
         cursor.execute(
-            sql.SQL("""SELECT name FROM tag
+            sql.SQL("""SELECT * FROM tag
                        WHERE id IN {tag_ids};
                        """).format(tag_ids=sql.Literal(tag_ids)))
         data = cursor.fetchall()
@@ -315,3 +315,16 @@ def get_questions_tags(cursor, question_id):
         return tag_ids
 
     return data
+
+
+@database_common.connection_handler
+def delete_tag(cursor, tag_id):
+    cursor.execute(
+        sql.SQL("""DELETE FROM question_tag
+                   WHERE tag_id = {tag_id};
+                   """).format(tag_id=sql.Literal(tag_id)))
+
+    cursor.execute(
+        sql.SQL("""DELETE FROM tag
+                   WHERE id = {tag_id};
+                       """).format(tag_id=sql.Literal(tag_id)))

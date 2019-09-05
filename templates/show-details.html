@@ -42,15 +42,14 @@
     </table>
 
     {% if tags %}
-        <table id="tags">
-            <tr>
+
                 {% for tag in tags %}
-                    <td>
-                        <button id="delete_tag" onclick="window.location.href='{{ url_for('route_list') }}'"></button>
-                        {{ tag["name"] }}</td>
+                    <p id="tags">
+                        {{ tag["name"] }}
+                        <button id="delete_tag" onclick="window.location.href='{{ url_for('route_delete_tag', question_id=question_to_display['id'], tag_id=tag['id']) }}'"></button>
+                        </p>
                 {% endfor %}
-            </tr>
-        </table>
+
     {% endif %}
 
     <button class="buttons" onclick="window.location.href='/question/{{ question_to_display["id"] }}/new-answer'">
@@ -189,7 +188,7 @@
                                 Edit comment
                             </button>
                             <button class="buttons"
-                                    onclick="window.location.href='">
+                                    onclick="window.location.href='/comments/{{ question_to_display['id'] }}/{{ comment['id'] }}/delete'">
                                 Delete comment
                             </button>
                         </td>
