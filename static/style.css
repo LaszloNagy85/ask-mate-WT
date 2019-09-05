@@ -103,7 +103,6 @@ button {
     margin: 0px;
     padding: 10px;
 }
-
 #delete_tag {
     background-image: url("/static/icons/cancel_button.png");
     background-size: contain;
@@ -111,7 +110,11 @@ button {
     width: 20px;
     height: 20px;
 }
-
 #tags {
-    display: block;
+    display: table-cell;
+    font-size: 1em;
+    background-color: cadetblue;
+    margin: 20px;
+    padding: 5px;
+    border-radius: 10px
 }
