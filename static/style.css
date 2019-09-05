@@ -118,3 +118,8 @@ button {
     padding: 5px;
     border-radius: 10px
 }
+.site-search {
+    padding-right: 50px;
+    height: 30px;
+    float: right;
+}
