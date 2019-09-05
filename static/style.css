@@ -66,8 +66,8 @@ button {
     margin-top: 5px;
 }
 #sort-form {
-    display: inline;
-    padding-left: 50px;
+    float: right;
+    padding-right: 10px;
 }
 .center-forms {
     text-align: center;
@@ -119,7 +119,7 @@ button {
     border-radius: 10px
 }
 .site-search {
-    padding-right: 50px;
+    padding-right: 10px;
     height: 30px;
     float: right;
 }
