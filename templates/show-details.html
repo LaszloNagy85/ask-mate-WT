@@ -28,7 +28,7 @@
             {% for title,q_data in question_to_display.items() %}
                 {% if title == 'image' %}
                     <td>
-                        {% if a_data %}
+                        {% if q_data %}
                             <a href="/static/images/{{ q_data }}">
                                 <img src="/static/images/{{ q_data }}" class="uploaded-images" width="100" height="70"
                                      alt=""></a>
