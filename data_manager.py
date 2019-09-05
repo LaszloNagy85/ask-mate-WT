@@ -157,9 +157,16 @@ def update_question(cursor, data_id, title, message):
 @database_common.connection_handler
 def remove_question_and_its_answers(cursor, question_id):
     cursor.execute(
+        sql.SQL("""SELECT tag_id FROM question_tag
+                       WHERE question_id = {q_id};
+                            """).format(q_id=sql.SQL(question_id)))
+
+
+cursor.execute(
         sql.SQL("""DELETE FROM answer WHERE question_id = {q_id};
+                   DELETE FROM comment WHERE question_id = {q_id};
                    DELETE FROM question WHERE id = {q_id};
-                        """).format(q_id=sql.SQL(question_id)))
+                            """).format(q_id=sql.SQL(question_id)))
 
 
 @database_common.connection_handler
