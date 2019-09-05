@@ -180,12 +180,16 @@ def route_new_tag(question_id):
     for each in tag_data:
         tags.add(each['name'])
 
-    print(tags)
-
     if request.method == "POST":
         data_manager.add_new_tag(question_id, request.form['tag'])
         return redirect(url_for('route_show_details', question_id=question_id))
     return render_template('add-tag.html', question_id=question_id, tags=tags)
+
+
+@app.route('/question/<question_id>/tag/<tag_id>/delete', methods=['GET', 'POST'])
+def route_delete_tag(question_id, tag_id):
+    data_manager.delete_tag(tag_id)
+    return redirect(url_for('route_show_details', question_id=question_id))
 
 
 if __name__ == '__main__':

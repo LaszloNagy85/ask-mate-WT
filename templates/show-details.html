@@ -46,8 +46,9 @@
             <tr>
                 {% for tag in tags %}
                     <td>
-                        <button id="delete_tag" onclick="window.location.href='{{ url_for('route_list') }}'"></button>
-                        {{ tag["name"] }}</td>
+                        {{ tag["name"] }}
+                        <button id="delete_tag" onclick="window.location.href='{{ url_for('route_delete_tag', question_id=question_to_display['id'], tag_id=tag['id']) }}'"></button>
+                        </td>
                 {% endfor %}
             </tr>
         </table>
