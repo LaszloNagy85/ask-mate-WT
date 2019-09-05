@@ -34,7 +34,7 @@
     <ul>
         {% for question in questions %}
             <p>
-            <li onclick="location.href='/question/view_count/{{ question["id"] }}'"> {{ question["title"] }} </li></p>
+            <li onclick="location.href='/question/view_count/{{ question["id"] }}'"> {{ question["title"] }} <div class="submission_time">{{ question['submission_time'] }}</div></li></p>
         {% endfor %}
     </ul>
 {% endblock %}

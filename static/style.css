@@ -40,7 +40,7 @@ table {
 #answer-comments {
     position: relative;
     float: right;
-    width: 1000px;
+    width: 800px;
     display: block;
 }
 ul li {
@@ -92,16 +92,17 @@ button {
 .comments {
     position: relative;
     float: right;
-    width: 1000px;
+    width: 800px;
     display: block;
 }
 #answer-comment-title, #question-comment-title {
     position: relative;
     float: right;
-    width: 977px;
+    width: 777px;
     display: block;
     margin: 0px;
     padding: 10px;
+    background-color: #2E8B57;
 }
 #delete_tag {
     background-image: url("/static/icons/cancel_button.png");
@@ -122,4 +123,14 @@ button {
     padding-right: 10px;
     height: 30px;
     float: right;
+}
+.submission_time{
+    text-align: right;
+    color: #485F6E;
+}
+#table-header-question th{
+    background-color: #3CB371;
+}
+#answer-comments th{
+    background-color: #3CB371;
 }
