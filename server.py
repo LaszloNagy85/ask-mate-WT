@@ -146,6 +146,12 @@ def route_delete_answer(answer_id, question_id):
     return redirect(url_for('route_show_details', question_id=question_id))
 
 
+@app.route('/comments/<redirect_question_id>/<comment_id>/delete')
+def route_delete_comment(comment_id, redirect_question_id):
+    data_manager.delete_comment(comment_id)
+    return redirect(url_for('route_show_details', question_id=redirect_question_id))
+
+
 @app.route('/question/view_count/<question_id>')
 def route_view_count(question_id):
     data_manager.view_count_handling(question_id)
