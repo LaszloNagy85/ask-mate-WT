@@ -2,7 +2,6 @@ from flask import Flask, request, render_template, redirect, url_for
 import data_manager
 import util
 
-
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/images'
 app.config['MAX_CONTENT_LENGTH'] = 5 * 2000 * 1400
@@ -16,7 +15,7 @@ def route_list():
         sort_by = request.args.get('sort')
     if 'order' in request.args:
         order_direction = request.args.get('order')
-    questions = data_manager.get_all_data_sql('question',  sort_by, order_direction, limit_it='LIMIT 5')
+    questions = data_manager.get_all_data_sql('question', sort_by, order_direction, limit_it='LIMIT 5')
     return render_template('list.html',
                            questions=questions,
                            sort_options=['submission_time', 'view_number', 'vote_number', 'title'],
@@ -34,7 +33,7 @@ def route_list_all():
         sort_by = request.args.get('sort')
     if 'order' in request.args:
         order_direction = request.args.get('order')
-    questions = data_manager.get_all_data_sql('question',  sort_by, order_direction)
+    questions = data_manager.get_all_data_sql('question', sort_by, order_direction)
 
     return render_template('list.html',
                            questions=questions,
@@ -116,7 +115,7 @@ def edit_question(data_id):
 
 @app.route('/answer/<answer_id>/edit', methods=["GET", "POST"])
 def edit_answer(answer_id):
-    answer = data_manager.get_answers_to_edit(answer_id)
+    answer = data_manager.get_answer_to_edit(answer_id)
     if request.method == 'POST':
         question_id = data_manager.edit_answer(answer_id, request.form['message'])
         return redirect(url_for('route_show_details', question_id=question_id['question_id']))
@@ -168,7 +167,7 @@ def route_vote(redirect_question_id, table_name, data_id, vote_type):
 @app.route('/comment/<question_id>/<answer_id>', methods=['GET', 'POST'])
 def route_new_comment(question_id, answer_id=''):
     question_data = data_manager.get_question_to_display(question_id)
-    answer_data = None if not answer_id else data_manager.get_answer_to_comment(answer_id)
+    answer_data = None if not answer_id else data_manager.get_answer_to_edit(answer_id)
 
     if request.method == 'POST':
         data_id = question_id if not answer_id else answer_id
@@ -183,7 +182,6 @@ def route_new_comment(question_id, answer_id=''):
 def route_edit_comment(comment_id):
     redirect_question_id = request.args['redirect_question_id']
     if request.method == 'POST':
-
         modified_comment_message = request.form['comment']
         data_manager.edit_comment(comment_id, modified_comment_message)
         return redirect(url_for('route_show_details', question_id=redirect_question_id))
