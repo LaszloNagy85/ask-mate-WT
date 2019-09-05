@@ -7,18 +7,32 @@
 
     <form class="center-forms" method="POST"
           action="{% if answer_data %}{{ url_for('route_new_comment', question_id=question_data['id'], answer_id=answer_data['id']) }}
-                  {% else %}{{ url_for('route_new_comment', question_id=question_data['id']) }}
+                  {% elif question_data %}{{ url_for('route_new_comment', question_id=question_data['id']) }}
+                  {% else %}{{ url_for('route_edit_comment', comment_id=comment_id, redirect_question_id=redirect_question_id) }}
                   {% endif %}">
         <p>
+            {% if comment_message %}{%  set message_to_display=comment_message['message'] %}
+            {% else %}{% set message_to_display='' %}
+            {% endif %}
             <label for=" message">Comment text:</label><br>
-    <textarea id="comment" name="comment" rows="6" cols="40" required></textarea>
-    </p>
-    <p>
-        <button class="buttons" type="submit">Add comment</button>
-    </p>
-    <button class="buttons"
-            onclick="window.location.href='{{ url_for('route_show_details', question_id=question_data['id']) }}'">Return
-    </button>
+            <textarea id="comment" name="comment" rows="6" cols="40" required>{{ message_to_display }}</textarea>
+        </p>
+        <p>
+            <button class="buttons" type="submit">
+                {% if comment_id %}Edit comment
+                {% else %}Add comment
+                {% endif %}
+            </button>
+        </p>
+
+        <button class="buttons"
+            {% if comment_id %}
+                onclick="window.location.href='{{ url_for('route_show_details', question_id=redirect_question_id) }}'">
+            {% else %}
+                onclick="window.location.href='{{ url_for('route_show_details', question_id=question_data['id']) }}'">
+            {% endif %}
+                Return
+        </button>
     </form>
 
 {% endblock %}

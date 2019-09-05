@@ -84,7 +84,7 @@
                     <th>Question ID</th>
                     <th>Submission time</th>
                     <th>Comment</th>
-                    <th>Edited count</th>
+                    <th>Edit count</th>
                     <th>Actions</th>
                 </tr>
                 {% for comment in question_comments %}
@@ -94,7 +94,7 @@
                         {% endfor %}
                         <td>
                             <button class="buttons"
-                                    onclick="window.location.href=''">
+                                    onclick="window.location.href='{{ url_for('route_edit_comment', comment_id=comment['id'], redirect_question_id=question_to_display['id']) }}'">
                                 Edit comment
                             </button>
                             <button class="buttons"
@@ -185,7 +185,7 @@
                         {% endfor %}
                         <td>
                             <button class="buttons"
-                                    onclick="window.location.href=''">
+                                    onclick="window.location.href='{{ url_for('route_edit_comment', comment_id=comment['id'], redirect_question_id=question_to_display['id']) }}'">
                                 Edit comment
                             </button>
                             <button class="buttons"

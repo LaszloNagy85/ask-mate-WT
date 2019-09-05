@@ -241,12 +241,35 @@ def get_question_comments_to_display(cursor, question_id):
 def get_answer_comments_to_display(cursor, answer_ids):
     if answer_ids:
         cursor.execute(
-        sql.SQL("""SELECT id, answer_id, submission_time, message, edited_count FROM comment
-                   WHERE answer_id IN {list_of_ids};
-                   """).format(list_of_ids=sql.Literal(answer_ids))
-    )
+            sql.SQL("""SELECT id, answer_id, submission_time, message, edited_count FROM comment
+                       WHERE answer_id IN {list_of_ids};
+                       """).format(list_of_ids=sql.Literal(answer_ids))
+        )
     data = cursor.fetchall()
     return data
+
+
+@database_common.connection_handler
+def get_comment_message(cursor, comment_id):
+    cursor.execute(
+        sql.SQL("""SELECT message FROM comment
+                   WHERE id = {comment_id}
+                   """).format(comment_id=sql.SQL(comment_id))
+    )
+    data = cursor.fetchone()
+    return data
+
+
+@database_common.connection_handler
+def edit_comment(cursor, comment_id, message):
+    sub_time = util.convert_timestamp(util.create_timestamp())
+    cursor.execute(
+        sql.SQL("""UPDATE comment
+                   SET  submission_time={sub_time}, message={msg}, edited_count = COALESCE(edited_count, 0) + 1 
+                   WHERE id = {comment_id};
+                   """).format(sub_time=sql.Literal(str(sub_time)),
+                               msg=sql.Literal(message),
+                               comment_id=sql.Literal(comment_id)))
 
 
 @database_common.connection_handler

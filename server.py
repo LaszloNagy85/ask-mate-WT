@@ -173,6 +173,22 @@ def route_new_comment(question_id, answer_id=''):
     return render_template('comment.html', question_data=question_data, answer_data=answer_data)
 
 
+@app.route('/comment/<comment_id>/edit', methods=["GET", 'POST'])
+def route_edit_comment(comment_id):
+    redirect_question_id = request.args['redirect_question_id']
+    if request.method == 'POST':
+
+        modified_comment_message = request.form['comment']
+        data_manager.edit_comment(comment_id, modified_comment_message)
+        return redirect(url_for('route_show_details', question_id=redirect_question_id))
+
+    comment_message = data_manager.get_comment_message(comment_id)
+    return render_template('comment.html',
+                           comment_id=comment_id,
+                           comment_message=comment_message,
+                           redirect_question_id=redirect_question_id)
+
+
 @app.route('/question/<question_id>/new-tag', methods=['GET', 'POST'])
 def route_new_tag(question_id):
     tag_data = data_manager.get_all_tags()
