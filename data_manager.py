@@ -130,30 +130,58 @@ def update_question(cursor, data_id, title, message):
 
 @database_common.connection_handler
 def remove_question_and_its_answers(cursor, question_id, answers):
-    questions_tag_ids = get_tag_ids(question_id)
 
-    if answers:
-        answer_ids = tuple([answer['id'] for answer in answers])
+    """DELETE QUESTION IMAGE"""
 
     cursor.execute(
         sql.SQL("""SELECT image FROM question
-                       WHERE id = {q_id};
-                          """).format(q_id=sql.SQL(question_id)))
-    util.delete_image(cursor.fetchone()['image'])
+                           WHERE id = {q_id};
+                              """).format(q_id=sql.SQL(question_id)))
+    image_name = cursor.fetchone()['image']
+    if image_name and image_name != 'No image':
+        util.delete_image(image_name)
+
+    """DELETE ANSWER, ANSWER IMAGE AND ANSWER COMMENTS"""
+
+    if answers:
+        answer_ids = tuple([answer['id'] for answer in answers])
+        answer_comment_ids = tuple([comment['id'] for comment in get_answer_comments_to_display(answer_ids)])
+        if answer_comment_ids:
+            cursor.execute(
+                sql.SQL("""DELETE FROM comment WHERE id IN {answer_comment_ids};
+                    """).format(answer_comment_ids=sql.Literal(answer_comment_ids)))
+
+        cursor.execute(
+            sql.SQL("""SELECT image FROM answer WHERE id IN {answer_ids};
+                """).format(answer_ids=sql.Literal(answer_ids)))
+
+        image_names = cursor.fetchall()
+        if image_names:
+            for row in image_names:
+                if row['image'] != 'No image':
+                    util.delete_image(row['image'])
+        cursor.execute(
+            sql.SQL("""DELETE FROM answer WHERE id IN {answer_ids};
+                """).format(answer_ids=sql.Literal(answer_ids)))
+
+    """DELETE TAGS, QUESTION TAGS, COMMENTS AND THE QUESTION"""
+    questions_tag_ids = get_tag_ids(question_id)
+
+    cursor.execute(
+        sql.SQL("""DELETE FROM question_tag WHERE question_id = {q_id};
+            """).format(q_id=sql.SQL(question_id)))
+
+    print(questions_tag_ids)
+    if questions_tag_ids:
+        print('init')
+        cursor.execute(
+            sql.SQL("""DELETE FROM tag WHERE id IN {questions_tag_ids};
+                    """).format(questions_tag_ids=sql.Literal(questions_tag_ids)))
 
     cursor.execute(
         sql.SQL("""DELETE FROM comment WHERE question_id = {q_id};
-                   DELETE FROM comment WHERE answer_id = {a_id}
-                   DELETE FROM answer WHERE question_id = {q_id};
-                   DELETE FROM question_tag WHERE question_id = {q_id};
                    DELETE FROM question WHERE id = {q_id};
                             """).format(q_id=sql.SQL(question_id)))
-
-    if questions_tag_ids:
-        cursor.execute(
-            sql.SQL("""DELETE FROM tag WHERE id = {questions_tag_ids};
-                            """).format(questions_tag_ids=sql.SQL(questions_tag_ids)))
-
 
 
 """------QUESTION SECTION OVER------"""
