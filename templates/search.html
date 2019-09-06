@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block title %}Search results{% endblock %}
 {% block content %}
-    <form id="sort-form" action={{ "/" if limit_it else "/list" }} method="GET">
+    <form id="search-form" action={{ "/" if limit_it else "/list" }} method="GET">
         <label for="sort">Sort questions by:</label>
         <select class="drop-downs" id="sort" name="sort">
             {% for i in range(4) %}

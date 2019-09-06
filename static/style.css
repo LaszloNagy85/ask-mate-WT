@@ -155,3 +155,6 @@ button {
 #top-button:hover {
     background-color: #7dbbf1;
 }
+#error {
+    text-align: center;
+}

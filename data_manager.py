@@ -173,7 +173,6 @@ def remove_question_and_its_answers(cursor, question_id, answers):
 
     print(questions_tag_ids)
     if questions_tag_ids:
-        print('init')
         cursor.execute(
             sql.SQL("""DELETE FROM tag WHERE id IN {questions_tag_ids};
                     """).format(questions_tag_ids=sql.Literal(questions_tag_ids)))
