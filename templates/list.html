@@ -20,7 +20,6 @@
             {% endfor %}
         </select>
         <button type="submit">Sort it!</button>
-
     </form>
 
     <form method="GET" action="/search">
@@ -34,7 +33,9 @@
     <ul>
         {% for question in questions %}
             <p>
-            <li onclick="location.href='/question/view_count/{{ question["id"] }}'"> {{ question["title"] }} <div class="submission_time">{{ question['submission_time'] }}</div></li></p>
+            <li onclick="location.href='/question/view_count/{{ question["id"] }}'"> {{ question["title"] }}
+                <div class="submission_time">{{ question['submission_time'] }}</div>
+            </li></p>
         {% endfor %}
     </ul>
 {% endblock %}
