@@ -43,12 +43,13 @@
 
     {% if tags %}
 
-                {% for tag in tags %}
-                    <p id="tags">
-                        {{ tag["name"] }}
-                        <button id="delete_tag" onclick="window.location.href='{{ url_for('route_delete_tag', question_id=question_to_display['id'], tag_id=tag['id']) }}'"></button>
-                        </p>
-                {% endfor %}
+        {% for tag in tags %}
+            <p id="tags">
+                {{ tag["name"] }}
+                <button id="delete_tag"
+                        onclick="window.location.href='{{ url_for('route_delete_tag', question_id=question_to_display['id'], tag_id=tag['id']) }}'"></button>
+            </p>
+        {% endfor %}
 
     {% endif %}
 
@@ -187,10 +188,22 @@
                                     onclick="window.location.href='{{ url_for('route_edit_comment', comment_id=comment['id'], redirect_question_id=question_to_display['id']) }}'">
                                 Edit comment
                             </button>
-                            <button class="buttons"
-                                    onclick="window.location.href='/comments/{{ question_to_display['id'] }}/{{ comment['id'] }}/delete'">
-                                Delete comment
+                            <br>
+                            <button class="buttons" onclick="location.href='#popup1'">Delete comment
                             </button>
+                            <div id="popup1" class="overlay">
+                                <div class="popup">
+                                    <h2>Are you sure?</h2>
+                                    <a class="close" href="#">&times;</a>
+                                    <div class="content">
+                                        <button class="buttons"
+                                                onclick="window.location.href='/comments/{{ question_to_display['id'] }}/{{ comment['id'] }}/delete'">
+                                            Yes
+                                        </button>
+                                        <button>No</button>
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 {% endif %}
@@ -201,7 +214,7 @@
             <br/>
         {% endfor %}
     </table><br>
-        <button id="top-button"><a href="#top" style="color: white">TOP</a></button>
+        <button id="top-button"><a href="#top" style="color: white">UP</a></button>
     {% endif %}
 
 

@@ -4,19 +4,22 @@ body {
     padding-right: 200px;
     padding-bottom: 100px;
 }
+
 #header {
     font: 400 40px/1.2 'Merienda One', Helvetica, sans-serif;
-    color: rgba(0,0,0,0.7);
+    color: rgba(0, 0, 0, 0.7);
     text-shadow: 3px 3px 3px #fff;
     text-align: center;
 }
+
 #content {
     font-size: 20px;
 }
+
 #footer {
     bottom: 0;
     position: fixed;
-    right:300px;
+    right: 300px;
     font-size: larger;
 }
 
@@ -26,6 +29,7 @@ th {
     margin: 20px;
     padding: 20px;
 }
+
 td {
     font-size: 1em;
     background-color: #bcc;
@@ -37,6 +41,7 @@ table {
     width: 100%;
     text-align: center;
 }
+
 #answer-comments {
     position: relative;
     float: right;
@@ -44,6 +49,7 @@ table {
     display: block;
     font-size: 0.85em;
 }
+
 ul li {
     margin: 10px;
     padding: 40px;
@@ -51,45 +57,57 @@ ul li {
     background-color: #0CC;
     transition: background-color 0.5s;
 }
+
 ul li:hover {
     background-color: #FFF;
 }
+
 button {
     height: 30px;
     width: 100px;
     font-size: 0.8em;
 }
+
 .buttons {
     height: 30px;
-    width:  145px;
+    width: 145px;
     font-size: 0.8em;
     margin-bottom: 5px;
     margin-top: 5px;
+    cursor: pointer;
 }
+
 #sort-form {
     float: right;
     padding-right: 10px;
 }
+
 .center-forms {
     text-align: center;
     width: 400px;
     margin: auto;
 }
+
 .drop-downs {
     height: 30px;
-    width:  140px;
+    width: 140px;
     font-size: 0.8em;
 }
+
 #ask-button {
     height: 50px;
-    width:  430px;
+    width: 430px;
     font-size: 1.1em;
+    cursor: pointer;
 }
+
 #list-all-button {
     height: 50px;
-    width:  430px;
+    width: 430px;
     font-size: 1.1em;
+    cursor: pointer;
 }
+
 .comments {
     position: relative;
     float: right;
@@ -97,6 +115,7 @@ button {
     display: block;
     font-size: 0.85em;
 }
+
 #answer-comment-title, #question-comment-title {
     position: relative;
     float: right;
@@ -106,6 +125,7 @@ button {
     padding: 10px;
     background-color: #2E8B57;
 }
+
 #delete_tag {
     background-image: url("/static/icons/cancel_button.png");
     background-size: contain;
@@ -113,6 +133,7 @@ button {
     width: 20px;
     height: 20px;
 }
+
 #tags {
     display: table-cell;
     font-size: 1em;
@@ -121,23 +142,29 @@ button {
     padding: 5px;
     border-radius: 10px
 }
+
 .site-search {
     padding-right: 10px;
     height: 30px;
     float: right;
+    cursor: pointer;
 }
-.submission_time{
+
+.submission_time {
     text-align: right;
     float: right;
     color: #485F6E;
     display: inline;
 }
-#table-header-question th{
+
+#table-header-question th {
     background-color: #3CB371;
 }
-#answer-comments th{
+
+#answer-comments th {
     background-color: #3CB371;
 }
+
 #top-button {
     position: fixed;
     bottom: 10px;
@@ -148,13 +175,80 @@ button {
     width: 100%;
     font-size: 12px;
     border-color: rgba(85, 85, 85, 0.2);
-    background-color: rgb(100,100,100);
-    padding: .5px;
+    background-color: rgb(100, 100, 100);
+    padding: 5px;
     border-radius: 4px;
+    cursor: pointer;
 }
+
 #top-button:hover {
     background-color: #7dbbf1;
 }
-#error {
-    text-align: center;
+
+.buttons:hover {
+    background: #483D8B;
+    color: white;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    transition: opacity 500ms;
+    visibility: hidden;
+    opacity: 0;
+}
+
+.overlay:target {
+    visibility: visible;
+    opacity: 1;
+}
+
+.popup {
+    margin: 70px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+    width: 30%;
+    position: relative;
+    transition: all 5s ease-in-out;
+}
+
+.popup h2 {
+    margin-top: 0;
+    color: #333;
+    font-family: Tahoma, Arial, sans-serif;
+}
+
+.popup .close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    transition: all 200ms;
+    font-size: 30px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #333;
+}
+
+.popup .close:hover {
+    color: #06D85F;
+}
+
+.popup .content {
+    max-height: 30%;
+    overflow: auto;
+}
+
+@media screen and (max-width: 700px) {
+    .box {
+        width: 70%;
+    }
+
+    .popup {
+        width: 70%;
+    }
 }
