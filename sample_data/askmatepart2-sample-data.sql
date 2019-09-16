@@ -19,7 +19,7 @@ ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS pk_user_id CAS
 
 
 DROP TABLE IF EXISTS public.users;
-DROP SEQUENCE IF EXISTS public.user_id_seq;
+DROP SEQUENCE IF EXISTS public.users_id_seq;
 CREATE TABLE users (
     id serial NOT NULL,
     name text,
