@@ -365,14 +365,10 @@ def get_questions_tags(cursor, question_id):
 @database_common.connection_handler
 def delete_tag(cursor, tag_id):
     cursor.execute(
-        sql.SQL("""DELETE FROM question_tag
+        sql.SQL("""DELETE FROM question_tag, tag
+                   INNER JOIN tag ON question_tag.tag_id = tag.id
                    WHERE tag_id = {tag_id};
                    """).format(tag_id=sql.Literal(tag_id)))
-
-    cursor.execute(
-        sql.SQL("""DELETE FROM tag
-                   WHERE id = {tag_id};
-                       """).format(tag_id=sql.Literal(tag_id)))
 
 
 """------TAG SECTION OVER------"""
