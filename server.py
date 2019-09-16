@@ -214,6 +214,29 @@ def route_delete_tag(question_id, tag_id):
     return redirect(url_for('route_show_details', question_id=question_id))
 
 
+@app.route('/registration', methods=['GET', 'POST'])
+def route_register():
+    if request.method == 'POST':
+        user_name = request.form['user_name']
+        user_input_password = request.form['password']
+        data_manager.save_user_registration(user_name, user_input_password)
+        return redirect(url_for('route_list'))
+    return render_template('register.html')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def route_login():
+    if request.method == 'POST':
+        user_name = request.form['user_name']
+        user_input_password = request.form['password']
+        if data_manager.check_user_validity(user_name, user_input_password):
+            return redirect(url_for('route_list'))
+        else:
+            redirect(url_for('route_login'))
+
+    return render_template('register.html')
+
+
 if __name__ == '__main__':
     app.run(
         port=5000,
