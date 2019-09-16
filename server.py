@@ -236,7 +236,8 @@ def route_login():
             session['username'] = user_name
             return redirect(url_for('route_list'))
         else:
-            redirect(url_for('route_login'))
+            error_message = "Invalid user name or password"
+            return render_template('error.html', error_message=error_message)
 
     return render_template('register-login.html', html_data=html_data)
 
