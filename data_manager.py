@@ -171,7 +171,6 @@ def remove_question_and_its_answers(cursor, question_id, answers):
         sql.SQL("""DELETE FROM question_tag WHERE question_id = {q_id};
             """).format(q_id=sql.SQL(question_id)))
 
-    print(questions_tag_ids)
     if questions_tag_ids:
         cursor.execute(
             sql.SQL("""DELETE FROM tag WHERE id IN {questions_tag_ids};
@@ -364,10 +363,14 @@ def get_questions_tags(cursor, question_id):
 @database_common.connection_handler
 def delete_tag(cursor, tag_id):
     cursor.execute(
-        sql.SQL("""DELETE FROM question_tag, tag
-                   INNER JOIN tag ON question_tag.tag_id = tag.id
+        sql.SQL("""DELETE FROM question_tag
                    WHERE tag_id = {tag_id};
                    """).format(tag_id=sql.Literal(tag_id)))
+
+    cursor.execute(
+        sql.SQL("""DELETE FROM tag
+                   WHERE id = {tag_id};
+                       """).format(tag_id=sql.Literal(tag_id)))
 
 
 """------TAG SECTION OVER------"""

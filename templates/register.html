@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block title %}Sign up page{% endblock %}
+
+{% block header %}Sign up details{% endblock %}
+
+{% block content %}
+    <div>
+
+    <form method="post" action="/registration" name="user_data">
+        <p>
+            <label for="user_name">User name:</label><br>
+            <input type="text" id="user_name" name="user_name" required/>
+        </p>
+        <p>
+            <label for="password">Password:</label><br>
+            <input type="text" id="password" name="password" required/>
+        </p>
+        <button class="buttons" type="submit">Register</button>
+    </form>
+
+    <button class="buttons" onclick="window.location.href='{{ url_for('route_list') }}'">Return</button>
+    </div>
+
+{% endblock %}
