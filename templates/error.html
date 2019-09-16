@@ -4,9 +4,10 @@
 {% block header %}You have run into an error{% endblock %}
 
 {% block content %}
-
-    <p>{{ error_message }}</p>
+    <div id="error">
+    <h2>{{ error_message }}</h2>
 
     <button class="buttons" onclick="window.location.href='{{ url_for('route_list') }}'">Return</button>
+    </div>
 
 {% endblock %}
