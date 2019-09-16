@@ -415,7 +415,6 @@ def check_user_validity(cursor, user_name, user_input_password):
                     """).format(user_name=sql.Literal(user_name))
     )
     user_data = cursor.fetchone()
-    print(user_data)
     if user_data:
         if verify_password(user_input_password, user_data['password']):
             return True
