@@ -414,7 +414,7 @@ def check_user_validity(cursor, user_name, user_input_password):
                    WHERE name = {user_name};
                     """).format(user_name=sql.Literal(user_name))
     )
-    user_data = cursor.fetchall()
+    user_data = cursor.fetchone()
     print(user_data)
     if user_data:
         if verify_password(user_input_password, user_data['password']):
@@ -424,13 +424,13 @@ def check_user_validity(cursor, user_name, user_input_password):
 
 @database_common.connection_handler
 def save_user_registration(cursor, user_name, password):
-    hashed_password = hash_password('password')
+    hashed_password = hash_password(password)
     sub_time = util.convert_timestamp(util.create_timestamp())
 
     cursor.execute(
         sql.SQL("""INSERT INTO users(name, password, submission_time)
                    VALUES ({user_name}, {hashed_password}, {submission_time})
-                   """).format(user_name=sql.SQL(user_name),
+                   """).format(user_name=sql.Literal(user_name),
                                hashed_password=sql.Literal(hashed_password),
                                submission_time=sql.Literal(str(sub_time)))
     )
