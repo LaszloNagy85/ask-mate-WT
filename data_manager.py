@@ -1,6 +1,7 @@
 import database_common
 import util
 from psycopg2 import sql
+import bcrypt
 
 
 def allowed_file(filename):
@@ -276,7 +277,7 @@ def get_comment_message(cursor, comment_id):
 @database_common.connection_handler
 def get_question_comments_to_display(cursor, question_id):
     cursor.execute(
-        sql.SQL("""SELECT id, question_id, submission_time, message, edited_count FROM comment
+        sql.SQL("""SELECT id, question_id, submission_time, user_id, message, edited_count FROM comment
                    WHERE question_id={q_id};
                    """).format(q_id=sql.Literal(question_id))
     )
@@ -288,7 +289,7 @@ def get_question_comments_to_display(cursor, question_id):
 def get_answer_comments_to_display(cursor, answer_ids):
     if answer_ids:
         cursor.execute(
-        sql.SQL("""SELECT id, answer_id, submission_time, message, edited_count FROM comment
+        sql.SQL("""SELECT id, answer_id, submission_time, user_id, message, edited_count FROM comment
                    WHERE answer_id IN {list_of_ids};
                    """).format(list_of_ids=sql.Literal(answer_ids))
     )
@@ -373,11 +374,6 @@ def delete_tag(cursor, tag_id):
                        """).format(tag_id=sql.Literal(tag_id)))
 
 
-"""------TAG SECTION OVER------"""
-
-"""------MISCELLANEOUS------"""
-
-
 @database_common.connection_handler
 def get_tag_ids(cursor, question_id):
     tag_ids = []
@@ -394,3 +390,49 @@ def get_tag_ids(cursor, question_id):
     tag_ids = tuple(tag_ids)
 
     return tag_ids
+
+
+"""------TAG SECTION OVER------"""
+
+"""------PASSWORD SECTION------"""
+
+
+def hash_password(plain_text_password):
+    hashed_bytes = bcrypt.hashpw(plain_text_password.encode('utf-8'), bcrypt.gensalt())
+    return hashed_bytes.decode('utf-8')
+
+
+def verify_password(plain_text_password, hashed_password):
+    hashed_bytes_password = hashed_password.encode('utf-8')
+    return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)
+
+
+@database_common.connection_handler
+def check_user_validity(cursor, user_name, user_input_password):
+    cursor.execute(
+        sql.SQL("""SELECT name, password FROM users
+                   WHERE name = {user_name};
+                    """).format(user_name=sql.Literal(user_name))
+    )
+    user_data = cursor.fetchall()
+    print(user_data)
+    if user_data:
+        if verify_password(user_input_password, user_data['password']):
+            return True
+    return False
+
+
+@database_common.connection_handler
+def save_user_registration(cursor, user_name, password):
+    hashed_password = hash_password('password')
+    sub_time = util.convert_timestamp(util.create_timestamp())
+
+    cursor.execute(
+        sql.SQL("""INSERT INTO users(name, password, submission_time)
+                   VALUES ({user_name}, {hashed_password}, {submission_time})
+                   """).format(user_name=sql.SQL(user_name),
+                               hashed_password=sql.Literal(hashed_password),
+                               submission_time=sql.Literal(str(sub_time)))
+    )
+
+
