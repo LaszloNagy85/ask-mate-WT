@@ -3,6 +3,7 @@
 {% block content %}
     <input id="ask-button" type="button" onclick="window.location.href='/add-question'" value="Ask a question"/>
     <input id="list-all-button" type="button" onclick="window.location.href='/list'" value="List all questions"/>
+
     <form id="sort-form" action={{ "/" if limit_it else "/list" }} method="GET">
         <label for="sort">Sort questions by:</label>
         <select class="drop-downs" id="sort" name="sort">
@@ -30,8 +31,17 @@
         </div>
     </form><br>
 
-    <input class="buttons" id="register-button" type="button" onclick="window.location.href='/registration'" value="Register"/>
-    <input class="buttons" id="login-button" type="button" onclick="window.location.href='/login'" value="Login"/>
+    {% if session['username'] %}
+        <div id="logged_in_user">Logged in as: {{ session['username'] }}</div><br>
+    {% endif %}
+
+
+    {% if not session['username'] %}
+        <input class="buttons" id="register-button" type="button" onclick="window.location.href='/registration'" value="Register"/>
+        <input class="buttons" id="login-button" type="button" onclick="window.location.href='/login'" value="Login"/>
+    {% elif session['username'] %}
+        <input class="buttons" id="logout-button" type="button" onclick="window.location.href='/logout'" value="Logout"/>
+    {% endif %}
 
     <ul>
         {% for question in questions %}

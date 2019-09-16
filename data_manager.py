@@ -427,11 +427,10 @@ def save_user_registration(cursor, user_name, password):
     sub_time = util.convert_timestamp(util.create_timestamp())
 
     cursor.execute(
-        sql.SQL("""INSERT INTO users(name, password, submission_time)
-                   VALUES ({user_name}, {hashed_password}, {submission_time})
+        sql.SQL("""INSERT INTO users(name, password, submission_time, reputation)
+                   VALUES ({user_name}, {hashed_password}, {submission_time}, 0)
                    """).format(user_name=sql.Literal(user_name),
                                hashed_password=sql.Literal(hashed_password),
                                submission_time=sql.Literal(str(sub_time)))
     )
-
 

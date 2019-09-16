@@ -1,10 +1,11 @@
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for, session, escape
 import data_manager
 import util
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/images'
 app.config['MAX_CONTENT_LENGTH'] = 5 * 2000 * 1400
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 
 @app.route('/')
@@ -205,7 +206,6 @@ def route_new_tag(question_id):
         data_manager.add_new_tag(question_id, request.form['tag'])
         return redirect(url_for('route_show_details', question_id=question_id))
     return render_template('add-tag.html', question_id=question_id, tags=tags)
-    return render_template('add-tag.html', question_id=question_id, tags=tags)
 
 
 @app.route('/question/<question_id>/tag/<tag_id>/delete', methods=['GET', 'POST'])
@@ -219,9 +219,9 @@ def route_register():
     html_data = "Registration"
     if request.method == 'POST':
         user_name = request.form['user_name']
-        print(user_name)
         user_input_password = request.form['password']
         data_manager.save_user_registration(user_name, user_input_password)
+        session['username'] = user_name
         return redirect(url_for('route_list'))
     return render_template('register-login.html', html_data=html_data)
 
@@ -233,11 +233,20 @@ def route_login():
         user_name = request.form['user_name']
         user_input_password = request.form['password']
         if data_manager.check_user_validity(user_name, user_input_password):
+            session['username'] = user_name
             return redirect(url_for('route_list'))
         else:
             redirect(url_for('route_login'))
 
     return render_template('register-login.html', html_data=html_data)
+
+
+
+@app.route('/logout')
+def logout():
+    # remove the username from the session if it's there
+    session.pop('username', None)
+    return redirect(url_for('route_list'))
 
 
 if __name__ == '__main__':
