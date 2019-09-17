@@ -27,16 +27,18 @@
                 <a href="/{{ question_to_display['id'] }}/vote/question/{{ question_to_display['id'] }}/down"> <img
                         src="/static/icons/arrow_down.png" alt="" width="24" height="24"></a></td>
             {% for title,q_data in question_to_display.items() %}
-                {% if title == 'image' %}
-                    <td>
-                        {% if q_data %}
-                            <a href="/static/images/{{ q_data }}">
-                                <img src="/static/images/{{ q_data }}" class="uploaded-images" width="100" height="70"
-                                     alt=""></a>
-                        {% endif %}
-                    </td>
-                {% else %}
-                    <td>{{ q_data }}</td>
+                {% if title != 'user_id' %}
+                    {% if title == 'image' %}
+                        <td>
+                            {% if q_data %}
+                                <a href="/static/images/{{ q_data }}">
+                                    <img src="/static/images/{{ q_data }}" class="uploaded-images" width="100" height="70"
+                                         alt=""></a>
+                            {% endif %}
+                        </td>
+                    {% else %}
+                        <td>{{ q_data }}</td>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
         </tr>
@@ -111,8 +113,10 @@
                 </tr>
                 {% for comment in question_comments %}
                     <tr>
-                        {% for data in comment.values() %}
-                            <td>{{ data }}</td>
+                        {% for title, data in comment.items() %}
+                            {% if title != 'user_id' %}
+                                <td>{{ data }}</td>
+                            {% endif %}
                         {% endfor %}
                         <td>
 
@@ -173,16 +177,18 @@
                     <a href="/{{ question_to_display['id'] }}/vote/answer/{{ answer['id'] }}/down"><img
                             src="/static/icons/arrow_down.png" alt="" width="24" height="24"></a></td>
                 {% for title,a_data in answer.items() %}
-                    {% if title == 'image' %}
-                        <td>
-                            {% if a_data %}
-                                <a href="/static/images/{{ a_data }}">
-                                    <img src="/static/images/{{ a_data }}" class="uploaded-images" width="100"
-                                         height="70" alt=""></a>
-                            {% endif %}
-                        </td>
-                    {% else %}
-                        <td>{{ a_data }}</td>
+                    {% if title != 'user_id' %}
+                        {% if title == 'image' %}
+                            <td>
+                                {% if a_data %}
+                                    <a href="/static/images/{{ a_data }}">
+                                        <img src="/static/images/{{ a_data }}" class="uploaded-images" width="100"
+                                             height="70" alt=""></a>
+                                {% endif %}
+                            </td>
+                        {% else %}
+                            <td>{{ a_data }}</td>
+                        {% endif %}
                     {% endif %}
                 {% endfor %}
                 <td>
@@ -238,8 +244,10 @@
             {% for comment in answer_comments %}
                 {% if comment['answer_id'] == answer['id'] %}
                     <tr>
-                        {% for data in comment.values() %}
-                            <td>{{ data }}</td>
+                        {% for title, data in comment.items() %}
+                            {% if title != 'user_id' %}
+                                <td>{{ data }}</td>
+                            {% endif %}
                         {% endfor %}
                         <td>
                             {% if session['user_id']['id'] == comment['user_id'] %}
