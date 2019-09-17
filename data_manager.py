@@ -397,7 +397,7 @@ def get_tag_ids(cursor, question_id):
 
 """------TAG SECTION OVER------"""
 
-"""------PASSWORD SECTION------"""
+"""------USER SECTION------"""
 
 
 def hash_password(plain_text_password):
@@ -449,7 +449,18 @@ def get_user_id(cursor, user_name):
     return user_id
 
 
-"""------PASSWORD SECTION OVER------"""
+@database_common.connection_handler
+def get_all_user_activity(cursor, user_id):
+    cursor.execute(
+        sql.SQL("""SELECT  FROM questios
+                   WHERE name = {user_name}
+                           """).format(user_name=sql.Literal(user_name)))
+    data = cursor.fetchall()
+
+    return data
+
+
+"""------USER SECTION OVER------"""
 
 
 @database_common.connection_handler

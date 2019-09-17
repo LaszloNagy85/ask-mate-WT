@@ -267,7 +267,9 @@ def route_users():
 
 @app.route('/user/<user_id>')
 def route_user_activity(user_id):
-    return render_template('user-activity.html')
+    data = data_manager.get_all_user_activity(user_id)
+    return render_template('user-activity.html', data=data)
+
 
 if __name__ == '__main__':
     app.run(
