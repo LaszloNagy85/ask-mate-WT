@@ -3,11 +3,52 @@
 {% block header %}User activity{% endblock %}
 {% block content %}
     <button class="buttons" onclick="window.location.href='{{ url_for('route_list') }}'">Return</button>
-    <table>
-    <tr>
-        <td>
 
-        </td>
-    </tr>
-    </table>
+    {% for each in data %}
+        <table>
+
+        <tr>
+            <th>Questions:</th>
+        </tr>
+        <tr>
+
+            <th>{{ each['question_title'] }}</th>
+        </tr>
+        <tr>
+            <td>
+                {{ each['question_message'] }}
+            </td>
+        </tr>
+
+        <tr>
+            <th>Answers:</th>
+        </tr>
+        <tr>
+            <th>{{ each['question_title'] }}</th>
+        </tr>
+        <tr>
+            <td>
+                {{ each['answer_message'] }}
+            </td>
+        </tr>
+
+
+        <tr>
+            <th>Comments:</th>
+        </tr>
+        <tr>
+            <th>{{ each['question_title'] }}</th>
+        </tr>
+        <tr>
+            <td>
+                {{ each['question_comment'] }}
+            </td>
+            <td>
+                {{ each['answer_comment'] }}
+            </td>
+        </tr>
+
+        </table>
+    {% endfor %}
+
 {% endblock %}

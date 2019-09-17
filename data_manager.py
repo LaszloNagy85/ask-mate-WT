@@ -456,15 +456,25 @@ def get_user_id(cursor, user_name):
 @database_common.connection_handler
 def get_all_user_activity(cursor, user_id):
     cursor.execute(
-        sql.SQL("""SELECT  FROM questios
-                   WHERE name = {user_name}
-                           """).format(user_name=sql.Literal(user_name)))
+        sql.SQL("""SELECT question.title AS question_title,
+                   MAX(question.message) AS question_message,
+                   MAX(answer.message) AS answer_message,
+                   MAX(CASE WHEN comment.question_id = question.id
+                    THEN comment.message END) AS question_comment,
+                   MAX(CASE WHEN comment.answer_id = answer.id
+                    THEN comment.message END) AS answer_comment
+                   FROM question
+                   JOIN answer ON question.user_id = answer.user_id
+                   JOIN comment ON comment.user_id = question.user_id
+                   WHERE question.user_id = '4686004'
+                    AND answer.question_id = question.id
+                    AND comment.question_id = question.id
+                        OR answer.question_id = question.id
+                    AND comment.answer_id = answer.id
+                   GROUP BY question.title;
+                           """).format(user_id=sql.Literal(user_id)))
     data = cursor.fetchall()
-
     return data
-
-
-"""------USER SECTION OVER------"""
 
 
 @database_common.connection_handler
@@ -472,3 +482,5 @@ def get_all_users_data(cursor):
     cursor.execute("""SELECT id, name, submission_time, reputation FROM users""")
     data = cursor.fetchall()
     return data
+
+"""------USER SECTION OVER------"""
