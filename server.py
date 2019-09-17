@@ -216,28 +216,20 @@ def route_delete_tag(question_id, tag_id):
 
 @app.route('/registration', methods=['GET', 'POST'])
 def route_register():
-    html_data = "Registration"
     if request.method == 'POST':
-        user_name = request.form['user_name']
-        print(user_name)
-        user_input_password = request.form['password']
-        data_manager.save_user_registration(user_name, user_input_password)
+        data_manager.save_user_registration(request.form['user_name'], request.form['password'])
         return redirect(url_for('route_list'))
-    return render_template('register-login.html', html_data=html_data)
+    return render_template('register-login.html', html_data="Registration")
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def route_login():
-    html_data = "Login"
     if request.method == 'POST':
-        user_name = request.form['user_name']
-        user_input_password = request.form['password']
-        if data_manager.check_user_validity(user_name, user_input_password):
+        if data_manager.check_user_validity(request.form['user_name'], request.form['password']):
             return redirect(url_for('route_list'))
         else:
             redirect(url_for('route_login'))
-
-    return render_template('register-login.html', html_data=html_data)
+    return render_template('register-login.html', html_data="Login")
 
 
 if __name__ == '__main__':
