@@ -49,12 +49,12 @@
         {% for tag in tags %}
             <p id="tags">
                 {{ tag["name"] }}
-
-                {% if session['user_id']['id'] == question_to_display['user_id'] %}
-                    <button id="delete_tag"
-                            onclick="window.location.href='{{ url_for('route_delete_tag', question_id=question_to_display['id'], tag_id=tag['id']) }}'"></button>
+                {% if session %}
+                    {% if session['user_id']['id'] == question_to_display['user_id'] %}
+                        <button id="delete_tag"
+                                onclick="window.location.href='{{ url_for('route_delete_tag', question_id=question_to_display['id'], tag_id=tag['id']) }}'"></button>
+                    {% endif %}
                 {% endif %}
-
             </p>
         {% endfor %}
 
@@ -68,6 +68,7 @@
         Comment
     </button>
 
+    {% if session %}
     {% if session['user_id']['id'] == question_to_display['user_id'] %}
         <button class="buttons"
                 onclick="window.location.href='{{ url_for('route_new_tag', question_id=question_to_display['id']) }}'">
@@ -90,6 +91,7 @@
                 </div>
             </div>
         </div>
+    {% endif %}
     {% endif %}
 
     <button class="buttons" onclick="window.location.href='{{ url_for('route_list') }}'">Return</button>
@@ -119,7 +121,7 @@
                             {% endif %}
                         {% endfor %}
                         <td>
-
+                            {% if session %}
                             {% if session['user_id']['id'] == comment['user_id'] %}
                                 <button class="buttons"
                                         onclick="window.location.href='{{ url_for('route_edit_comment', comment_id=comment['id'], redirect_question_id=question_to_display['id']) }}'">
@@ -143,7 +145,7 @@
                                     </div>
                                 </div>
                             {% endif %}
-
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
@@ -196,7 +198,7 @@
                             onclick="window.location.href='/comment/{{ question_to_display['id'] }}/{{ answer['id'] }}'">
                         Comment answer
                     </button>
-
+                    {% if session %}
                     {% if session['user_id']['id'] == answer['user_id'] %}
                         <button class="buttons"
                                 onclick="window.location.href='/answer/{{ answer['id'] }}/edit'">
@@ -219,6 +221,7 @@
                                 </div>
                             </div>
                         </div>
+                    {% endif %}
                     {% endif %}
                 </td>
             </tr>
@@ -250,6 +253,7 @@
                             {% endif %}
                         {% endfor %}
                         <td>
+                            {% if session %}
                             {% if session['user_id']['id'] == comment['user_id'] %}
                                 <button class="buttons"
                                         onclick="window.location.href='{{ url_for('route_edit_comment', comment_id=comment['id'], redirect_question_id=question_to_display['id']) }}'">
@@ -274,6 +278,7 @@
                             </div>
                         </td>
                     </tr>
+                {% endif %}
                 {% endif %}
             {% endfor %}
             </table>
