@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for, session, escape
+from flask import Flask, request, render_template, redirect, url_for, session
 import data_manager
 import util
 
