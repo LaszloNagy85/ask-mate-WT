@@ -256,6 +256,7 @@ def route_login():
 @app.route('/logout')
 def logout():
     session.pop('username', None)
+    session.clear()
     return redirect(url_for('route_list'))
 
 

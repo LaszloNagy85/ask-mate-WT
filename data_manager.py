@@ -112,8 +112,9 @@ def create_new_question(cursor, user_id, title, message, image):
 @database_common.connection_handler
 def get_question_to_display(cursor, question_id):
     cursor.execute(
-        sql.SQL("""SELECT * FROM question 
-                   WHERE id = {question_id};
+        sql.SQL("""SELECT question.id, user_id, name, question.submission_time, view_number, vote_number, title, message, image 
+                   FROM question JOIN users ON question.user_id = users.id 
+                   WHERE question.id = {question_id}
                     """).format(question_id=sql.Literal(question_id)))
     data = cursor.fetchone()
     return data
@@ -206,7 +207,8 @@ def add_answer(cursor, user_id, question_id, answer_text, image_name):
 @database_common.connection_handler
 def get_answers_to_display(cursor, question_id):
     cursor.execute(
-        sql.SQL("""SELECT * FROM answer 
+        sql.SQL("""SELECT answer.id, user_id, name, answer.submission_time, vote_number, question_id, message, image 
+                   FROM answer JOIN users ON answer.user_id = users.id
                    WHERE question_id = {question_id};
                     """).format(question_id=sql.Literal(question_id)))
     data = cursor.fetchall()
@@ -280,7 +282,8 @@ def get_comment_message(cursor, comment_id):
 @database_common.connection_handler
 def get_question_comments_to_display(cursor, question_id):
     cursor.execute(
-        sql.SQL("""SELECT id, question_id, submission_time, user_id, message, edited_count FROM comment
+        sql.SQL("""SELECT comment.id, question_id, comment.submission_time, user_id, name,  message, edited_count 
+                   FROM comment JOIN users ON comment.user_id = users.id
                    WHERE question_id={q_id};
                    """).format(q_id=sql.Literal(question_id))
     )
@@ -292,7 +295,8 @@ def get_question_comments_to_display(cursor, question_id):
 def get_answer_comments_to_display(cursor, answer_ids):
     if answer_ids:
         cursor.execute(
-        sql.SQL("""SELECT id, answer_id, submission_time, user_id, message, edited_count FROM comment
+        sql.SQL("""SELECT comment.id, answer_id, comment.submission_time, user_id, name, message, edited_count 
+                   FROM comment JOIN users ON comment.user_id = users.id
                    WHERE answer_id IN {list_of_ids};
                    """).format(list_of_ids=sql.Literal(answer_ids))
     )

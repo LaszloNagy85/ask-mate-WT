@@ -27,16 +27,18 @@
                 <a href="/{{ question_to_display['id'] }}/vote/question/{{ question_to_display['id'] }}/down"> <img
                         src="/static/icons/arrow_down.png" alt="" width="24" height="24"></a></td>
             {% for title,q_data in question_to_display.items() %}
-                {% if title == 'image' %}
-                    <td>
-                        {% if q_data %}
-                            <a href="/static/images/{{ q_data }}">
-                                <img src="/static/images/{{ q_data }}" class="uploaded-images" width="100" height="70"
-                                     alt=""></a>
-                        {% endif %}
-                    </td>
-                {% else %}
-                    <td>{{ q_data }}</td>
+                {% if title != 'user_id' %}
+                    {% if title == 'image' %}
+                        <td>
+                            {% if q_data %}
+                                <a href="/static/images/{{ q_data }}">
+                                    <img src="/static/images/{{ q_data }}" class="uploaded-images" width="100" height="70"
+                                         alt=""></a>
+                            {% endif %}
+                        </td>
+                    {% else %}
+                        <td>{{ q_data }}</td>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
         </tr>
@@ -47,12 +49,12 @@
         {% for tag in tags %}
             <p id="tags">
                 {{ tag["name"] }}
-
-                {% if session['user_id']['id'] == question_to_display['user_id'] %}
-                    <button id="delete_tag"
-                            onclick="window.location.href='{{ url_for('route_delete_tag', question_id=question_to_display['id'], tag_id=tag['id']) }}'"></button>
+                {% if session %}
+                    {% if session['user_id']['id'] == question_to_display['user_id'] %}
+                        <button id="delete_tag"
+                                onclick="window.location.href='{{ url_for('route_delete_tag', question_id=question_to_display['id'], tag_id=tag['id']) }}'"></button>
+                    {% endif %}
                 {% endif %}
-
             </p>
         {% endfor %}
 
@@ -66,6 +68,7 @@
         Comment
     </button>
 
+    {% if session %}
     {% if session['user_id']['id'] == question_to_display['user_id'] %}
         <button class="buttons"
                 onclick="window.location.href='{{ url_for('route_new_tag', question_id=question_to_display['id']) }}'">
@@ -89,6 +92,7 @@
             </div>
         </div>
     {% endif %}
+    {% endif %}
 
     <button class="buttons" onclick="window.location.href='{{ url_for('route_list') }}'">Return</button>
     <br/>
@@ -111,11 +115,13 @@
                 </tr>
                 {% for comment in question_comments %}
                     <tr>
-                        {% for data in comment.values() %}
-                            <td>{{ data }}</td>
+                        {% for title, data in comment.items() %}
+                            {% if title != 'user_id' %}
+                                <td>{{ data }}</td>
+                            {% endif %}
                         {% endfor %}
                         <td>
-
+                            {% if session %}
                             {% if session['user_id']['id'] == comment['user_id'] %}
                                 <button class="buttons"
                                         onclick="window.location.href='{{ url_for('route_edit_comment', comment_id=comment['id'], redirect_question_id=question_to_display['id']) }}'">
@@ -139,7 +145,7 @@
                                     </div>
                                 </div>
                             {% endif %}
-
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
@@ -173,16 +179,18 @@
                     <a href="/{{ question_to_display['id'] }}/vote/answer/{{ answer['id'] }}/down"><img
                             src="/static/icons/arrow_down.png" alt="" width="24" height="24"></a></td>
                 {% for title,a_data in answer.items() %}
-                    {% if title == 'image' %}
-                        <td>
-                            {% if a_data %}
-                                <a href="/static/images/{{ a_data }}">
-                                    <img src="/static/images/{{ a_data }}" class="uploaded-images" width="100"
-                                         height="70" alt=""></a>
-                            {% endif %}
-                        </td>
-                    {% else %}
-                        <td>{{ a_data }}</td>
+                    {% if title != 'user_id' %}
+                        {% if title == 'image' %}
+                            <td>
+                                {% if a_data %}
+                                    <a href="/static/images/{{ a_data }}">
+                                        <img src="/static/images/{{ a_data }}" class="uploaded-images" width="100"
+                                             height="70" alt=""></a>
+                                {% endif %}
+                            </td>
+                        {% else %}
+                            <td>{{ a_data }}</td>
+                        {% endif %}
                     {% endif %}
                 {% endfor %}
                 <td>
@@ -190,7 +198,7 @@
                             onclick="window.location.href='/comment/{{ question_to_display['id'] }}/{{ answer['id'] }}'">
                         Comment answer
                     </button>
-
+                    {% if session %}
                     {% if session['user_id']['id'] == answer['user_id'] %}
                         <button class="buttons"
                                 onclick="window.location.href='/answer/{{ answer['id'] }}/edit'">
@@ -213,6 +221,7 @@
                                 </div>
                             </div>
                         </div>
+                    {% endif %}
                     {% endif %}
                 </td>
             </tr>
@@ -238,10 +247,13 @@
             {% for comment in answer_comments %}
                 {% if comment['answer_id'] == answer['id'] %}
                     <tr>
-                        {% for data in comment.values() %}
-                            <td>{{ data }}</td>
+                        {% for title, data in comment.items() %}
+                            {% if title != 'user_id' %}
+                                <td>{{ data }}</td>
+                            {% endif %}
                         {% endfor %}
                         <td>
+                            {% if session %}
                             {% if session['user_id']['id'] == comment['user_id'] %}
                                 <button class="buttons"
                                         onclick="window.location.href='{{ url_for('route_edit_comment', comment_id=comment['id'], redirect_question_id=question_to_display['id']) }}'">
@@ -266,6 +278,7 @@
                             </div>
                         </td>
                     </tr>
+                {% endif %}
                 {% endif %}
             {% endfor %}
             </table>
