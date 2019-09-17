@@ -259,6 +259,12 @@ def logout():
     return redirect(url_for('route_list'))
 
 
+@app.route('/users')
+def route_users():
+    data = data_manager.get_all_users_data()
+    return render_template('users.html', data=data)
+
+
 if __name__ == '__main__':
     app.run(
         port=5000,

@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}Users{% endblock %}
+{% block header %}Users{% endblock %}
+{% block content %}
+<button class="buttons" onclick="window.location.href='{{ url_for('route_list') }}'">Return</button>
+<table>
+    <tr>
+        <th>User ID</th>
+        <th>User name</th>
+        <th>Registration time</th>
+        <th>Reputation</th>
+    </tr>
+    {% for user in data %}
+        <tr>
+            {%  for value in user.values() %}
+                <td>{{ value }}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
