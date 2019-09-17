@@ -60,6 +60,7 @@
 
     {% endif %}
 
+    {% if session %}
     <button class="buttons" onclick="window.location.href='/question/{{ question_to_display["id"] }}/new-answer'">
         Answer
     </button>
@@ -67,6 +68,7 @@
             onclick="window.location.href='{{ url_for('route_new_comment', question_id=question_to_display['id']) }}'">
         Comment
     </button>
+    {% endif %}
 
     {% if session %}
     {% if session['user_id']['id'] == question_to_display['user_id'] %}
@@ -194,10 +196,12 @@
                     {% endif %}
                 {% endfor %}
                 <td>
+                {% if session %}
                     <button class="buttons"
                             onclick="window.location.href='/comment/{{ question_to_display['id'] }}/{{ answer['id'] }}'">
                         Comment answer
                     </button>
+                {% endif %}
                     {% if session %}
                     {% if session['user_id']['id'] == answer['user_id'] %}
                         <button class="buttons"
