@@ -265,6 +265,10 @@ def route_users():
     return render_template('users.html', data=data)
 
 
+@app.route('/user/<user_id>')
+def route_user_activity(user_id):
+    return render_template('user-activity.html')
+
 if __name__ == '__main__':
     app.run(
         port=5000,

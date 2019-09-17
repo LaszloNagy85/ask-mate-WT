@@ -12,8 +12,12 @@
     </tr>
     {% for user in data %}
         <tr>
-            {%  for value in user.values() %}
-                <td>{{ value }}</td>
+            {%  for key, value in user.items() %}
+                {% if key == 'name' %}
+                    <td><a href="{{ url_for('route_user_activity', user_id=user['id']) }}">{{ value }}</a></td>
+                {% else %}
+                    <td>{{ value }}</td>
+                {% endif %}
             {% endfor %}
         </tr>
     {% endfor %}
