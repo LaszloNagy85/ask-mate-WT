@@ -447,3 +447,13 @@ def get_user_id(cursor, user_name):
     user_id = cursor.fetchone()
 
     return user_id
+
+
+"""------PASSWORD SECTION OVER------"""
+
+
+@database_common.connection_handler
+def get_all_users_data(cursor):
+    cursor.execute("""SELECT id, name, submission_time, reputation FROM users""")
+    data = cursor.fetchall()
+    return data
