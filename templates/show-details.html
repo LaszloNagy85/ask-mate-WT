@@ -12,6 +12,7 @@
         <tr>
             <th>Vote</th>
             <th>ID</th>
+            <th>User name</th>
             <th>Submission time</th>
             <th>View number</th>
             <th>Vote number</th>
@@ -46,8 +47,12 @@
         {% for tag in tags %}
             <p id="tags">
                 {{ tag["name"] }}
+
+                {% if session['user_id']['id'] == question_to_display['user_id'] %}
                 <button id="delete_tag"
                         onclick="window.location.href='{{ url_for('route_delete_tag', question_id=question_to_display['id'], tag_id=tag['id']) }}'"></button>
+                {% endif %}
+
             </p>
         {% endfor %}
 
@@ -60,15 +65,18 @@
             onclick="window.location.href='{{ url_for('route_new_comment', question_id=question_to_display['id']) }}'">
         Comment
     </button>
-    <button class="buttons"
-            onclick="window.location.href='{{ url_for('route_new_tag', question_id=question_to_display['id']) }}'">
-        Add Tag
-    </button>
 
-    <button class="buttons" onclick="window.location.href='/question/{{ question_to_display["id"] }}/edit'">Edit
-    </button>
-    <button class="buttons" onclick="window.location.href='/question/{{ question_to_display["id"] }}/delete'">Delete
-    </button>
+    {% if session['user_id']['id'] == question_to_display['user_id'] %}
+        <button class="buttons"
+                onclick="window.location.href='{{ url_for('route_new_tag', question_id=question_to_display['id']) }}'">
+            Add Tag
+        </button>
+        <button class="buttons" onclick="window.location.href='/question/{{ question_to_display["id"] }}/edit'">Edit
+        </button>
+        <button class="buttons" onclick="window.location.href='/question/{{ question_to_display["id"] }}/delete'">Delete
+        </button>
+    {% endif %}
+
     <button class="buttons" onclick="window.location.href='{{ url_for('route_list') }}'">Return</button>
     <br/>
     {% if question_comments %}
@@ -83,6 +91,7 @@
                     <th>ID</th>
                     <th>Question ID</th>
                     <th>Submission time</th>
+                    <th>User name</th>
                     <th>Comment</th>
                     <th>Edit count</th>
                     <th>Actions</th>
@@ -93,14 +102,18 @@
                             <td>{{ data }}</td>
                         {% endfor %}
                         <td>
-                            <button class="buttons"
-                                    onclick="window.location.href='{{ url_for('route_edit_comment', comment_id=comment['id'], redirect_question_id=question_to_display['id']) }}'">
-                                Edit comment
-                            </button>
-                            <button class="buttons"
-                                    onclick="window.location.href='/comments/{{ question_to_display['id'] }}/{{ comment['id'] }}/delete'">
-                                Delete comment
-                            </button>
+
+                            {% if session['user_id']['id'] == comment['user_id'] %}
+                                <button class="buttons"
+                                        onclick="window.location.href='{{ url_for('route_edit_comment', comment_id=comment['id'], redirect_question_id=question_to_display['id']) }}'">
+                                    Edit comment
+                                </button>
+                                <button class="buttons"
+                                        onclick="window.location.href='/comments/{{ question_to_display['id'] }}/{{ comment['id'] }}/delete'">
+                                    Delete comment
+                                </button>
+                            {% endif %}
+
                         </td>
                     </tr>
                 {% endfor %}
@@ -117,12 +130,14 @@
             <tr>
                 <th>Vote</th>
                 <th>ID</th>
+                <th>User name</th>
                 <th>Submission time</th>
                 <th>Vote number</th>
                 <th>Question ID</th>
                 <th>Message</th>
                 <th>Image</th>
                 <th>Actions</th>
+
             </tr>
 
 
@@ -149,11 +164,13 @@
                             onclick="window.location.href='/comment/{{ question_to_display['id'] }}/{{ answer['id'] }}'">
                         Comment answer
                     </button>
-                    <button class="buttons"
-                            onclick="window.location.href='/answer/{{ answer['id'] }}/edit'">
-                        Edit answer
-                    </button>
-                    <button class="buttons"
+
+                    {% if session['user_id']['id'] == answer['user_id'] %}
+                        <button class="buttons"
+                                onclick="window.location.href='/answer/{{ answer['id'] }}/edit'">
+                            Edit answer
+                        </button>
+                        <button class="buttons"
                             onclick="location.href='#popup1'">
                         Delete Answer
                     </button>
@@ -170,6 +187,7 @@
                             </div>
                         </div>
                     </div>
+                    {% endif %}
                 </td>
             </tr>
             <br/>
@@ -185,6 +203,7 @@
                         <th>ID</th>
                         <th>Answer ID</th>
                         <th>Submission time</th>
+                        <th>User name</th>
                         <th>Message</th>
                         <th>Edited count</th>
                         <th>Actions</th>
@@ -197,13 +216,15 @@
                             <td>{{ data }}</td>
                         {% endfor %}
                         <td>
-                            <button class="buttons"
-                                    onclick="window.location.href='{{ url_for('route_edit_comment', comment_id=comment['id'], redirect_question_id=question_to_display['id']) }}'">
-                                Edit comment
-                            </button>
-                            <br>
-                            <button class="buttons" onclick="location.href='#popup1'">Delete comment
-                            </button>
+                            {% if session['user_id']['id'] == comment['user_id'] %}
+                                <button class="buttons"
+                                        onclick="window.location.href='{{ url_for('route_edit_comment', comment_id=comment['id'], redirect_question_id=question_to_display['id']) }}'">
+                                    Edit comment
+                                </button>
+                                <br>
+                                <button class="buttons" onclick="location.href='#popup1'">Delete comment
+                                </button>
+                            {% endif %}
                             <div id="popup1" class="overlay">
                                 <div class="popup">
                                     <h2>Are you sure?</h2>

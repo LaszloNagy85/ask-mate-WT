@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block title %}{{ html_data }}{% endblock %}
+
+{% block header %}{{ html_data }}{% endblock %}
+
+{% block content %}
+
+    <form method="POST" class="center-forms"
+          action="{% if html_data == 'Registration' %}{{ url_for('route_register') }}
+                  {% elif html_data == "Login" %}{{ url_for('route_login') }}
+                  {% endif %}">
+        <p>
+            <label for="user_name">User name:</label><br>
+            <input type="text" id="user_name" name="user_name" required/>
+        </p>
+        <p>
+            <label for="password">Password:</label><br>
+            <input type="text" id="password" name="password" required/>
+        </p>
+        <button class="buttons" type="submit">
+        {% if html_data == "Registration" %}Register
+        {% elif html_data == "Login" %}Login
+        {% endif %}</button>
+    </form>
+
+    <button class="buttons" onclick="window.location.href='{{ url_for('route_list') }}'">Return</button>
+
+
+{% endblock %}

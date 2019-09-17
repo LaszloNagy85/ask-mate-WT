@@ -1,6 +1,7 @@
 import database_common
 import util
 from psycopg2 import sql
+import bcrypt
 
 
 def allowed_file(filename):
@@ -89,13 +90,14 @@ def get_searched_data(cursor, search_string):
 
 
 @database_common.connection_handler
-def create_new_question(cursor, title, message, image):
+def create_new_question(cursor, user_id, title, message, image):
     sub_time = util.convert_timestamp(util.create_timestamp())
 
     cursor.execute(
-        sql.SQL("""INSERT INTO question (submission_time, view_number, vote_number, title, message, image) 
-                   VALUES ({sub_time}, 0, 0, {title}, {message}, {image});
-                   """).format(sub_time=sql.Literal(str(sub_time)),
+        sql.SQL("""INSERT INTO question (user_id, submission_time, view_number, vote_number, title, message, image) 
+                   VALUES ({user_id},{sub_time}, 0, 0, {title}, {message}, {image});
+                   """).format(user_id=sql.Literal(user_id),
+                               sub_time=sql.Literal(str(sub_time)),
                                title=sql.Literal(title),
                                message=sql.Literal(message),
                                image=sql.Literal(image)))
@@ -188,13 +190,14 @@ def remove_question_and_its_answers(cursor, question_id, answers):
 
 
 @database_common.connection_handler
-def add_answer(cursor, question_id, answer_text, image_name):
+def add_answer(cursor, user_id, question_id, answer_text, image_name):
     sub_time = util.convert_timestamp(util.create_timestamp())
 
     cursor.execute(
-        sql.SQL("""INSERT INTO answer (submission_time, vote_number, question_id, message, image) 
-                   VALUES ({sub_time}, 0, {question_id}, {message}, {image});
-                   """).format(sub_time=sql.Literal(str(sub_time)),
+        sql.SQL("""INSERT INTO answer (user_id,submission_time, vote_number, question_id, message, image) 
+                   VALUES ({user_id}, {sub_time}, 0, {question_id}, {message}, {image});
+                   """).format(user_id=sql.Literal(user_id),
+                               sub_time=sql.Literal(str(sub_time)),
                                question_id=sql.Literal(question_id),
                                message=sql.Literal(answer_text),
                                image=sql.Literal(image_name)))
@@ -250,13 +253,14 @@ def delete_answer(cursor, answer_id):
 
 
 @database_common.connection_handler
-def new_comment(cursor, comment_type, data_id, comment):
+def new_comment(cursor, comment_type, data_id, comment, user_id):
     sub_time = util.convert_timestamp(util.create_timestamp())
     cursor.execute(
-        sql.SQL("""INSERT INTO comment ({com_type}, message, submission_time)
-                   VALUES ({id_number}, {msg}, {sub_time});
+        sql.SQL("""INSERT INTO comment ({com_type}, user_id,  message, submission_time)
+                   VALUES ({id_number}, {user_id}, {msg}, {sub_time});
                    """).format(com_type=sql.SQL(comment_type),
                                id_number=sql.SQL(data_id),
+                               user_id=sql.Literal(user_id),
                                msg=sql.Literal(comment),
                                sub_time=sql.Literal(str(sub_time)))
     )
@@ -276,7 +280,7 @@ def get_comment_message(cursor, comment_id):
 @database_common.connection_handler
 def get_question_comments_to_display(cursor, question_id):
     cursor.execute(
-        sql.SQL("""SELECT id, question_id, submission_time, message, edited_count FROM comment
+        sql.SQL("""SELECT id, question_id, submission_time, user_id, message, edited_count FROM comment
                    WHERE question_id={q_id};
                    """).format(q_id=sql.Literal(question_id))
     )
@@ -288,7 +292,7 @@ def get_question_comments_to_display(cursor, question_id):
 def get_answer_comments_to_display(cursor, answer_ids):
     if answer_ids:
         cursor.execute(
-        sql.SQL("""SELECT id, answer_id, submission_time, message, edited_count FROM comment
+        sql.SQL("""SELECT id, answer_id, submission_time, user_id, message, edited_count FROM comment
                    WHERE answer_id IN {list_of_ids};
                    """).format(list_of_ids=sql.Literal(answer_ids))
     )
@@ -373,11 +377,6 @@ def delete_tag(cursor, tag_id):
                        """).format(tag_id=sql.Literal(tag_id)))
 
 
-"""------TAG SECTION OVER------"""
-
-"""------MISCELLANEOUS------"""
-
-
 @database_common.connection_handler
 def get_tag_ids(cursor, question_id):
     tag_ids = []
@@ -394,3 +393,57 @@ def get_tag_ids(cursor, question_id):
     tag_ids = tuple(tag_ids)
 
     return tag_ids
+
+
+"""------TAG SECTION OVER------"""
+
+"""------PASSWORD SECTION------"""
+
+
+def hash_password(plain_text_password):
+    hashed_bytes = bcrypt.hashpw(plain_text_password.encode('utf-8'), bcrypt.gensalt())
+    return hashed_bytes.decode('utf-8')
+
+
+def verify_password(plain_text_password, hashed_password):
+    hashed_bytes_password = hashed_password.encode('utf-8')
+    return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)
+
+
+@database_common.connection_handler
+def check_user_validity(cursor, user_name, user_input_password):
+    cursor.execute(
+        sql.SQL("""SELECT name, password FROM users
+                   WHERE name = {user_name};
+                    """).format(user_name=sql.Literal(user_name))
+    )
+    user_data = cursor.fetchone()
+    if user_data:
+        if verify_password(user_input_password, user_data['password']):
+            return True
+    return False
+
+
+@database_common.connection_handler
+def save_user_registration(cursor, user_name, password):
+    hashed_password = hash_password(password)
+    sub_time = util.convert_timestamp(util.create_timestamp())
+
+    cursor.execute(
+        sql.SQL("""INSERT INTO users(name, password, submission_time, reputation)
+                   VALUES ({user_name}, {hashed_password}, {submission_time}, 0)
+                   """).format(user_name=sql.Literal(user_name),
+                               hashed_password=sql.Literal(hashed_password),
+                               submission_time=sql.Literal(str(sub_time)))
+    )
+
+
+@database_common.connection_handler
+def get_user_id(cursor, user_name):
+    cursor.execute(
+        sql.SQL("""SELECT id FROM users
+                   WHERE name = {user_name}
+                       """).format(user_name=sql.Literal(user_name)))
+    user_id = cursor.fetchone()
+
+    return user_id

@@ -252,3 +252,9 @@ button {
         width: 70%;
     }
 }
+
+#logged_in_user {
+    float: left;
+    font-weight: bold;
+    display: inline-block;
+}
