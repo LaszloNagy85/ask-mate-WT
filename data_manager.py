@@ -269,7 +269,7 @@ def new_comment(cursor, comment_type, data_id, comment, user_id):
 @database_common.connection_handler
 def get_comment_message(cursor, comment_id):
     cursor.execute(
-        sql.SQL("""SELECT message FROM comment
+        sql.SQL("""SELECT message, user_id FROM comment
                    WHERE id = {comment_id}
                    """).format(comment_id=sql.SQL(comment_id))
     )

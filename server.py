@@ -107,20 +107,28 @@ def add_question():
 
 @app.route('/question/<data_id>/edit', methods=["GET", "POST"])
 def edit_question(data_id):
+    user_id = session['user_id']['id']
     question = data_manager.get_question_to_display(data_id)
     if request.method == 'POST':
-        data_manager.update_question(data_id, request.form['title'], request.form['message'])
-        return redirect(url_for('route_show_details', question_id=data_id))
+        if user_id != question['user_id']:
+            return render_template('error.html', error_message='Stop hacking!!!')
+        else:
+            data_manager.update_question(data_id, request.form['title'], request.form['message'])
+            return redirect(url_for('route_show_details', question_id=data_id))
 
     return render_template('edit-question.html', question=question, data_id=data_id)
 
 
 @app.route('/answer/<answer_id>/edit', methods=["GET", "POST"])
 def edit_answer(answer_id):
+    user_id = session['user_id']['id']
     answer = data_manager.get_answer_to_edit(answer_id)
     if request.method == 'POST':
-        question_id = data_manager.edit_answer(answer_id, request.form['message'])
-        return redirect(url_for('route_show_details', question_id=question_id['question_id']))
+        if user_id != answer['user_id']:
+            return render_template('error.html', error_message='Stop hacking!!!')
+        else:
+            question_id = data_manager.edit_answer(answer_id, request.form['message'])
+            return redirect(url_for('route_show_details', question_id=question_id['question_id']))
 
     return render_template('edit-answer.html', answer=answer)
 
@@ -185,13 +193,17 @@ def route_new_comment(question_id, answer_id=''):
 
 @app.route('/comment/<comment_id>/edit', methods=["GET", 'POST'])
 def route_edit_comment(comment_id):
+    user_id = session['user_id']['id']
     redirect_question_id = request.args['redirect_question_id']
-    if request.method == 'POST':
-        modified_comment_message = request.form['comment']
-        data_manager.edit_comment(comment_id, modified_comment_message)
-        return redirect(url_for('route_show_details', question_id=redirect_question_id))
-
     comment_message = data_manager.get_comment_message(comment_id)
+    if request.method == 'POST':
+        if user_id != comment_message['user_id']:
+            return render_template('error.html', error_message='Stop hacking!!!')
+        else:
+            modified_comment_message = request.form['comment']
+            data_manager.edit_comment(comment_id, modified_comment_message)
+            return redirect(url_for('route_show_details', question_id=redirect_question_id))
+
     return render_template('comment.html',
                            comment_id=comment_id,
                            comment_message=comment_message,
