@@ -90,13 +90,14 @@ def get_searched_data(cursor, search_string):
 
 
 @database_common.connection_handler
-def create_new_question(cursor, title, message, image):
+def create_new_question(cursor, user_id, title, message, image):
     sub_time = util.convert_timestamp(util.create_timestamp())
 
     cursor.execute(
-        sql.SQL("""INSERT INTO question (submission_time, view_number, vote_number, title, message, image) 
-                   VALUES ({sub_time}, 0, 0, {title}, {message}, {image});
-                   """).format(sub_time=sql.Literal(str(sub_time)),
+        sql.SQL("""INSERT INTO question (user_id, submission_time, view_number, vote_number, title, message, image) 
+                   VALUES ({user_id},{sub_time}, 0, 0, {title}, {message}, {image});
+                   """).format(user_id=sql.Literal(user_id),
+                               sub_time=sql.Literal(str(sub_time)),
                                title=sql.Literal(title),
                                message=sql.Literal(message),
                                image=sql.Literal(image)))
@@ -189,13 +190,14 @@ def remove_question_and_its_answers(cursor, question_id, answers):
 
 
 @database_common.connection_handler
-def add_answer(cursor, question_id, answer_text, image_name):
+def add_answer(cursor, user_id, question_id, answer_text, image_name):
     sub_time = util.convert_timestamp(util.create_timestamp())
 
     cursor.execute(
-        sql.SQL("""INSERT INTO answer (submission_time, vote_number, question_id, message, image) 
-                   VALUES ({sub_time}, 0, {question_id}, {message}, {image});
-                   """).format(sub_time=sql.Literal(str(sub_time)),
+        sql.SQL("""INSERT INTO answer (user_id,submission_time, vote_number, question_id, message, image) 
+                   VALUES ({user_id}, {sub_time}, 0, {question_id}, {message}, {image});
+                   """).format(user_id=sql.Literal(user_id),
+                               sub_time=sql.Literal(str(sub_time)),
                                question_id=sql.Literal(question_id),
                                message=sql.Literal(answer_text),
                                image=sql.Literal(image_name)))
@@ -251,13 +253,14 @@ def delete_answer(cursor, answer_id):
 
 
 @database_common.connection_handler
-def new_comment(cursor, comment_type, data_id, comment):
+def new_comment(cursor, comment_type, data_id, comment, user_id):
     sub_time = util.convert_timestamp(util.create_timestamp())
     cursor.execute(
-        sql.SQL("""INSERT INTO comment ({com_type}, message, submission_time)
-                   VALUES ({id_number}, {msg}, {sub_time});
+        sql.SQL("""INSERT INTO comment ({com_type}, user_id,  message, submission_time)
+                   VALUES ({id_number}, {user_id}, {msg}, {sub_time});
                    """).format(com_type=sql.SQL(comment_type),
                                id_number=sql.SQL(data_id),
+                               user_id=sql.Literal(user_id),
                                msg=sql.Literal(comment),
                                sub_time=sql.Literal(str(sub_time)))
     )
@@ -434,3 +437,13 @@ def save_user_registration(cursor, user_name, password):
                                submission_time=sql.Literal(str(sub_time)))
     )
 
+
+@database_common.connection_handler
+def get_user_id(cursor, user_name):
+    cursor.execute(
+        sql.SQL("""SELECT id FROM users
+                   WHERE name = {user_name}
+                       """).format(user_name=sql.Literal(user_name)))
+    user_id = cursor.fetchone()
+
+    return user_id

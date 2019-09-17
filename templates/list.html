@@ -1,7 +1,10 @@
 {% extends "layout.html" %}
 {% block title %}Main page{% endblock %}
 {% block content %}
-    <input id="ask-button" type="button" onclick="window.location.href='/add-question'" value="Ask a question"/>
+    {% if session['username'] %}
+        <input id="ask-button" type="button" onclick="window.location.href='/add-question'" value="Ask a question"/>
+    {% endif %}
+
     <input id="list-all-button" type="button" onclick="window.location.href='/list'" value="List all questions"/>
 
     <form id="sort-form" action={{ "/" if limit_it else "/list" }} method="GET">

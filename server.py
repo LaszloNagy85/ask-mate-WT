@@ -98,7 +98,8 @@ def route_show_details(question_id):
 def add_question():
     if request.method == 'POST':
         image = util.upload_image(request.files, app)
-        new_question_id = data_manager.create_new_question(request.form['title'], request.form['message'], image)
+        user_id = session['user_id']['id']
+        new_question_id = data_manager.create_new_question(user_id, request.form['title'], request.form['message'], image)
         return redirect(url_for('route_show_details', question_id=new_question_id['id']))
 
     return render_template('add-question.html')
@@ -135,7 +136,8 @@ def delete_question(data_id):
 def route_add_answer(question_id):
     if request.method == 'POST':
         image = util.upload_image(request.files, app)
-        data_manager.add_answer(question_id, request.form['message'], image)
+        user_id = session['user_id']['id']
+        data_manager.add_answer(user_id, question_id, request.form['message'], image)
         return redirect(url_for('route_show_details', question_id=question_id))
 
     return render_template('answer.html', question_id=question_id)
@@ -174,7 +176,8 @@ def route_new_comment(question_id, answer_id=''):
     if request.method == 'POST':
         data_id = question_id if not answer_id else answer_id
         comment_type = 'question_id' if not answer_id else 'answer_id'
-        data_manager.new_comment(comment_type, data_id, request.form['comment'])
+        user_id = session['user_id']['id']
+        data_manager.new_comment(comment_type, data_id, request.form['comment'], user_id)
         return redirect(url_for('route_show_details', question_id=question_id))
 
     return render_template('comment.html', question_data=question_data, answer_data=answer_data)
@@ -222,6 +225,7 @@ def route_register():
         user_input_password = request.form['password']
         data_manager.save_user_registration(user_name, user_input_password)
         session['username'] = user_name
+        session['user_id'] = data_manager.get_user_id(user_name)
         return redirect(url_for('route_list'))
     return render_template('register-login.html', html_data=html_data)
 
@@ -234,6 +238,7 @@ def route_login():
         user_input_password = request.form['password']
         if data_manager.check_user_validity(user_name, user_input_password):
             session['username'] = user_name
+            session['user_id'] = data_manager.get_user_id(user_name)
             return redirect(url_for('route_list'))
         else:
             error_message = "Invalid user name or password"
@@ -242,10 +247,8 @@ def route_login():
     return render_template('register-login.html', html_data=html_data)
 
 
-
 @app.route('/logout')
 def logout():
-    # remove the username from the session if it's there
     session.pop('username', None)
     return redirect(url_for('route_list'))
 
