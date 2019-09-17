@@ -45,6 +45,7 @@
     {% elif session['username'] %}
         <input class="buttons" id="logout-button" type="button" onclick="window.location.href='/logout'" value="Logout"/>
     {% endif %}
+    <input class="buttons" id="users" type="button" onclick="window.location.href='/users'" value="List all users"/>
 
     <ul>
         {% for question in questions %}
