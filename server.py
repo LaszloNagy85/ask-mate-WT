@@ -219,32 +219,26 @@ def route_delete_tag(question_id, tag_id):
 
 @app.route('/registration', methods=['GET', 'POST'])
 def route_register():
-    html_data = "Registration"
     if request.method == 'POST':
-        user_name = request.form['user_name']
-        user_input_password = request.form['password']
-        data_manager.save_user_registration(user_name, user_input_password)
-        session['username'] = user_name
-        session['user_id'] = data_manager.get_user_id(user_name)
+        data_manager.save_user_registration(request.form['user_name'], request.form['password'])
+        session['username'] = request.form['user_name']
+        session['user_id'] = data_manager.get_user_id(request.form['user_name'])
         return redirect(url_for('route_list'))
-    return render_template('register-login.html', html_data=html_data)
+    return render_template('register-login.html', html_data='Registration')
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def route_login():
-    html_data = "Login"
     if request.method == 'POST':
-        user_name = request.form['user_name']
-        user_input_password = request.form['password']
-        if data_manager.check_user_validity(user_name, user_input_password):
-            session['username'] = user_name
-            session['user_id'] = data_manager.get_user_id(user_name)
+        if data_manager.check_user_validity(request.form['user_name'], request.form['password']):
+            session['username'] = request.form['user_name']
+            session['user_id'] = data_manager.get_user_id(request.form['user_name'])
             return redirect(url_for('route_list'))
         else:
             error_message = "Invalid user name or password"
             return render_template('error.html', error_message=error_message)
 
-    return render_template('register-login.html', html_data=html_data)
+    return render_template('register-login.html', html_data='Login')
 
 
 @app.route('/logout')
