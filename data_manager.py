@@ -207,7 +207,7 @@ def add_answer(cursor, user_id, question_id, answer_text, image_name):
 @database_common.connection_handler
 def get_answers_to_display(cursor, question_id):
     cursor.execute(
-        sql.SQL("""SELECT answer.id, user_id, name, answer.submission_time, vote_number, question_id, message, image 
+        sql.SQL("""SELECT answer.id, user_id, name, answer.submission_time, vote_number, question_id, message, image, acceptance 
                    FROM answer JOIN users ON answer.user_id = users.id
                    WHERE question_id = {question_id};
                     """).format(question_id=sql.Literal(question_id)))
@@ -242,11 +242,27 @@ def edit_answer(cursor, answer_id, message):
 
 
 @database_common.connection_handler
-def delete_answer(cursor, answer_id):
+def delete_answer(cursor):
     cursor.execute(
         sql.SQL("""DELETE FROM answer 
                    WHERE id = {answer_id};
                        """).format(answer_id=sql.Literal(answer_id)))
+
+
+@database_common.connection_handler
+def set_accepted_answer(cursor, answer_id, user_id):
+    cursor.execute(
+        sql.SQL("""UPDATE answer
+                   SET acceptance = TRUE
+                   WHERE id = {answer_id};
+                   """).format(answer_id=sql.SQL(answer_id))
+    )
+    cursor.execute(
+        sql.SQL("""UPDATE users
+                   SET reputation = reputation + 15
+                   WHERE id = {user_id};
+                   """).format(user_id=sql.SQL(user_id))
+    )
 
 
 """------ANSWER SECTION OVER------"""
