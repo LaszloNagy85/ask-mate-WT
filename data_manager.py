@@ -37,15 +37,40 @@ def view_count_handling(cursor, question_id):
 
 @database_common.connection_handler
 def vote(cursor, table_name, data_id, vote_type):
+    if table_name == 'question' and vote_type == 'up':
+        reputation_modificator = 5
+    elif table_name == 'question' and vote_type == 'down':
+        reputation_modificator = -5
+    elif table_name == 'answer' and vote_type == "up":
+        reputation_modificator = 10
+    else:
+        reputation_modificator = -10
+
     vote_modificator = '1' if vote_type == 'up' else '-1'
+
     cursor.execute(
         sql.SQL("""UPDATE {table}
                 SET vote_number = vote_number + {vote}
-                WHERE id = {data_id}
+                WHERE id = {data_id};
                 """).format(table=sql.Identifier(table_name),
                             vote=sql.SQL(vote_modificator),
                             data_id=sql.SQL(data_id))
     )
+    cursor.execute(
+            sql.SQL(""" SELECT user_id FROM {table}
+                        WHERE id = {data_id};
+                        """).format(data_id=sql.SQL(data_id),
+                                    table=sql.Identifier(table_name))
+    )
+    user_data = cursor.fetchone()
+    print(user_data)
+
+    cursor.execute(
+            sql.SQL(""" UPDATE users
+                    SET reputation = reputation + {reputation_modificator}
+                    WHERE id = {user_id};
+                    """).format(reputation_modificator=sql.Literal(reputation_modificator),
+                                user_id=sql.Literal(user_data['user_id'])))
 
 
 @database_common.connection_handler
