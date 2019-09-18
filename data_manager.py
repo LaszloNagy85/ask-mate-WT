@@ -492,21 +492,18 @@ def get_user_id(cursor, user_name):
 def get_all_user_activity(cursor, user_id):
     cursor.execute(
         sql.SQL("""SELECT question.title AS question_title,
-                   MAX(question.message) AS question_message,
-                   MAX(answer.message) AS answer_message,
-                   MAX(CASE WHEN comment.question_id = question.id
-                    THEN comment.message END) AS question_comment,
-                   MAX(CASE WHEN comment.answer_id = answer.id
-                    THEN comment.message END) AS answer_comment
+                          question.message AS question_message,
+                          answer.message AS answer_message,
+                    MAX(CASE WHEN comment.question_id = question.id
+                        THEN comment.message END) AS question_comment,
+                    MAX(CASE WHEN comment.answer_id = answer.id
+                        THEN comment.message END) AS answer_comment
                    FROM question
                    JOIN answer ON question.user_id = answer.user_id
                    JOIN comment ON comment.user_id = question.user_id
-                   WHERE question.user_id = {user_id}
-                    AND answer.question_id = question.id
-                    AND comment.question_id = question.id
-                        OR answer.question_id = question.id
-                    AND comment.answer_id = answer.id
-                   GROUP BY question.title;
+                   WHERE (4686000 IN (question.user_id, answer.user_id, comment.user_id)
+                    AND answer.question_id = question.id)
+                   GROUP BY question.title, question.message, answer.message;
                            """).format(user_id=sql.Literal(user_id)))
     data = cursor.fetchall()
     return data
