@@ -267,7 +267,7 @@ def edit_answer(cursor, answer_id, message):
 
 
 @database_common.connection_handler
-def delete_answer(cursor):
+def delete_answer(cursor, answer_id):
     cursor.execute(
         sql.SQL("""DELETE FROM answer 
                    WHERE id = {answer_id};
