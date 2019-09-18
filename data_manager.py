@@ -501,7 +501,7 @@ def get_all_user_activity(cursor, user_id):
                    FROM question
                    JOIN answer ON question.user_id = answer.user_id
                    JOIN comment ON comment.user_id = question.user_id
-                   WHERE (4686000 IN (question.user_id, answer.user_id, comment.user_id)
+                   WHERE ({user_id} IN (question.user_id, answer.user_id, comment.user_id)
                     AND answer.question_id = question.id)
                    GROUP BY question.title, question.message, answer.message;
                            """).format(user_id=sql.Literal(user_id)))
