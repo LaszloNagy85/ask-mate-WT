@@ -489,23 +489,75 @@ def get_user_id(cursor, user_name):
 
 
 @database_common.connection_handler
-def get_all_user_activity(cursor, user_id):
+def get_all_user_questions(cursor, user_id):
     cursor.execute(
-        sql.SQL("""SELECT question.title AS question_title,
-                          question.message AS question_message,
-                          answer.message AS answer_message,
-                    MAX(CASE WHEN comment.question_id = question.id
-                        THEN comment.message END) AS question_comment,
-                    MAX(CASE WHEN comment.answer_id = answer.id
-                        THEN comment.message END) AS answer_comment
-                   FROM question
-                   JOIN answer ON question.user_id = answer.user_id
-                   JOIN comment ON comment.user_id = question.user_id
-                   WHERE ({user_id} IN (question.user_id, answer.user_id, comment.user_id)
-                    AND answer.question_id = question.id)
-                   GROUP BY question.title, question.message, answer.message;
+        sql.SQL("""SELECT title, message FROM question
+                   WHERE question.user_id = {user_id}
                            """).format(user_id=sql.Literal(user_id)))
     data = cursor.fetchall()
+    return data
+
+
+@database_common.connection_handler
+def get_all_user_answers(cursor, user_id):
+    cursor.execute(
+        sql.SQL("""SELECT question.title, answer.message FROM answer
+                   JOIN question ON answer.question_id = question.id
+                   WHERE answer.user_id = {user_id};
+                           """).format(user_id=sql.Literal(user_id)))
+    data = cursor.fetchall()
+    return data
+
+
+@database_common.connection_handler
+def get_all_user_question_comments(cursor, user_id):
+    cursor.execute(
+        sql.SQL("""SELECT question.title, comment.message AS question_comment
+                   FROM comment
+                   JOIN question ON comment.question_id = question.id
+                   WHERE comment.user_id = {user_id};
+                           """).format(user_id=sql.Literal(user_id)))
+    data = cursor.fetchall()
+
+    return data
+
+
+@database_common.connection_handler
+def get_all_user_answer_comments(cursor, user_id):
+    answer_ids = []
+    data = []
+
+    cursor.execute(
+        sql.SQL("""SELECT answer_id, message FROM comment
+                   WHERE comment.user_id = {user_id} AND answer_id IS NOT NULL
+                   ORDER BY answer_id;
+                           """).format(user_id=sql.Literal(user_id)))
+    answer_comment_data = cursor.fetchall()
+
+    for each in answer_comment_data:
+        answer_ids.append(each['answer_id'])
+
+    answer_ids = tuple(answer_ids)
+
+    if answer_ids:
+        cursor.execute(
+            sql.SQL("""SELECT question.title FROM question
+                       JOIN answer ON question.id = answer.question_id
+                       WHERE answer.id IN {answer_ids};
+                                   """).format(answer_ids=sql.Literal(answer_ids)))
+        question_title = cursor.fetchall()
+    else:
+        answer_ids = None
+        return answer_ids
+
+    for question in question_title:
+        data.append({'title': question['title']})
+
+    counter = 0
+    for answer in answer_comment_data:
+        data[counter].update(message=answer['message'])
+        counter += 1
+
     return data
 
 

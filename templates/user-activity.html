@@ -4,51 +4,97 @@
 {% block content %}
     <button class="buttons" onclick="window.location.href='{{ url_for('route_list') }}'">Return</button>
 
-    {% for each in data %}
         <table>
 
+        {% if user_questions %}
+        {% for question in user_questions %}
         <tr>
             <th>Questions:</th>
         </tr>
         <tr>
-
-            <th>{{ each['question_title'] }}</th>
+            {% if question['title'] == None %}
+            {% continue %}
+            {% else %}
+            <th>{{ question['title'] }}</th>
+            {% endif %}
         </tr>
+
         <tr>
+            {% if question['message'] == None %}
+            {% continue %}
+            {% else %}
             <td>
-                {{ each['question_message'] }}
+                {{ question['message'] }}
             </td>
+            {% endif %}
         </tr>
+        {% endfor %}
+        {% endif %}
 
+        {% if user_answers %}
+        {% for each in user_answers %}
         <tr>
             <th>Answers:</th>
         </tr>
         <tr>
-            <th>{{ each['question_title'] }}</th>
+            {% if each['title'] == None %}
+            {% continue %}
+            {% else %}
+            <th>{{ each['title'] }}</th>
+            {% endif %}
         </tr>
         <tr>
+            {% if each['message'] == None %}
+            {% continue %}
+            {% else %}
             <td>
-                {{ each['answer_message'] }}
+                {{ each['message'] }}
             </td>
+            {% endif %}
         </tr>
+        {% endfor %}
+        {% endif %}
 
-
+        {% if user_question_comments %}
+        {% for each in user_question_comments %}
         <tr>
-            <th>Comments:</th>
+            <th>Question comments:</th>
         </tr>
         <tr>
-            <th>{{ each['question_title'] }}</th>
+            {% if each['title'] == None %}
+            {% continue %}
+            {% else %}
+            <th>{{ each['title'] }}</th>
+            {% endif %}
         </tr>
         <tr>
             <td>
                 {{ each['question_comment'] }}
             </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+
+        {% if user_answer_comments %}
+        {% for each in user_answer_comments %}
+        <tr>
+            <th>Answer comments:</th>
+        </tr>
+        <tr>
+            {% if each['title'] == None %}
+            {% continue %}
+            {% else %}
+            <th>{{ each['title'] }}</th>
+            {% endif %}
+        </tr>
+        <tr>
             <td>
-                {{ each['answer_comment'] }}
+                {{ each['message'] }}
             </td>
         </tr>
+        {% endfor %}
+        {% endif %}
 
         </table>
-    {% endfor %}
 
 {% endblock %}

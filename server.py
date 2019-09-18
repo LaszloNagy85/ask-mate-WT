@@ -6,6 +6,7 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/images'
 app.config['MAX_CONTENT_LENGTH'] = 5 * 2000 * 1400
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+app.jinja_env.add_extension('jinja2.ext.loopcontrols')
 
 
 @app.route('/')
@@ -283,8 +284,16 @@ def route_users():
 
 @app.route('/user/<user_id>')
 def route_user_activity(user_id):
-    data = data_manager.get_all_user_activity(user_id)
-    return render_template('user-activity.html', data=data)
+    user_questions = data_manager.get_all_user_questions(user_id)
+    user_answers = data_manager.get_all_user_answers(user_id)
+    user_question_comments = data_manager.get_all_user_question_comments(user_id)
+    user_answer_comments = data_manager.get_all_user_answer_comments(user_id)
+
+    return render_template('user-activity.html',
+                           user_questions=user_questions,
+                           user_answers=user_answers,
+                           user_question_comments=user_question_comments,
+                           user_answer_comments=user_answer_comments)
 
 
 if __name__ == '__main__':
