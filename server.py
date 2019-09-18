@@ -157,6 +157,12 @@ def route_delete_answer(answer_id, question_id):
     return redirect(url_for('route_show_details', question_id=question_id))
 
 
+@app.route('/answer/accept')
+def route_answer_acceptance():
+    data_manager.set_accepted_answer(request.args['answer_id'], request.args['user_id'])
+    return redirect(url_for('route_show_details', question_id=request.args['redirect_question_id']))
+
+
 @app.route('/comments/<redirect_question_id>/<comment_id>/delete')
 def route_delete_comment(comment_id, redirect_question_id):
     data_manager.delete_comment(comment_id)

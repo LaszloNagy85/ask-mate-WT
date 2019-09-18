@@ -32,7 +32,8 @@
                         <td>
                             {% if q_data %}
                                 <a href="/static/images/{{ q_data }}">
-                                    <img src="/static/images/{{ q_data }}" class="uploaded-images" width="100" height="70"
+                                    <img src="/static/images/{{ q_data }}" class="uploaded-images" width="100"
+                                         height="70"
                                          alt=""></a>
                             {% endif %}
                         </td>
@@ -170,8 +171,8 @@
                 <th>Question ID</th>
                 <th>Message</th>
                 <th>Image</th>
+                <th>Was this helpful?</th>
                 <th>Actions</th>
-
             </tr>
 
 
@@ -190,6 +191,16 @@
                                              height="70" alt=""></a>
                                 {% endif %}
                             </td>
+                        {% elif title == 'acceptance' %}
+                            {% if a_data == False %}
+                                <td><button class="buttons"
+                                        onclick="window.location.href='{{ url_for('route_answer_acceptance', answer_id=answer['id'], user_id=answer['user_id'], redirect_question_id=question_to_display['id']) }}'">
+                                    Accept answer
+                                </button></td>
+                            {% elif a_data == True %}
+                                <td>Answer has been accepted!</td>
+                            {% endif %}
+
                         {% else %}
                             <td>{{ a_data }}</td>
                         {% endif %}
