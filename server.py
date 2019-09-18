@@ -219,7 +219,10 @@ def route_new_tag(question_id):
 
     if request.method == "POST":
         data_manager.add_new_tag(question_id, request.form['tag'])
-        return redirect(url_for('route_show_details', question_id=question_id))
+        if data_manager.add_new_tag(question_id, request.form['tag']) == 'Already added':
+            return render_template('error.html', error_message='Tag already added to question')
+        else:
+            return redirect(url_for('route_show_details', question_id=question_id))
     return render_template('add-tag.html', question_id=question_id, tags=tags)
 
 
@@ -227,6 +230,12 @@ def route_new_tag(question_id):
 def route_delete_tag(question_id, tag_id):
     data_manager.delete_tag(tag_id)
     return redirect(url_for('route_show_details', question_id=question_id))
+
+
+@app.route('/tags')
+def route_tags():
+    data = data_manager.get_all_tags_and_count()
+    return render_template('list-all-tags.html', data=data)
 
 
 @app.route('/registration', methods=['GET', 'POST'])

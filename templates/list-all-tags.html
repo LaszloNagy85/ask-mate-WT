@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block title %}Tags page{% endblock %}
+
+{% block header %}Tags{% endblock %}
+
+{% block content %}
+    <button class="buttons" onclick="window.location.href='{{ url_for('route_list') }}'">Return</button>
+
+    <table>
+    <tr>
+        <th>
+            Tag name
+        </th>
+        <th>
+            Tag in questions
+        </th>
+    </tr>
+
+    {% for each in data %}
+    <tr>
+        <td>
+            {{ each['name'] }}
+        </td>
+        <td>
+            {{ each['times_in_questions'] }}
+        </td>
+    </tr>
+    {% endfor %}
+    </table>
+
+{% endblock %}

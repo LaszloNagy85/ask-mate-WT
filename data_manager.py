@@ -331,6 +331,12 @@ def delete_comment(cursor, comment_id):
 
 @database_common.connection_handler
 def add_new_tag(cursor, question_id, new_tag):
+    question_tags = get_questions_tags(question_id)
+
+    for each in question_tags:
+        if each['name'] == new_tag:
+            return "Already added"
+
     cursor.execute(
         sql.SQL("""INSERT INTO tag (name)
                    VALUES ({new_tag});
@@ -397,6 +403,19 @@ def get_tag_ids(cursor, question_id):
     tag_ids = tuple(tag_ids)
 
     return tag_ids
+
+
+@database_common.connection_handler
+def get_all_tags_and_count(cursor):
+    cursor.execute(
+        sql.SQL("""SELECT tag.name, COUNT(question_tag.question_id) AS times_in_questions
+                   FROM tag
+                   JOIN question_tag ON tag.id = question_tag.tag_id
+                   GROUP BY tag.name
+                           """))
+    data = cursor.fetchall()
+
+    return data
 
 
 """------TAG SECTION OVER------"""
@@ -466,7 +485,7 @@ def get_all_user_activity(cursor, user_id):
                    FROM question
                    JOIN answer ON question.user_id = answer.user_id
                    JOIN comment ON comment.user_id = question.user_id
-                   WHERE question.user_id = '4686004'
+                   WHERE question.user_id = {user_id}
                     AND answer.question_id = question.id
                     AND comment.question_id = question.id
                         OR answer.question_id = question.id

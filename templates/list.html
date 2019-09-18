@@ -6,6 +6,7 @@
     {% endif %}
 
     <input id="list-all-button" type="button" onclick="window.location.href='/list'" value="List all questions"/>
+    <input id="list-all-button" type="button" onclick="window.location.href='/tags'" value="List all tags"/>
 
     <form id="sort-form" action={{ "/" if limit_it else "/list" }} method="GET">
         <label for="sort">Sort questions by:</label>
