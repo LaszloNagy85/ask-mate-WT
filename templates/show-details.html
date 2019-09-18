@@ -167,17 +167,22 @@
                             </td>
                         {% elif title == 'acceptance' %}
                             {% if a_data == False %}
-                                <td><button class="buttons"
+                                {% if session and session['user_id']['id'] == question_to_display['user_id'] %}
+                                    <td><button class="buttons"
                                         onclick="window.location.href='{{ url_for('route_answer_acceptance', answer_id=answer['id'], user_id=answer['user_id'], redirect_question_id=question_to_display['id']) }}'">
                                     Accept answer
                                 </button></td>
-                            {% elif a_data == True %}
+                                {% else %}
+                                    <td>Answer has not been accepted yet.</td>
+                                {% endif %}
+                        {% elif a_data == True %}
                                 <td>Answer has been accepted!</td>
-                            {% endif %}
+                        {% endif %}
 
                         {% else %}
                             <td>{{ a_data }}</td>
                         {% endif %}
+
                     {% endif %}
                 {% endfor %}
                 <td>
