@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block title %}Main page{% endblock %}
 {% block content %}
+
     {% if session['username'] %}
         <input id="ask-button" type="button" onclick="window.location.href='/add-question'" value="Ask a question"/>
     {% endif %}
@@ -33,7 +34,7 @@
             <label for="site-search"></label>
             <input type="search" id="site-search" class="site-search" name="q"/>
         </div>
-    </form><br>
+    </form>
 
     {% if session['username'] %}
         <div id="logged_in_user">Logged in as: {{ session['username'] }}</div><br>
