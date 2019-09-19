@@ -165,7 +165,7 @@ def route_answer_acceptance():
 
 
 @app.route('/comments/<redirect_question_id>/<comment_id>/delete')
-def route_delete_comment(comment_id, redirect_question_id):
+def route_delete_comment(redirect_question_id, comment_id):
     print(comment_id)
     data_manager.delete_comment(comment_id)
     return redirect(url_for('route_show_details', question_id=redirect_question_id))
@@ -299,6 +299,7 @@ def route_user_activity(user_id):
 
 if __name__ == '__main__':
     app.run(
-        port=5000,
+        host='10.44.1.211',
+        port=8000,
         debug=False,
     )

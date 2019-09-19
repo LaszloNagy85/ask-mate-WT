@@ -257,19 +257,19 @@
                                         Edit comment
                                     </button>
                                     <br>
-                                    <button class="buttons" onclick="location.href='#popup1'">Delete comment
+                                    <button class="buttons" onclick="location.href='#popup{{ comment['id'] }}'">Delete comment
                                     </button>
                                 {% endif %}
-                                <div id="popup1" class="overlay">
+                                <div id="popup{{ comment['id'] }}" class="overlay">
                                     <div class="popup">
                                         <h2>Are you sure?</h2>
                                         <a class="close" href="#">&times;</a>
                                         <div class="content">
                                             <button class="buttons"
-                                                    onclick="window.location.href='/comments/{{ question_to_display['id'] }}/{{ comment['id'] }}/delete'">
+                                                    onclick="window.location.href='{{ url_for('route_delete_comment', redirect_question_id=question_to_display['id'], comment_id=comment['id']) }}'">
                                                 Yes
                                             </button>
-                                            <button class="buttons">No</button>
+                                            <button class="buttons" onclick="window.location.href='{{ url_for('route_show_details', question_id=question_to_display['id']) }}'" >No</button>
                                         </div>
                                     </div>
                                 </div>
