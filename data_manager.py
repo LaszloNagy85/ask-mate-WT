@@ -269,9 +269,16 @@ def edit_answer(cursor, answer_id, message):
 @database_common.connection_handler
 def delete_answer(cursor, answer_id):
     cursor.execute(
+        sql.SQL(""" DELETE FROM comment
+                        WHERE  answer_id= {answer_id};
+                        """).format(answer_id=sql.Literal(answer_id))
+    )
+
+    cursor.execute(
         sql.SQL("""DELETE FROM answer 
                    WHERE id = {answer_id};
-                       """).format(answer_id=sql.Literal(answer_id)))
+                       """).format(answer_id=sql.Literal(answer_id))
+    )
 
 
 @database_common.connection_handler
