@@ -2,12 +2,37 @@
 {% block title %}Main page{% endblock %}
 {% block content %}
 
+    <div class="dropdown">
+        <button class="dropbtn">Menu</button>
+            <div class="dropdown-content">
+                {% if session['username'] %}
+                    <a href="{{ url_for('add_question') }}">Ask a question</a>
+                {% endif %}
+                <a href="{{ url_for('route_list_all') }}">List all questions</a>
+                <a href="{{ url_for('route_tags') }}">List all tags</a>
+                <a href="{{ url_for('route_users') }}">List all users</a>
+            </div>
+    </div>
+    <br>
+
+    <div class="top_right">
+
     {% if session['username'] %}
-        <input id="ask-button" type="button" onclick="window.location.href='/add-question'" value="Ask a question"/>
+        <div id="logged_in_user">Logged in as: {{ session['username'] }}</div><br>
     {% endif %}
 
-    <input id="list-all-button" type="button" onclick="window.location.href='/list'" value="List all questions"/>
-    <input id="list-all-button" type="button" onclick="window.location.href='/tags'" value="List all tags"/>
+        {% if not session['username'] %}
+            <input id="register-button" type="button" onclick="window.location.href='/registration'" value="Register"/>
+            <input id="login-button" type="button" onclick="window.location.href='/login'" value="Login"/>
+        {% elif session['username'] %}
+            <input id="logout-button" type="button" onclick="window.location.href='/logout'" value="Logout"/>
+        {% endif %}
+
+        <form method="GET" action="/search">
+            <input type="search" name="q"/>
+            <button type="submit" >Search</button>
+        </form>
+    </div><br>
 
     <form id="sort-form" action={{ "/" if limit_it else "/list" }} method="GET">
         <label for="sort">Sort questions by:</label>
@@ -28,26 +53,7 @@
         <button type="submit">Sort it!</button>
     </form>
 
-    <form method="GET" action="/search">
-        <div class="site-search">
-            <button type="submit" class="site-search">Search</button>
-            <label for="site-search"></label>
-            <input type="search" id="site-search" class="site-search" name="q"/>
-        </div>
-    </form>
-
-    {% if session['username'] %}
-        <div id="logged_in_user">Logged in as: {{ session['username'] }}</div><br>
-    {% endif %}
-
-
-    {% if not session['username'] %}
-        <input class="buttons" id="register-button" type="button" onclick="window.location.href='/registration'" value="Register"/>
-        <input class="buttons" id="login-button" type="button" onclick="window.location.href='/login'" value="Login"/>
-    {% elif session['username'] %}
-        <input class="buttons" id="logout-button" type="button" onclick="window.location.href='/logout'" value="Logout"/>
-    {% endif %}
-    <input class="buttons" id="users" type="button" onclick="window.location.href='/users'" value="List all users"/>
+    <br>
 
     <ul>
         {% for question in questions %}

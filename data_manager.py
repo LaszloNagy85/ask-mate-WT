@@ -210,6 +210,19 @@ def remove_question_and_its_answers(cursor, question_id, answers):
                             """).format(q_id=sql.SQL(question_id)))
 
 
+@database_common.connection_handler
+def get_question_id_by_title(cursor, title):
+
+    cursor.execute(
+        sql.SQL("""SELECT id FROM question
+                   WHERE title = {title};
+                    """).format(title=sql.Literal(title)))
+
+    data = cursor.fetchone()
+
+    return data
+
+
 """------QUESTION SECTION OVER------"""
 
 """------ANSWER SECTION------"""

@@ -141,6 +141,12 @@ def delete_question(data_id):
     return redirect(url_for('route_list'))
 
 
+@app.route('/forward/<title>')
+def route_forward_to_show_detail(title):
+    question_id = data_manager.get_question_id_by_title(title)
+    return redirect(url_for('route_show_details', question_id=question_id['id']))
+
+
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def route_add_answer(question_id):
     if request.method == 'POST':

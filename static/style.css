@@ -51,6 +51,7 @@ table {
 }
 
 ul li {
+    border-radius: 5px;
     margin: 10px;
     padding: 40px;
     color: black;
@@ -78,7 +79,8 @@ button {
 }
 
 #sort-form {
-    float: right;
+    display: inline-block;
+    float: left;
     padding-right: 10px;
 }
 
@@ -89,6 +91,7 @@ button {
 }
 
 .drop-downs {
+    float: left;
     height: 30px;
     width: 140px;
     font-size: 0.8em;
@@ -143,12 +146,6 @@ button {
     border-radius: 10px
 }
 
-.site-search {
-    padding-right: 10px;
-    height: 30px;
-    float: right;
-    cursor: pointer;
-}
 
 .submission_time {
     text-align: right;
@@ -253,13 +250,6 @@ button {
     }
 }
 
-#logged_in_user {
-    float: left;
-    font-weight: bold;
-    display: inline-block;
-}
-
-
 .user_activity{
     position: center;
     text-align: center;
@@ -292,4 +282,70 @@ button {
 
 #error {
     text-align: center;
+}
+
+.dropbtn {
+    text-align: center;
+    background-color: cadetblue;
+    color: black;
+    padding: auto;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: auto;
+    width: 120px;
+    height: 50px;
+}
+
+.dropdown {
+    float: left;
+    horiz-align: left;
+    text-align: center;
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    text-align: center;
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    left: 0;
+}
+
+.dropdown-content a {
+    left: 0;
+    text-align: center;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: #30799B;
+    text-align: center;
+}
+
+.top_right {
+    float:right;
+}
+
+.top_right {
+    text-align: right;
+    float: top;
+    margin: auto;
+    padding: auto;
 }
