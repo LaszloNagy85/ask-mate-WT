@@ -94,16 +94,9 @@ button {
     font-size: 0.8em;
 }
 
-#ask-button {
+#ask-button, #list-all-button{
     height: 50px;
-    width: 430px;
-    font-size: 1.1em;
-    cursor: pointer;
-}
-
-#list-all-button {
-    height: 50px;
-    width: 430px;
+    width: 300px;
     font-size: 1.1em;
     cursor: pointer;
 }
