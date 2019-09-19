@@ -557,13 +557,13 @@ def get_all_user_question_comments(cursor, user_id):
 @database_common.connection_handler
 def get_all_user_answer_comments(cursor, user_id):
     cursor.execute(
-        sql.SQL("""SELECT (SELECT question.title FROM question
+        sql.SQL("""SELECT DISTINCT (SELECT question.title FROM question
                     WHERE question.id = answer.question_id),
                    comment.message
                    FROM question
                    JOIN comment ON question.user_id = comment.user_id
                    JOIN answer ON comment.user_id = answer.user_id
-                   WHERE comment.user_id = 4686001
+                   WHERE comment.user_id = {user_id}
                     AND comment.answer_id = answer.id
                     AND comment.answer_id IS NOT NULL;
                            """).format(user_id=sql.Literal(user_id)))
