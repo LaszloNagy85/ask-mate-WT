@@ -289,3 +289,7 @@ button {
     vertical-align: alphabetic;
     margin: auto;
 }
+
+#error {
+    text-align: center;
+}
