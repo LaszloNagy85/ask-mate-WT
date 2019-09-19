@@ -258,3 +258,38 @@ button {
     font-weight: bold;
     display: inline-block;
 }
+
+
+.user_activity{
+    position: center;
+    text-align: center;
+    horiz-align: left;
+}
+
+.user_activity .ua_header{
+    float: left;
+    font-size: 1em;
+    background-color: #0cc;
+    margin: auto;
+}
+
+.user_activity .ua_comment_header {
+    float: left;
+    background-color: #2E8B57;
+    margin: auto;
+}
+
+.user_activity .ua_comment_th{
+    background-color: #3CB371
+
+}
+
+.user_activity td {
+    display: block;
+    vertical-align: alphabetic;
+    margin: auto;
+}
+
+#error {
+    text-align: center;
+}

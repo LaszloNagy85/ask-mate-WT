@@ -226,10 +226,10 @@ def route_new_tag(question_id):
         tags.add(each['name'])
 
     if request.method == "POST":
-        data_manager.add_new_tag(question_id, request.form['tag'])
         if data_manager.add_new_tag(question_id, request.form['tag']) == 'Already added':
             return render_template('error.html', error_message='Tag already added to question')
         else:
+            data_manager.add_new_tag(question_id, request.form['tag'])
             return redirect(url_for('route_show_details', question_id=question_id))
     return render_template('add-tag.html', question_id=question_id, tags=tags)
 
