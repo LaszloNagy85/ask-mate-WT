@@ -32,65 +32,67 @@
         {% endif %}
 
         {% if user_answers %}
-        {% for each in user_answers %}
+        {% for key, values in user_answers.items() %}
         <tr>
             <th>Answers:</th>
         </tr>
         <tr>
-            {% if each['title'] == None %}
+            {% if key == None %}
             {% continue %}
             {% else %}
-            <th>{{ each['title'] }}</th>
+            <th>{{ key }}</th>
             {% endif %}
         </tr>
         <tr>
-            {% if each['message'] == None %}
-            {% continue %}
-            {% else %}
+            {% for value in values %}
             <td>
-                {{ each['message'] }}
+                {{ value }}
             </td>
-            {% endif %}
+            {% endfor %}
         </tr>
         {% endfor %}
         {% endif %}
 
         {% if user_question_comments %}
-        {% for each in user_question_comments %}
+        {% for key, values in user_question_comments.items() %}
         <tr>
             <th>Question comments:</th>
         </tr>
         <tr>
-            {% if each['title'] == None %}
+            {% if key == None %}
             {% continue %}
             {% else %}
-            <th>{{ each['title'] }}</th>
+            <th>{{ key }}</th>
             {% endif %}
         </tr>
         <tr>
+            {% for value in values %}
             <td>
-                {{ each['question_comment'] }}
+                {{ value }}
             </td>
+            {% endfor %}
         </tr>
         {% endfor %}
         {% endif %}
 
         {% if user_answer_comments %}
-        {% for each in user_answer_comments %}
+        {% for key, values in user_answer_comments.items() %}
         <tr>
             <th>Answer comments:</th>
         </tr>
         <tr>
-            {% if each['title'] == None %}
+            {% if key == None %}
             {% continue %}
             {% else %}
-            <th>{{ each['title'] }}</th>
+            <th>{{ key }}</th>
             {% endif %}
         </tr>
         <tr>
+            {% for value in values %}
             <td>
-                {{ each['message'] }}
+                {{ value }}
             </td>
+            {% endfor %}
         </tr>
         {% endfor %}
         {% endif %}

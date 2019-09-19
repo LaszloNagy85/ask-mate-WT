@@ -531,59 +531,50 @@ def get_all_user_answers(cursor, user_id):
                    WHERE answer.user_id = {user_id};
                            """).format(user_id=sql.Literal(user_id)))
     data = cursor.fetchall()
-    return data
+    return sort_dictionary(data)
 
 
 @database_common.connection_handler
 def get_all_user_question_comments(cursor, user_id):
     cursor.execute(
-        sql.SQL("""SELECT question.title, comment.message AS question_comment
+        sql.SQL("""SELECT question.title, comment.message
                    FROM comment
                    JOIN question ON comment.question_id = question.id
                    WHERE comment.user_id = {user_id};
                            """).format(user_id=sql.Literal(user_id)))
     data = cursor.fetchall()
 
-    return data
+    return sort_dictionary(data)
 
 
 @database_common.connection_handler
 def get_all_user_answer_comments(cursor, user_id):
-    answer_ids = []
-    data = []
-
     cursor.execute(
-        sql.SQL("""SELECT answer_id, message FROM comment
-                   WHERE comment.user_id = {user_id} AND answer_id IS NOT NULL
-                   ORDER BY answer_id;
+        sql.SQL("""SELECT (SELECT question.title FROM question
+                    WHERE question.id = answer.question_id),
+                   comment.message
+                   FROM question
+                   JOIN comment ON question.user_id = comment.user_id
+                   JOIN answer ON comment.user_id = answer.user_id
+                   WHERE comment.user_id = 4686001
+                    AND comment.answer_id = answer.id
+                    AND comment.answer_id IS NOT NULL;
                            """).format(user_id=sql.Literal(user_id)))
-    answer_comment_data = cursor.fetchall()
+    data = cursor.fetchall()
 
-    for each in answer_comment_data:
-        answer_ids.append(each['answer_id'])
+    return sort_dictionary(data)
 
-    answer_ids = tuple(answer_ids)
 
-    if answer_ids:
-        cursor.execute(
-            sql.SQL("""SELECT question.title FROM question
-                       JOIN answer ON question.id = answer.question_id
-                       WHERE answer.id IN {answer_ids};
-                                   """).format(answer_ids=sql.Literal(answer_ids)))
-        question_title = cursor.fetchall()
-    else:
-        answer_ids = None
-        return answer_ids
+def sort_dictionary(data):
+    result_data = {}
 
-    for question in question_title:
-        data.append({'title': question['title']})
+    for each in data:
+        if each['title'] in result_data.keys():
+            result_data[each['title']].append(each['message'])
+        else:
+            result_data[each['title']] = [each['message']]
 
-    counter = 0
-    for answer in answer_comment_data:
-        data[counter].update(message=answer['message'])
-        counter += 1
-
-    return data
+    return result_data
 
 
 @database_common.connection_handler
