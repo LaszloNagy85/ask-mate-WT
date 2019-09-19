@@ -4,99 +4,91 @@
 {% block content %}
     <button class="buttons" onclick="window.location.href='{{ url_for('route_list') }}'">Return</button>
 
-        <table>
+        <table class="user_activity">
+        <tbody>
+            {% if user_questions %}
+            {% for question in user_questions %}
+            <th class="ua_header">Questions:</th>
+            <tr>
+                {% if question['title'] == None %}
+                {% continue %}
+                {% else %}
+                <th>{{ question['title'] }}</th>
+                {% endif %}
+            </tr>
 
-        {% if user_questions %}
-        {% for question in user_questions %}
-        <tr>
-            <th>Questions:</th>
-        </tr>
-        <tr>
-            {% if question['title'] == None %}
-            {% continue %}
-            {% else %}
-            <th>{{ question['title'] }}</th>
-            {% endif %}
-        </tr>
-
-        <tr>
-            {% if question['message'] == None %}
-            {% continue %}
-            {% else %}
-            <td>
-                {{ question['message'] }}
-            </td>
-            {% endif %}
-        </tr>
-        {% endfor %}
-        {% endif %}
-
-        {% if user_answers %}
-        {% for key, values in user_answers.items() %}
-        <tr>
-            <th>Answers:</th>
-        </tr>
-        <tr>
-            {% if key == None %}
-            {% continue %}
-            {% else %}
-            <th>{{ key }}</th>
-            {% endif %}
-        </tr>
-        <tr>
-            {% for value in values %}
-            <td>
-                {{ value }}
-            </td>
+            <tr>
+                {% if question['message'] == None %}
+                {% continue %}
+                {% else %}
+                <td>
+                    {{ question['message'] }}
+                </td>
+                {% endif %}
+            </tr>
             {% endfor %}
-        </tr>
-        {% endfor %}
-        {% endif %}
-
-        {% if user_question_comments %}
-        {% for key, values in user_question_comments.items() %}
-        <tr>
-            <th>Question comments:</th>
-        </tr>
-        <tr>
-            {% if key == None %}
-            {% continue %}
-            {% else %}
-            <th>{{ key }}</th>
             {% endif %}
-        </tr>
-        <tr>
-            {% for value in values %}
-            <td>
-                {{ value }}
-            </td>
-            {% endfor %}
-        </tr>
-        {% endfor %}
-        {% endif %}
 
-        {% if user_answer_comments %}
-        {% for key, values in user_answer_comments.items() %}
-        <tr>
-            <th>Answer comments:</th>
-        </tr>
-        <tr>
-            {% if key == None %}
-            {% continue %}
-            {% else %}
-            <th>{{ key }}</th>
+            {% if user_answers %}
+            {% for key, values in user_answers.items() %}
+            <th class="ua_header">Answers:</th>
+            <tr>
+                {% if key == None %}
+                {% continue %}
+                {% else %}
+                <th>{{ key }}</th>
+                {% endif %}
+            </tr>
+            <tr>
+                {% for value in values %}
+                <td>
+                    {{ value }}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
             {% endif %}
-        </tr>
-        <tr>
-            {% for value in values %}
-            <td>
-                {{ value }}
-            </td>
-            {% endfor %}
-        </tr>
-        {% endfor %}
-        {% endif %}
 
+            {% if user_question_comments %}
+            {% for key, values in user_question_comments.items() %}
+            <th class="ua_comment_header">Question comments:</th>
+            <tr>
+                {% if key == None %}
+                {% continue %}
+                {% else %}
+                <th class="ua_comment_th">{{ key }}</th>
+                {% endif %}
+            </tr>
+            <tr>
+                {% for value in values %}
+                <td>
+                    {{ value }}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            {% endif %}
+
+            {% if user_answer_comments %}
+            {% for key, values in user_answer_comments.items() %}
+            <th class="ua_comment_header">Answer comments:</th>
+            <tr>
+                {% if key == None %}
+                {% continue %}
+                {% else %}
+                <th class="ua_comment_th">{{ key }}</th>
+                {% endif %}
+            </tr>
+            <tr>
+                {% for value in values %}
+                <td>
+                    {{ value }}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            {% endif %}
+        </tbody>
         </table>
 
 {% endblock %}
