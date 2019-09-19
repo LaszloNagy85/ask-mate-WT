@@ -45,7 +45,7 @@ table {
 #answer-comments {
     position: relative;
     float: right;
-    width: 700px;
+    width: 750px;
     display: block;
     font-size: 0.85em;
 }
@@ -104,7 +104,7 @@ button {
 .comments {
     position: relative;
     float: right;
-    width: 700px;
+    width: 753px;
     display: block;
     font-size: 0.85em;
 }
@@ -112,7 +112,7 @@ button {
 #answer-comment-title, #question-comment-title {
     position: relative;
     float: right;
-    width: 677px;
+    width: 726px;
     display: block;
     margin: 0px;
     padding: 10px;
