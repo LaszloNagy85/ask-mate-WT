@@ -380,6 +380,7 @@ def delete_comment(cursor, comment_id):
 @database_common.connection_handler
 def add_new_tag(cursor, question_id, new_tag):
     question_tags = get_questions_tags(question_id)
+    print(question_tags)
 
     for each in question_tags:
         if each['name'] == new_tag:

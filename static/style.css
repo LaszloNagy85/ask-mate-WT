@@ -268,21 +268,24 @@ button {
 
 .user_activity .ua_header{
     float: left;
-    horiz-align: left;
     font-size: 1em;
     background-color: #0cc;
-    margin: 20px;
-    padding: 20px;
-
+    margin: auto;
 }
 
 .user_activity .ua_comment_header {
     float: left;
-    horiz-align: left;
     background-color: #2E8B57;
+    margin: auto;
 }
 
 .user_activity .ua_comment_th{
-    horiz-align: left;
     background-color: #3CB371
+
+}
+
+.user_activity td {
+    display: block;
+    vertical-align: alphabetic;
+    margin: auto;
 }
