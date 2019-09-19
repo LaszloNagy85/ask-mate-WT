@@ -15,25 +15,6 @@
     </div>
     <br>
 
-    <div class="top_right">
-
-    {% if session['username'] %}
-        <div id="logged_in_user">Logged in as: {{ session['username'] }}</div><br>
-    {% endif %}
-
-        {% if not session['username'] %}
-            <input id="register-button" type="button" onclick="window.location.href='/registration'" value="Register"/>
-            <input id="login-button" type="button" onclick="window.location.href='/login'" value="Login"/>
-        {% elif session['username'] %}
-            <input id="logout-button" type="button" onclick="window.location.href='/logout'" value="Logout"/>
-        {% endif %}
-
-        <form method="GET" action="/search">
-            <input type="search" name="q"/>
-            <button type="submit" >Search</button>
-        </form>
-    </div><br>
-
     <form id="sort-form" action={{ "/" if limit_it else "/list" }} method="GET">
         <label for="sort">Sort questions by:</label>
         <select class="drop-downs" id="sort" name="sort">
@@ -52,6 +33,25 @@
         </select>
         <button type="submit">Sort it!</button>
     </form>
+
+    <div class="top_right">
+
+    {% if session['username'] %}
+        Logged in as: {{ session['username'] }}
+    {% endif %}
+
+        {% if not session['username'] %}
+            <input id="register-button" type="button" onclick="window.location.href='/registration'" value="Register"/>
+            <input id="login-button" type="button" onclick="window.location.href='/login'" value="Login"/>
+        {% elif session['username'] %}
+            <input id="logout-button" type="button" onclick="window.location.href='/logout'" value="Logout"/>
+        {% endif %}
+
+        <form method="GET" action="/search">
+            <input type="search" name="q"/>
+            <button type="submit" >Search</button>
+        </form>
+    </div>
 
     <br>
 

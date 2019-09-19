@@ -80,6 +80,7 @@ button {
 
 #sort-form {
     display: inline-block;
+    text-align: center;
     float: left;
     padding-right: 10px;
 }
@@ -339,13 +340,8 @@ button {
     text-align: center;
 }
 
-.top_right {
-    float:right;
-}
 
 .top_right {
     text-align: right;
     float: top;
-    margin: auto;
-    padding: auto;
 }
