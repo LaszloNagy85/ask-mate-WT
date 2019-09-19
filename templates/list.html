@@ -31,7 +31,7 @@
                 </option>
             {% endfor %}
         </select>
-        <button type="submit">Sort it!</button>
+        <button class="buttons" type="submit">Sort it!</button>
     </form>
 
     <div class="top_right">
@@ -41,15 +41,15 @@
     {% endif %}
 
         {% if not session['username'] %}
-            <input id="register-button" type="button" onclick="window.location.href='/registration'" value="Register"/>
-            <input id="login-button" type="button" onclick="window.location.href='/login'" value="Login"/>
+            <input class="buttons" type="button" onclick="window.location.href='/registration'" value="Register"/>
+            <input class="buttons" type="button" onclick="window.location.href='/login'" value="Login"/>
         {% elif session['username'] %}
-            <input id="logout-button" type="button" onclick="window.location.href='/logout'" value="Logout"/>
+            <input class="buttons" type="button" onclick="window.location.href='/logout'" value="Logout"/>
         {% endif %}
 
         <form method="GET" action="/search">
-            <input type="search" name="q"/>
-            <button type="submit" >Search</button>
+            <input id="search-field" type="search" name="q"/>
+            <button class="buttons" type="submit" >Search</button>
         </form>
     </div>
 

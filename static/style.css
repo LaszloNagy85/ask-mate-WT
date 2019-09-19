@@ -345,3 +345,12 @@ button {
     text-align: right;
     float: top;
 }
+
+#search-field {
+    height: 30px;
+    width: 145px;
+    font-size: 0.8em;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    cursor: pointer;
+}
